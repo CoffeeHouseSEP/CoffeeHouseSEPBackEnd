@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
   info = @Info(
-    title = "Forum API",
+    title = "CoffeeHouseSEP API",
     version = "${api.version}",
     contact = @Contact(
-      name = "Eric Chen",
-      email = "dev.tranviethailinh@gmail.com",
-      url = "https://github.com/devtranviethailinh"
+      name = "CoffeeHouseSEPBackend",
+      email = "CoffeeHouseSEPBackend@gmail.com",
+      url = "https://github.com/CoffeeHouseSEP"
     )
     // ,
     // license = @License(
