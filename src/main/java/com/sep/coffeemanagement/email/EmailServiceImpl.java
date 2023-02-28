@@ -12,16 +12,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-
   @Autowired
   private JavaMailSender javaMailSender;
 
   @Value("${spring.mail.username}")
   private String sender;
 
-  protected AppLogger APP_LOGGER = LoggerFactory.getLogger(
-    LoggerType.APPLICATION
-  );
+  protected AppLogger APP_LOGGER = LoggerFactory.getLogger(LoggerType.APPLICATION);
 
   @Override
   public void sendSimpleMail(EmailDetail details) {
