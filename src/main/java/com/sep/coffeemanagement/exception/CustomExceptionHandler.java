@@ -31,6 +31,18 @@ public class CustomExceptionHandler {
     );
   }
 
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<CommonResponse<String>> handleNotFound(
+    ResourceNotFoundException e
+  ) {
+    APP_LOGGER.error(e.getMessage());
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(false, "", e.getMessage(), HttpStatus.NOT_FOUND.value()),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
   @ExceptionHandler(UnauthorizedException.class)
   public ResponseEntity<CommonResponse<String>> handleUnAuthorizedException(
     UnauthorizedException e

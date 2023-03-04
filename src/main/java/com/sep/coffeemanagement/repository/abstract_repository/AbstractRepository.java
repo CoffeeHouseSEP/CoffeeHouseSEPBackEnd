@@ -57,108 +57,36 @@ public abstract class AbstractRepository {
     }
   }
 
-  protected <T> void save(T entity, String[] ignoreFields, String tableName) {
+  protected <T> void save(
+    T entity,
+    String[] ignoreFields,
+    String idField,
+    boolean isUpdate
+  ) {
     StringBuilder sql = new StringBuilder();
-    try {
-      Field fieldId = entity.getClass().getDeclaredField("id");
-      fieldId.setAccessible(true);
-      jdbcTemplate.queryForObject(
-        "SELECT * FROM " +
-        tableName +
-        entity.getClass().getSimpleName().toLowerCase() +
-        " WHERE id = " +
-        "'" +
-        fieldId.get(entity) +
-        "'",
-        new BeanPropertyRowMapper<>(entity.getClass())
-      );
-      sql.append(
-        "UPDATE " + tableName + entity.getClass().getSimpleName().toLowerCase() + " SET "
-      );
-      Field[] fields = entity.getClass().getDeclaredFields();
-      for (int i = 0; i < fields.length; i++) {
-        fields[i].setAccessible(true);
-        if (fields[i].getType() == String.class) {
-          try {
-            sql.append(
-              StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-              "=" +
-              "'" +
-              fields[i].get(entity) +
-              "'"
-            );
-          } catch (IllegalArgumentException | IllegalAccessException e1) {
-            APP_LOGGER.error(
-              "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
-            );
-            throw new BadSqlException("something went wrong");
-          }
-        }
-        if (fields[i].getType() == int.class) {
-          try {
-            sql.append(
-              StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-              "=" +
-              fields[i].get(entity)
-            );
-          } catch (IllegalArgumentException | IllegalAccessException e1) {
-            APP_LOGGER.error(
-              "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
-            );
-            throw new BadSqlException("something went wrong");
-          }
-        }
-        if (fields[i].getType() == Date.class) {
-          try {
-            Date date = (Date) fields[i].get(entity);
-            sql.append(
-              StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-              "=" +
-              "'" +
-              new java.sql.Date(date.getTime()) +
-              "'"
-            );
-          } catch (IllegalArgumentException | IllegalAccessException e1) {
-            APP_LOGGER.error(
-              "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
-            );
-            throw new BadSqlException("something went wrong");
-          }
-        }
-        if (i != fields.length - 1) {
-          sql.append(",");
-        }
-      }
-      sql.append(" WHERE id='" + fieldId.get(entity) + "'");
-    } catch (
-      EmptyResultDataAccessException
-      | NoSuchFieldException
-      | IllegalArgumentException
-      | IllegalAccessException e
-    ) {
-      APP_LOGGER.info(e.getLocalizedMessage());
-      StringBuilder fieldInsert = new StringBuilder();
-      StringBuilder valueInsert = new StringBuilder();
-      Field[] fields = entity.getClass().getDeclaredFields();
-      sql.append(
-        "INSERT INTO " + tableName + entity.getClass().getSimpleName().toLowerCase()
-      );
-      fieldInsert.append(" (");
-      valueInsert.append(" (");
-      for (int i = 0; i < fields.length; i++) {
-        boolean isInsert = true;
-        for (String ignore : ignoreFields) {
-          if (fields[i].getName().compareTo(ignore) == 0) {
-            isInsert = false;
-            break;
-          }
-        }
-        if (isInsert) {
+    if (isUpdate) {
+      try {
+        Field fieldId = entity.getClass().getDeclaredField(idField);
+        fieldId.setAccessible(true);
+        sql.append(
+          "UPDATE " +
+          StringUtils
+            .camelCaseToSnakeCase(entity.getClass().getSimpleName())
+            .toLowerCase() +
+          " SET "
+        );
+        Field[] fields = entity.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
           fields[i].setAccessible(true);
-          fieldInsert.append(StringUtils.camelCaseToSnakeCase(fields[i].getName()));
           if (fields[i].getType() == String.class) {
             try {
-              valueInsert.append("'" + fields[i].get(entity) + "'");
+              sql.append(
+                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                "=" +
+                "'" +
+                fields[i].get(entity) +
+                "'"
+              );
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -168,7 +96,11 @@ public abstract class AbstractRepository {
           }
           if (fields[i].getType() == int.class) {
             try {
-              valueInsert.append(fields[i].get(entity));
+              sql.append(
+                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                "=" +
+                fields[i].get(entity)
+              );
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -179,7 +111,13 @@ public abstract class AbstractRepository {
           if (fields[i].getType() == Date.class) {
             try {
               Date date = (Date) fields[i].get(entity);
-              valueInsert.append("'" + new java.sql.Date(date.getTime()) + "'");
+              sql.append(
+                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                "=" +
+                "'" +
+                new java.sql.Date(date.getTime()) +
+                "'"
+              );
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -188,17 +126,101 @@ public abstract class AbstractRepository {
             }
           }
           if (i != fields.length - 1) {
-            fieldInsert.append(",");
-            valueInsert.append(",");
+            sql.append(",");
           }
         }
+        sql.append(generateConditionInQuery(fieldId, fieldId.get(entity).toString()));
+      } catch (
+        EmptyResultDataAccessException
+        | NoSuchFieldException
+        | IllegalArgumentException
+        | IllegalAccessException e
+      ) {
+        APP_LOGGER.error("BAD SQL: " + sql.toString());
+        e.printStackTrace();
+        throw new BadSqlException("something went wrong");
       }
-      fieldInsert.append(")");
-      valueInsert.append(")");
-      sql.append(fieldInsert.toString() + " VALUES " + valueInsert.toString());
-    } catch (BadSqlGrammarException e) {
-      APP_LOGGER.error("Bad SQL: " + sql.toString());
-      throw new BadSqlException("something went wrong");
+    } else {
+      try {
+        StringBuilder fieldInsert = new StringBuilder();
+        StringBuilder valueInsert = new StringBuilder();
+        Field[] fields = entity.getClass().getDeclaredFields();
+        sql.append(
+          "INSERT INTO " +
+          StringUtils
+            .camelCaseToSnakeCase(entity.getClass().getSimpleName())
+            .toLowerCase()
+        );
+        fieldInsert.append(" (");
+        valueInsert.append(" (");
+        for (int i = 0; i < fields.length; i++) {
+          boolean isInsert = true;
+          for (String ignore : ignoreFields) {
+            if (fields[i].getName().compareTo(ignore) == 0) {
+              isInsert = false;
+              break;
+            }
+          }
+          if (isInsert) {
+            fields[i].setAccessible(true);
+            fieldInsert.append(StringUtils.camelCaseToSnakeCase(fields[i].getName()));
+            if (fields[i].getType() == String.class) {
+              try {
+                valueInsert.append("'" + fields[i].get(entity) + "'");
+              } catch (IllegalArgumentException | IllegalAccessException e1) {
+                APP_LOGGER.error(
+                  "Not found " +
+                  fields[i].getName() +
+                  " in " +
+                  entity.getClass().getName()
+                );
+                throw new BadSqlException("something went wrong");
+              }
+            }
+            if (fields[i].getType() == int.class) {
+              try {
+                valueInsert.append(fields[i].get(entity));
+              } catch (IllegalArgumentException | IllegalAccessException e1) {
+                APP_LOGGER.error(
+                  "Not found " +
+                  fields[i].getName() +
+                  " in " +
+                  entity.getClass().getName()
+                );
+                throw new BadSqlException("something went wrong");
+              }
+            }
+            if (fields[i].getType() == Date.class) {
+              try {
+                Date date = (Date) fields[i].get(entity);
+                valueInsert.append("'" + new java.sql.Date(date.getTime()) + "'");
+              } catch (IllegalArgumentException | IllegalAccessException e1) {
+                APP_LOGGER.error(
+                  "Not found " +
+                  fields[i].getName() +
+                  " in " +
+                  entity.getClass().getName()
+                );
+                throw new BadSqlException("something went wrong");
+              }
+            }
+            if (i != fields.length - 1) {
+              fieldInsert.append(",");
+              valueInsert.append(",");
+            }
+          }
+        }
+        fieldInsert.append(")");
+        valueInsert.append(")");
+        sql.append(fieldInsert.toString() + " VALUES " + valueInsert.toString());
+      } catch (
+        EmptyResultDataAccessException
+        | IllegalArgumentException
+        | BadSqlGrammarException e
+      ) {
+        APP_LOGGER.info(e.getLocalizedMessage());
+        throw new BadSqlException("something went wrong");
+      }
     }
     try {
       jdbcTemplate.execute(sql.toString());
@@ -323,11 +345,10 @@ public abstract class AbstractRepository {
     }
     if (pageSize != 0) {
       result
-        .append(" OFFSET ")
-        .append((page - 1) * pageSize)
-        .append(" ROWS FETCH NEXT ")
+        .append(" LIMIT ")
         .append(pageSize)
-        .append(" ROWS ONLY");
+        .append(" OFFSET ")
+        .append((page - 1) * pageSize);
     }
     return result.toString();
   }
