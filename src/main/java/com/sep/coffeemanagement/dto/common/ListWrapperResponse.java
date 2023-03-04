@@ -1,4 +1,4 @@
-package com.sep.coffeemanagement.exception;
+package com.sep.coffeemanagement.dto.common;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
