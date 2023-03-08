@@ -94,7 +94,8 @@ public abstract class AbstractRepository {
               throw new BadSqlException("something went wrong");
             }
           }
-          if (fields[i].getType() == int.class) {
+          //anhpd modified
+          if (fields[i].getType() == int.class || fields[i].getType() == double.class) {
             try {
               sql.append(
                 StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
@@ -177,7 +178,8 @@ public abstract class AbstractRepository {
                 throw new BadSqlException("something went wrong");
               }
             }
-            if (fields[i].getType() == int.class) {
+            //anhpd35 modified
+            if (fields[i].getType() == int.class || fields[i].getType() == double.class) {
               try {
                 valueInsert.append(fields[i].get(entity));
               } catch (IllegalArgumentException | IllegalAccessException e1) {
