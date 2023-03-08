@@ -3,6 +3,7 @@ package com.sep.coffeemanagement.service.internal_user;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
+import com.sep.coffeemanagement.dto.internal_user_login.InternalUserLoginReq;
 import java.util.Map;
 import java.util.Optional;
 
