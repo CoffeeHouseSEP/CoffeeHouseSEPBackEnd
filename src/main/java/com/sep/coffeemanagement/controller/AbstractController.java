@@ -1,6 +1,7 @@
 package com.sep.coffeemanagement.controller;
 
 import com.sep.coffeemanagement.dto.common.CommonResponse;
+import com.sep.coffeemanagement.exception.BadSqlException;
 import com.sep.coffeemanagement.exception.UnauthorizedException;
 import com.sep.coffeemanagement.jwt.JwtValidation;
 import java.util.Optional;
@@ -21,15 +22,21 @@ public class AbstractController<s> {
     String successMessage
   ) {
     return new ResponseEntity<>(
-      new CommonResponse<>(true, response.get(), successMessage, HttpStatus.OK.value()),
+      new CommonResponse<>(
+        true,
+        response.orElseThrow(() -> new BadSqlException("server error!")),
+        successMessage,
+        HttpStatus.OK.value()
+      ),
       HttpStatus.OK
     );
   }
 
-  protected void checkAuthentication(HttpServletRequest request) {
+  protected String checkAuthentication(HttpServletRequest request) {
     String token = jwtValidation.getJwtFromRequest(request);
     if (token == null) {
       throw new UnauthorizedException("unauthorized");
     }
+    return jwtValidation.getUserIdFromJwt(token);
   }
 }

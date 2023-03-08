@@ -12,7 +12,9 @@ public class InternalUser {
   private int internalUserId;
   private String loginName;
   private String encrPassword;
+  private String email;
   private String phoneNumber;
   private Date createdDate;
   private int status;
+  private String token;
 }
