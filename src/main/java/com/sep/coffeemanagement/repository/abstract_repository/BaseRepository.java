@@ -29,7 +29,7 @@ public class BaseRepository<T> extends AbstractRepository {
       .append("SELECT * from ")
       .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
       .append(
-        convertParamsFilterSelectQuery(allParams, g(), page, page, keySort, sortField)
+        convertParamsFilterSelectQuery(allParams, g(), page, pageSize, keySort, sortField)
       );
     return replaceQuery(sql.toString(), g());
   }
