@@ -245,7 +245,7 @@ public abstract class AbstractRepository {
       result.append(insertFirstCondition(""));
       result
         .append(StringUtils.camelCaseToSnakeCase(field.getName()))
-        .append(" ILIKE '%")
+        .append(" LIKE '%")
         .append(value.toLowerCase())
         .append("%'");
     }
