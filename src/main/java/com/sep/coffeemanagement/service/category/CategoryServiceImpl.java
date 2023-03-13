@@ -10,6 +10,7 @@ import com.sep.coffeemanagement.service.AbstractService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +70,8 @@ public class CategoryServiceImpl
   public void createCategory(CategoryReq req) {
     validate(req);
     Category category = objectMapper.convertValue(req, Category.class);
-    category.setCategoryId(0);
+    String newId = UUID.randomUUID().toString();
+    category.setCategoryId(newId);
     category.setStatus(0);
     repository.insertAndUpdate(category, false);
   }
