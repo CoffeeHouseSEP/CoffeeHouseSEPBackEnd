@@ -12,6 +12,7 @@ import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +72,8 @@ public class InternalUserServiceImpl
   public void createUser(InternalUserReq user) {
     validate(user);
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
-    userSave.setInternalUserId(0);
+    String newId = UUID.randomUUID().toString();
+    userSave.setInternalUserId(newId);
     userSave.setEncrPassword(bCryptPasswordEncoder().encode("Abcd@1234"));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(0);
