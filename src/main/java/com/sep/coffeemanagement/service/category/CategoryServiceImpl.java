@@ -79,7 +79,7 @@ public class CategoryServiceImpl
   @Override
   public void updateCategory(CategoryReq req) {
     Category category = repository
-      .getOneByAttribute("categoryId", Integer.toString(req.getCategoryId()))
+      .getOneByAttribute("categoryId", req.getCategoryId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(req);
     repository.insertAndUpdate(objectMapper.convertValue(req, Category.class), true);

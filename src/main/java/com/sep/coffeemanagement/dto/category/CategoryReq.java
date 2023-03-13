@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryReq {
-  private int categoryId;
+  private String categoryId;
 
   @NotNull(message = "category name is empty or blank")
   @Length(max = 100, message = "category name over length(100)")
