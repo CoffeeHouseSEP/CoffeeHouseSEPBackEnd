@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CategoryRepository extends BaseRepository<Category> {
-  public String[] categoryIgnores = { "categoryId" };
+  public String[] categoryIgnores = { "" };
 
   CategoryRepository() {
     this.ignores = categoryIgnores;
