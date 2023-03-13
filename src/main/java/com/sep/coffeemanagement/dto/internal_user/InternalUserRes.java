@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUserRes {
-  private int id;
+  private String id;
   private String loginName;
   private String phoneNumber;
   private String createdDate;
