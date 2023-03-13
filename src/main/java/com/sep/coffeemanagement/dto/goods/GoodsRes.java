@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoodsRes {
-  private int goodsId;
+  private String goodsId;
   private String name;
   private String code;
   private double applyPrice;
   private double innerPrice;
   private String description;
   private int status;
-  private int categoryId;
+  private String categoryId;
   private String categoryName;
 }

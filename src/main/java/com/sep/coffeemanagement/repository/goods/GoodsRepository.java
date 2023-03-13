@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class GoodsRepository extends BaseRepository<Goods> {
-  public String[] goodsIgnores = { "goodsId" };
+  public String[] goodsIgnores = { "" };
 
   GoodsRepository() {
     this.ignores = goodsIgnores;

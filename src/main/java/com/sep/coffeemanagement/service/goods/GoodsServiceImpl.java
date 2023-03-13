@@ -10,6 +10,7 @@ import com.sep.coffeemanagement.service.AbstractService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -85,7 +86,8 @@ public class GoodsServiceImpl
   public void createGoods(GoodsReq req) {
     validate(req);
     Goods goods = objectMapper.convertValue(req, Goods.class);
-    goods.setGoodsId(0);
+    String newId = UUID.randomUUID().toString();
+    goods.setGoodsId(newId);
     goods.setStatus(1);
     repository.insertAndUpdate(goods, false);
   }
@@ -93,7 +95,7 @@ public class GoodsServiceImpl
   @Override
   public void updateGoods(GoodsReq req) {
     Goods goods = repository
-      .getOneByAttribute("goodsId", Integer.toString(req.getGoodsId()))
+      .getOneByAttribute("goodsId", req.getGoodsId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     Goods goodsUpdate = objectMapper.convertValue(req, Goods.class);
     validate(goodsUpdate);

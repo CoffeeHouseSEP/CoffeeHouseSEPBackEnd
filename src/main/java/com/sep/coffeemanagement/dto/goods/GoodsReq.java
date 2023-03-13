@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoodsReq {
-  private int goodsId;
+  private String goodsId;
 
   @NotNull(message = "goods name is empty or blank")
   @Length(max = 200, message = "goods name over length(200)")
@@ -36,5 +36,5 @@ public class GoodsReq {
   private int status;
 
   @NotNull(message = "category is empty or blank")
-  private int categoryId;
+  private String categoryId;
 }
