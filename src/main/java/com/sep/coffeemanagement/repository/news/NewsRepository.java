@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class NewsRepository extends BaseRepository<News> {
-  public String[] newsIgnores = { "newsId" };
+  public String[] newsIgnores = { "" };
 
   NewsRepository() {
     this.ignores = newsIgnores;

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class News {
-  private int newsId;
+  private String newsId;
   private String title;
   private String content;
-  private int createdBy;
+  private String createdBy;
   private Date createdDate;
   private int status;
 }

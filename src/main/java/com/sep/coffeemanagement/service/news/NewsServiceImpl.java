@@ -11,6 +11,7 @@ import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,8 @@ public class NewsServiceImpl
   public void createNews(NewsReq req) {
     validate(req);
     News news = objectMapper.convertValue(req, News.class);
-    news.setNewsId(0);
+    String newId = UUID.randomUUID().toString();
+    news.setNewsId(newId);
     news.setCreatedDate(DateFormat.getCurrentTime());
     news.setStatus(1);
     repository.insertAndUpdate(news, false);
@@ -71,7 +73,7 @@ public class NewsServiceImpl
   @Override
   public void updateNews(NewsReq req) {
     News news = repository
-      .getOneByAttribute("newsId", Integer.toString(req.getNewsId()))
+      .getOneByAttribute("newsId", req.getNewsId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(news);
     news.setTitle(req.getTitle());

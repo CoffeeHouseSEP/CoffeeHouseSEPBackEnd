@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewsReq {
-  private int newsId;
+  private String newsId;
 
   @NotNull(message = "title is empty or blank")
   @Length(max = 2000, message = "title over length(2000)")
@@ -21,7 +21,7 @@ public class NewsReq {
   @Length(max = 16000, message = "content over length(16000)")
   private String content;
 
-  private int createdBy;
+  private String createdBy;
   private Date createdDate;
   private int status;
 }
