@@ -17,4 +17,5 @@ public class InternalUser {
   private Date createdDate;
   private int status;
   private String token;
+  private String address;
 }

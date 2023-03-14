@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.service.internal_user;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
@@ -74,7 +75,7 @@ public class InternalUserServiceImpl
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
     String uuid = UUID.randomUUID().toString();
     userSave.setInternalUserId(uuid);
-    userSave.setEncrPassword(bCryptPasswordEncoder().encode(user.getPassWord()));
+    userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(0);
     repository.insertAndUpdate(userSave, false);
@@ -87,6 +88,18 @@ public class InternalUserServiceImpl
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
+    repository.insertAndUpdate(userSave, true);
+  }
+
+  @Override
+  public void updateProfile(InternalUserReq userReq, String id) {
+    InternalUser userSave = repository
+            .getOneByAttribute("internalUserId", id)
+            .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    validate(userReq);
+    userSave.setEmail(userReq.getEmail());
+    userSave.setAddress(userReq.getAddress());
+    userSave.setPhoneNumber(userReq.getPhoneNumber());
     repository.insertAndUpdate(userSave, true);
   }
 }
