@@ -70,7 +70,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @PutMapping(value = "update-user")
   public ResponseEntity<CommonResponse<String>> updateUser(
     @RequestBody InternalUserReq userRequest,
-    @RequestParam int id,
+    @RequestParam String id,
     HttpServletRequest request
   ) {
     service.updateUser(userRequest, id);

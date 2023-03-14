@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUser {
-  private int internalUserId;
+  private String internalUserId;
   private String loginName;
   private String encrPassword;
   private String email;

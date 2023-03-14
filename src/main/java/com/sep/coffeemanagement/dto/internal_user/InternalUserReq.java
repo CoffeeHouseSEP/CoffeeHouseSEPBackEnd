@@ -13,6 +13,9 @@ public class InternalUserReq {
   @Pattern(regexp = TypeValidation.USERNAME, message = "invalid login name")
   private String loginName;
 
+  @Pattern(regexp = TypeValidation.PASSWORD, message = "invalid password")
+  private String passWord;
+
   @Pattern(regexp = TypeValidation.PHONE, message = "invalid phone number")
   private String phoneNumber;
 }

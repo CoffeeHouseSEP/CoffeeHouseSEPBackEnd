@@ -12,6 +12,7 @@ import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -71,16 +72,17 @@ public class InternalUserServiceImpl
   public void createUser(InternalUserReq user) {
     validate(user);
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
-    userSave.setInternalUserId(0);
-    userSave.setEncrPassword(bCryptPasswordEncoder().encode("Abcd@1234"));
+    String uuid = UUID.randomUUID().toString();
+    userSave.setInternalUserId(uuid);
+    userSave.setEncrPassword(bCryptPasswordEncoder().encode(user.getPassWord()));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(0);
     repository.insertAndUpdate(userSave, false);
   }
 
-  public void updateUser(InternalUserReq user, int id) {
+  public void updateUser(InternalUserReq user, String id) {
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", Integer.toString(id))
+      .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(user);
     userSave.setLoginName(user.getLoginName());
