@@ -1,6 +1,10 @@
 package com.sep.coffeemanagement.dto.internal_user;
 
 import com.sep.coffeemanagement.constant.TypeValidation;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,4 +19,10 @@ public class InternalUserReq {
 
   @Pattern(regexp = TypeValidation.PHONE, message = "invalid phone number")
   private String phoneNumber;
+
+  @Pattern(regexp = TypeValidation.EMAIL, message = "invalid email")
+  private String email;
+
+  @NotEmpty@NotBlank@NotNull(message = "address is null ")
+  private String address;
 }

@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.service.internal_user;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
@@ -72,21 +73,33 @@ public class InternalUserServiceImpl
   public void createUser(InternalUserReq user) {
     validate(user);
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
-    String newId = UUID.randomUUID().toString();
-    userSave.setInternalUserId(newId);
-    userSave.setEncrPassword(bCryptPasswordEncoder().encode("Abcd@1234"));
+    String uuid = UUID.randomUUID().toString();
+    userSave.setInternalUserId(uuid);
+    userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(0);
     repository.insertAndUpdate(userSave, false);
   }
 
-  public void updateUser(InternalUserReq user, int id) {
+  public void updateUser(InternalUserReq user, String id) {
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", Integer.toString(id))
+      .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
+    repository.insertAndUpdate(userSave, true);
+  }
+
+  @Override
+  public void updateProfile(InternalUserReq userReq, String id) {
+    InternalUser userSave = repository
+            .getOneByAttribute("internalUserId", id)
+            .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    validate(userReq);
+    userSave.setEmail(userReq.getEmail());
+    userSave.setAddress(userReq.getAddress());
+    userSave.setPhoneNumber(userReq.getPhoneNumber());
     repository.insertAndUpdate(userSave, true);
   }
 }
