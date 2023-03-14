@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository extends BaseRepository<InternalUser> {
-  public String[] userIgnores = { "internalUserId" };
+  public String[] userIgnores = { "" };
 
   UserRepository() {
     this.ignores = userIgnores;

@@ -73,8 +73,8 @@ public class InternalUserServiceImpl
   public void createUser(InternalUserReq user) {
     validate(user);
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
-    String uuid = UUID.randomUUID().toString();
-    userSave.setInternalUserId(uuid);
+    String newId = UUID.randomUUID().toString();
+    userSave.setInternalUserId(newId);
     userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(0);
