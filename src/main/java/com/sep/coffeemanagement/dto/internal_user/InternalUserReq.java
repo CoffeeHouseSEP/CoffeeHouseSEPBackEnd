@@ -1,7 +1,6 @@
 package com.sep.coffeemanagement.dto.internal_user;
 
 import com.sep.coffeemanagement.constant.TypeValidation;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -23,6 +22,8 @@ public class InternalUserReq {
   @Pattern(regexp = TypeValidation.EMAIL, message = "invalid email")
   private String email;
 
-  @NotEmpty@NotBlank@NotNull(message = "address is null ")
+  @NotEmpty
+  @NotBlank
+  @NotNull(message = "address is null ")
   private String address;
 }
