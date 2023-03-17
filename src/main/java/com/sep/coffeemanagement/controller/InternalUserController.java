@@ -89,20 +89,20 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "update-user-profile")
   public ResponseEntity<CommonResponse<String>> updateUserProfile(
-          @RequestBody InternalUserReq userRequest,
-          @RequestParam String id,
-          HttpServletRequest request
+    @RequestBody InternalUserReq userRequest,
+    @RequestParam String id,
+    HttpServletRequest request
   ) {
     service.updateProfile(userRequest, id);
     return new ResponseEntity<CommonResponse<String>>(
-            new CommonResponse<String>(
-                    true,
-                    null,
-                    "update internal user success",
-                    HttpStatus.OK.value()
-            ),
-            null,
-            HttpStatus.OK.value()
+      new CommonResponse<String>(
+        true,
+        null,
+        "update internal user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
     );
   }
 }
