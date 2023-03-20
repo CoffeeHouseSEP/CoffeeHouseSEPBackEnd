@@ -94,8 +94,8 @@ public class InternalUserServiceImpl
   @Override
   public void updateProfile(InternalUserReq userReq, String id) {
     InternalUser userSave = repository
-            .getOneByAttribute("internalUserId", id)
-            .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .getOneByAttribute("internalUserId", id)
+      .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
     userSave.setEmail(userReq.getEmail());
     userSave.setAddress(userReq.getAddress());
