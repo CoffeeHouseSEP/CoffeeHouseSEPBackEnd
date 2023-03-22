@@ -46,7 +46,8 @@ public class NewsRepository extends BaseRepository<News> {
         page,
         pageSize,
         keySort,
-        sortField
+        sortField,
+        this.idField
       )
     );
     return replaceQuery(sb.toString(), NewsRes.class).get();
