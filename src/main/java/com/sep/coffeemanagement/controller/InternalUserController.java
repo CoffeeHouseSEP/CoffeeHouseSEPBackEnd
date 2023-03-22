@@ -143,12 +143,13 @@ public class InternalUserController extends AbstractController<InternalUserServi
     );
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "change-password")
   public ResponseEntity<CommonResponse<String>> changePassword(
     @RequestParam String newPass,
     HttpServletRequest request
   ) {
-    service.changePassword(request, newPass);
+    service.changePassword(checkAuthentication(request), newPass);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
         true,

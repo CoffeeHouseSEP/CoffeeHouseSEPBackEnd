@@ -2,13 +2,11 @@ package com.sep.coffeemanagement.service.internal_user;
 
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.constant.DateTime;
-import com.sep.coffeemanagement.constant.TypeValidation;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.dto.mail.DataMailDto;
-import com.sep.coffeemanagement.exception.BadSqlException;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.jwt.JwtValidation;
@@ -23,7 +21,6 @@ import com.sep.coffeemanagement.utils.MailSenderUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,10 +121,11 @@ public class InternalUserServiceImpl
   public String register(InternalUserRegisterReq user) {
     //CREATE USER
     validate(user);
-    if (checkExistUser(user.getRegisterName())) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "register name is existed!"
-    );
+    Map<String, String> errors = generateError(InternalUserRegisterReq.class);
+    if (checkExistUser(user.getRegisterName())) {
+      errors.put("registerName", "registerName is existed");
+      throw new InvalidRequestException(errors, "register name is existed!");
+    }
     InternalUser userSave = new InternalUser()
       .builder()
       .internalUserId(UUID.randomUUID().toString())
@@ -192,19 +190,18 @@ public class InternalUserServiceImpl
   }
 
   @Override
-  public void changePassword(HttpServletRequest http, String newPass) {
-    String userId = jwtValidation.getUserIdFromJwt(jwtValidation.getJwtFromRequest(http));
+  public void changePassword(String id, String newPass) {
     Optional<InternalUser> internalUser = repository.getOneByAttribute(
       "internalUserId",
-      userId
+      id
     );
     if (internalUser.isEmpty()) throw new InvalidRequestException(
       new HashMap<>(),
       "user is not exist"
     );
-    if (!newPass.matches(TypeValidation.PASSWORD)) throw new InvalidRequestException(
+    if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
       new HashMap<>(),
-      "password does not meet requirements"
+      "password does not allowed to be null or empty"
     );
     InternalUser userUpdate = internalUser.get();
     userUpdate.setEncrPassword(bCryptPasswordEncoder().encode(newPass));
