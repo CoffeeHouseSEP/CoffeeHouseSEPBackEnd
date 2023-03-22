@@ -136,7 +136,9 @@ public abstract class AbstractRepository {
             sql.append(",");
           }
         }
-        sql.append(generateConditionInQuery(fieldId, fieldId.get(entity).toString()));
+        sql.append(
+          generateConditionInQuery(fieldId, fieldId.get(entity).toString(), idField)
+        );
       } catch (
         EmptyResultDataAccessException
         | NoSuchFieldException
@@ -251,17 +253,23 @@ public abstract class AbstractRepository {
     return " OR ";
   }
 
-  protected String generateConditionInQuery(Field field, String value) {
+  protected String generateConditionInQuery(Field field, String value, String fieldId) {
     StringBuilder result = new StringBuilder();
-    if (field.getType() == String.class) {
+    if (field.getName() == fieldId) {
+      result.append(insertFirstCondition(""));
+      result
+        .append(StringUtils.camelCaseToSnakeCase(field.getName()))
+        .append(" = '")
+        .append(value.toLowerCase())
+        .append("'");
+    } else if (field.getType() == String.class) {
       result.append(insertFirstCondition(""));
       result
         .append(StringUtils.camelCaseToSnakeCase(field.getName()))
         .append(" LIKE '%")
         .append(value.toLowerCase())
         .append("%'");
-    }
-    if (field.getType() == int.class) {
+    } else if (field.getType() == int.class) {
       try {
         int valueParse = Integer.parseInt(value.toLowerCase());
         result.append(insertFirstCondition(""));
@@ -272,8 +280,7 @@ public abstract class AbstractRepository {
       } catch (NumberFormatException e) {
         APP_LOGGER.error("error parse number: " + field.getName() + " = " + value);
       }
-    }
-    if (field.getType() == Date.class) {
+    } else if (field.getType() == Date.class) {
       if (value.matches(TypeValidation.DATE)) {
         result.append(insertFirstCondition(""));
         result
@@ -317,7 +324,8 @@ public abstract class AbstractRepository {
     int page,
     int pageSize,
     String keySort,
-    String sortField
+    String sortField,
+    String fieldId
   ) {
     Field[] fields = clazz.getDeclaredFields();
     StringBuilder result = new StringBuilder();
@@ -336,7 +344,7 @@ public abstract class AbstractRepository {
               result.append(generateDateCondition(field, values));
             } else {
               for (int i = 0; i < values.length; i++) {
-                result.append(generateConditionInQuery(field, values[i]));
+                result.append(generateConditionInQuery(field, values[i], fieldId));
               }
             }
           }
@@ -365,10 +373,10 @@ public abstract class AbstractRepository {
     return result.toString();
   }
 
-  protected int getTotal(Map<String, String> allParams, Class<?> clazz) {
+  protected int getTotal(Map<String, String> allParams, Class<?> clazz, String fieldId) {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT COUNT(*) FROM " + clazz.getSimpleName().toLowerCase());
-    sql.append(convertParamsFilterSelectQuery(allParams, clazz, 0, 0, "", ""));
+    sql.append(convertParamsFilterSelectQuery(allParams, clazz, 0, 0, "", "", fieldId));
     try {
       int result = jdbcTemplate.queryForObject(sql.toString(), Integer.class);
       return result;

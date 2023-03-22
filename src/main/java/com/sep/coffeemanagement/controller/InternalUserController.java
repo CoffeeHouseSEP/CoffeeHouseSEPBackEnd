@@ -4,6 +4,7 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
+import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.service.internal_user.InternalUserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
@@ -99,6 +100,61 @@ public class InternalUserController extends AbstractController<InternalUserServi
         true,
         null,
         "update internal user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @PostMapping(value = "register")
+  public ResponseEntity<CommonResponse<String>> register(
+    @RequestBody InternalUserRegisterReq userRequest,
+    HttpServletRequest request
+  ) {
+    service.register(userRequest);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "register internal user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @PostMapping(value = "forgot-password")
+  public ResponseEntity<CommonResponse<String>> forgotPassword(
+    @RequestBody String username,
+    HttpServletRequest request
+  ) {
+    service.forgotPassword(username);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "change internal user's  password success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "change-password")
+  public ResponseEntity<CommonResponse<String>> changePassword(
+    @RequestParam String newPass,
+    HttpServletRequest request
+  ) {
+    service.changePassword(checkAuthentication(request), newPass);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "change password successfully",
         HttpStatus.OK.value()
       ),
       null,
