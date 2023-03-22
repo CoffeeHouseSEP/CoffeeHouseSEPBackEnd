@@ -16,8 +16,7 @@ public class InternalUserRegisterReq {
   @Pattern(regexp = TypeValidation.USERNAME, message = "invalid username")
   private String registerName;
 
-  @Pattern(regexp = TypeValidation.PASSWORD, message = "password is not well formed")
-  private String registerPassword;
+@NotNull(message = "register password is null")  private String registerPassword;
 
   @Pattern(regexp = TypeValidation.EMAIL, message = "email is not valid")
   private String email;
