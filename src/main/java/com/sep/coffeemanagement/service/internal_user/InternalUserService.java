@@ -32,5 +32,5 @@ public interface InternalUserService {
 
   void forgotPassword(String username);
 
-  void changePassword(HttpServletRequest http, String newPass);
+  void changePassword(String id, String newPass);
 }
