@@ -3,21 +3,27 @@ package com.sep.coffeemanagement.service.goods;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.goods.GoodsReq;
 import com.sep.coffeemanagement.dto.goods.GoodsRes;
+import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.goods.Goods;
 import com.sep.coffeemanagement.repository.goods.GoodsRepository;
+import com.sep.coffeemanagement.repository.image_info.ImageInfo;
+import com.sep.coffeemanagement.repository.image_info.ImageInfoRepository;
 import com.sep.coffeemanagement.service.AbstractService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GoodsServiceImpl
   extends AbstractService<GoodsRepository>
   implements GoodsService {
+  @Autowired
+  private ImageInfoRepository imageInfoRepository;
 
   @Override
   public Optional<GoodsRes> getGoods(int id) {
@@ -87,9 +93,16 @@ public class GoodsServiceImpl
     validate(req);
     Goods goods = objectMapper.convertValue(req, Goods.class);
     String newId = UUID.randomUUID().toString();
+
+    ImageInfoReq imageReq = req.getImage();
+    imageReq.setObjectId(newId);
+    ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
+    validate(imageReq);
+
     goods.setGoodsId(newId);
     goods.setStatus(1);
     repository.insertAndUpdate(goods, false);
+    imageInfoRepository.insertAndUpdate(imageInfo, false);
   }
 
   @Override
