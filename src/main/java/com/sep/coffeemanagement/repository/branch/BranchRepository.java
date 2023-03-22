@@ -51,7 +51,8 @@ public class BranchRepository extends BaseRepository<Branch> {
         page,
         pageSize,
         keySort,
-        sortField
+        sortField,
+        this.idField
       )
     );
     return replaceQuery(sb.toString(), BranchRes.class).get();
