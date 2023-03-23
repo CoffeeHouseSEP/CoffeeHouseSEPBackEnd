@@ -1,12 +1,10 @@
 package com.sep.coffeemanagement.service.coupon;
 
-import com.sep.coffeemanagement.dto.category.CategoryRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponReq;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
-import com.sep.coffeemanagement.repository.category.Category;
 import com.sep.coffeemanagement.repository.coupon.Coupon;
 import com.sep.coffeemanagement.repository.coupon.CouponRepository;
 import com.sep.coffeemanagement.service.AbstractService;
@@ -58,19 +56,7 @@ public class CouponServiceImpl
 
   @Override
   public void createCoupon(CouponReq req) {
-    validate(req);
-    if (req.getAppliedDate().compareTo(new Date()) <= 0) {
-      throw new InvalidRequestException(
-        new HashMap<>(),
-        "applied date must after present"
-      );
-    }
-    if (req.getExpiredDate().compareTo(req.getAppliedDate()) <= 0) {
-      throw new InvalidRequestException(
-        new HashMap<>(),
-        "expired date must after applied date"
-      );
-    }
+    checkValidCouponRequest(req, false);
     Coupon coupon = objectMapper.convertValue(req, Coupon.class);
     String newId = UUID.randomUUID().toString();
     coupon.setCouponId(newId);
@@ -84,7 +70,21 @@ public class CouponServiceImpl
     Coupon coupon = repository
       .getOneByAttribute("couponId", req.getCouponId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    checkValidCouponRequest(req, true);
+    repository.insertAndUpdate(objectMapper.convertValue(req, Coupon.class), true);
+  }
+
+  private void checkValidCouponRequest(CouponReq req, boolean isUpdate) {
     validate(req);
+    if (
+      repository.checkDuplicateFieldValue(
+        "code",
+        req.getCode(),
+        isUpdate ? req.getCouponId() : ""
+      )
+    ) {
+      throw new InvalidRequestException(new HashMap<>(), "coupon code duplicate");
+    }
     if (req.getAppliedDate().compareTo(new Date()) <= 0) {
       throw new InvalidRequestException(
         new HashMap<>(),
@@ -97,6 +97,5 @@ public class CouponServiceImpl
         "expired date must after applied date"
       );
     }
-    repository.insertAndUpdate(objectMapper.convertValue(req, Coupon.class), true);
   }
 }

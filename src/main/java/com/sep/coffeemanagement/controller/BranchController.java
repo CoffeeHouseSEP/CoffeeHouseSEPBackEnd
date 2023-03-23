@@ -23,30 +23,17 @@ public class BranchController extends AbstractController<BranchService> {
     @RequestBody BranchReq branchRequest,
     HttpServletRequest request
   ) {
-    try {
-      service.createBranch(branchRequest);
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "create branch success",
-          HttpStatus.OK.value()
-        ),
+    service.createBranch(branchRequest);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
         null,
+        "create branch success",
         HttpStatus.OK.value()
-      );
-    } catch (InvalidRequestException e) {
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "create branch fail: " + e.getMessage(),
-          HttpStatus.OK.value()
-        ),
-        null,
-        HttpStatus.OK.value()
-      );
-    }
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -55,30 +42,17 @@ public class BranchController extends AbstractController<BranchService> {
     @RequestBody BranchReq branchRequest,
     HttpServletRequest request
   ) {
-    try {
-      service.updateBranch(branchRequest);
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "update news success",
-          HttpStatus.OK.value()
-        ),
+    service.updateBranch(branchRequest);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
         null,
+        "update news success",
         HttpStatus.OK.value()
-      );
-    } catch (InvalidRequestException e) {
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "update branch fail: " + e.getMessage(),
-          HttpStatus.OK.value()
-        ),
-        null,
-        HttpStatus.OK.value()
-      );
-    }
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
   }
 
   @GetMapping(value = "get-list-branch")

@@ -24,30 +24,17 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestBody CouponReq couponRequest,
     HttpServletRequest request
   ) {
-    try {
-      service.createCoupon(couponRequest);
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "create coupon success",
-          HttpStatus.OK.value()
-        ),
+    service.createCoupon(couponRequest);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
         null,
+        "create coupon success",
         HttpStatus.OK.value()
-      );
-    } catch (Exception e) {
-      return new ResponseEntity<CommonResponse<String>>(
-        new CommonResponse<String>(
-          true,
-          null,
-          "create coupon fail: " + e.getMessage(),
-          HttpStatus.OK.value()
-        ),
-        null,
-        HttpStatus.OK.value()
-      );
-    }
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -56,7 +43,6 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestBody CouponReq couponRequest,
     HttpServletRequest request
   ) {
-    //    try {
     service.updateCoupon(couponRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -68,18 +54,6 @@ public class CouponController extends AbstractController<CouponService> {
       null,
       HttpStatus.OK.value()
     );
-    //    } catch (Exception e) {
-    //      return new ResponseEntity<CommonResponse<String>>(
-    //        new CommonResponse<String>(
-    //          true,
-    //          null,
-    //          "update coupon fail: " + e.getMessage(),
-    //          HttpStatus.OK.value()
-    //        ),
-    //        null,
-    //        HttpStatus.OK.value()
-    //      );
-    //    }
   }
 
   @GetMapping(value = "get-list-coupon")
