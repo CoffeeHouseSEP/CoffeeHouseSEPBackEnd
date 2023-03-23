@@ -4,16 +4,17 @@ import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.goods.GoodsReq;
 import com.sep.coffeemanagement.dto.goods.GoodsRes;
 import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
+import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
+import com.sep.coffeemanagement.repository.category.Category;
+import com.sep.coffeemanagement.repository.category.CategoryRepository;
 import com.sep.coffeemanagement.repository.goods.Goods;
 import com.sep.coffeemanagement.repository.goods.GoodsRepository;
 import com.sep.coffeemanagement.repository.image_info.ImageInfo;
 import com.sep.coffeemanagement.repository.image_info.ImageInfoRepository;
 import com.sep.coffeemanagement.service.AbstractService;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class GoodsServiceImpl
   implements GoodsService {
   @Autowired
   private ImageInfoRepository imageInfoRepository;
+  @Autowired
+  private CategoryRepository categoryRepository;
 
   @Override
   public Optional<GoodsRes> getGoods(int id) {
@@ -90,7 +93,7 @@ public class GoodsServiceImpl
 
   @Override
   public void createGoods(GoodsReq req) {
-    validate(req);
+    checkValidGoodsRequest(req, false);
     Goods goods = objectMapper.convertValue(req, Goods.class);
     String newId = UUID.randomUUID().toString();
 
@@ -110,8 +113,21 @@ public class GoodsServiceImpl
     Goods goods = repository
       .getOneByAttribute("goodsId", req.getGoodsId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    checkValidGoodsRequest(req, true);
     Goods goodsUpdate = objectMapper.convertValue(req, Goods.class);
-    validate(goodsUpdate);
     repository.insertAndUpdate(goodsUpdate, true);
+  }
+
+  private void checkValidGoodsRequest(GoodsReq req, boolean isUpdate) {
+    validate(req);
+    if(repository.checkDuplicateFieldValue("name",req.getName(),isUpdate?req.getGoodsId():"")) {
+      throw new InvalidRequestException(new HashMap<>(), "goods name duplicate");
+    }
+    if(repository.checkDuplicateFieldValue("code",req.getCode(),isUpdate?req.getGoodsId():"")) {
+      throw new InvalidRequestException(new HashMap<>(), "goods code duplicate");
+    }
+    Category category = categoryRepository
+            .getOneByAttribute("categoryId", req.getCategoryId())
+            .orElseThrow(() -> new ResourceNotFoundException("category not found"));
   }
 }

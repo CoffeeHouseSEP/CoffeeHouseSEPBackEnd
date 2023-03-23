@@ -3,14 +3,13 @@ package com.sep.coffeemanagement.service.category;
 import com.sep.coffeemanagement.dto.category.CategoryReq;
 import com.sep.coffeemanagement.dto.category.CategoryRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.category.Category;
 import com.sep.coffeemanagement.repository.category.CategoryRepository;
 import com.sep.coffeemanagement.service.AbstractService;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +67,7 @@ public class CategoryServiceImpl
 
   @Override
   public void createCategory(CategoryReq req) {
-    validate(req);
+    checkValidCategoryRequest(req, false);
     Category category = objectMapper.convertValue(req, Category.class);
     String newId = UUID.randomUUID().toString();
     category.setCategoryId(newId);
@@ -81,7 +80,14 @@ public class CategoryServiceImpl
     Category category = repository
       .getOneByAttribute("categoryId", req.getCategoryId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
-    validate(req);
+    checkValidCategoryRequest(req, true);
     repository.insertAndUpdate(objectMapper.convertValue(req, Category.class), true);
+  }
+
+  private void checkValidCategoryRequest(CategoryReq req, boolean isUpdate) {
+    validate(req);
+    if(repository.checkDuplicateFieldValue("name",req.getName(), isUpdate?req.getCategoryId():"")) {
+      throw new InvalidRequestException(new HashMap<>(), "category name duplicate");
+    }
   }
 }
