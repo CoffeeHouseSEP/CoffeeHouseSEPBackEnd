@@ -76,19 +76,25 @@ public class CouponServiceImpl
 
   private void checkValidCouponRequest(CouponReq req, boolean isUpdate) {
     validate(req);
-    if(repository.checkDuplicateFieldValue("code",req.getCode(),isUpdate?req.getCouponId():"")) {
-      throw new InvalidRequestException(new HashMap<>(), "category name duplicate");
+    if (
+      repository.checkDuplicateFieldValue(
+        "code",
+        req.getCode(),
+        isUpdate ? req.getCouponId() : ""
+      )
+    ) {
+      throw new InvalidRequestException(new HashMap<>(), "coupon code duplicate");
     }
     if (req.getAppliedDate().compareTo(new Date()) <= 0) {
       throw new InvalidRequestException(
-              new HashMap<>(),
-              "applied date must after present"
+        new HashMap<>(),
+        "applied date must after present"
       );
     }
     if (req.getExpiredDate().compareTo(req.getAppliedDate()) <= 0) {
       throw new InvalidRequestException(
-              new HashMap<>(),
-              "expired date must after applied date"
+        new HashMap<>(),
+        "expired date must after applied date"
       );
     }
   }

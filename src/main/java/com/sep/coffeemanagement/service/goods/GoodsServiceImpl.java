@@ -13,7 +13,6 @@ import com.sep.coffeemanagement.repository.goods.GoodsRepository;
 import com.sep.coffeemanagement.repository.image_info.ImageInfo;
 import com.sep.coffeemanagement.repository.image_info.ImageInfoRepository;
 import com.sep.coffeemanagement.service.AbstractService;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ public class GoodsServiceImpl
   implements GoodsService {
   @Autowired
   private ImageInfoRepository imageInfoRepository;
+
   @Autowired
   private CategoryRepository categoryRepository;
 
@@ -120,14 +120,26 @@ public class GoodsServiceImpl
 
   private void checkValidGoodsRequest(GoodsReq req, boolean isUpdate) {
     validate(req);
-    if(repository.checkDuplicateFieldValue("name",req.getName(),isUpdate?req.getGoodsId():"")) {
+    if (
+      repository.checkDuplicateFieldValue(
+        "name",
+        req.getName(),
+        isUpdate ? req.getGoodsId() : ""
+      )
+    ) {
       throw new InvalidRequestException(new HashMap<>(), "goods name duplicate");
     }
-    if(repository.checkDuplicateFieldValue("code",req.getCode(),isUpdate?req.getGoodsId():"")) {
+    if (
+      repository.checkDuplicateFieldValue(
+        "code",
+        req.getCode(),
+        isUpdate ? req.getGoodsId() : ""
+      )
+    ) {
       throw new InvalidRequestException(new HashMap<>(), "goods code duplicate");
     }
     Category category = categoryRepository
-            .getOneByAttribute("categoryId", req.getCategoryId())
-            .orElseThrow(() -> new ResourceNotFoundException("category not found"));
+      .getOneByAttribute("categoryId", req.getCategoryId())
+      .orElseThrow(() -> new ResourceNotFoundException("category not found"));
   }
 }

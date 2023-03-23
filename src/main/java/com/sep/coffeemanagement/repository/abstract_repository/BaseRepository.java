@@ -62,23 +62,28 @@ public class BaseRepository<T> extends AbstractRepository {
 
   //duongnt: only for check nvarchar field (name, code, etc ..)
   //return true if duplicate
-  public boolean checkDuplicateFieldValue(String fieldName, String value, String exceptId) {
+  public boolean checkDuplicateFieldValue(
+    String fieldName,
+    String value,
+    String exceptId
+  ) {
     StringBuilder sb = new StringBuilder("SELECT * FROM ");
     sb
-            .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
-            .append(" WHERE ")
-            .append(fieldName)
-            .append(" LIKE '")
-            .append(value)
-            .append("'");
-    if(!exceptId.isEmpty()){
-      sb.append("AND ")
-              .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
-              .append("_id NOT LIKE '")
-              .append(exceptId)
-              .append("'");
+      .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
+      .append(" WHERE ")
+      .append(fieldName)
+      .append(" LIKE '")
+      .append(value)
+      .append("'");
+    if (!exceptId.isEmpty()) {
+      sb
+        .append("AND ")
+        .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
+        .append("_id NOT LIKE '")
+        .append(exceptId)
+        .append("'");
     }
-    List<T> lst =  replaceQuery(sb.toString(), g()).get();
+    List<T> lst = replaceQuery(sb.toString(), g()).get();
     return !lst.isEmpty();
   }
 }

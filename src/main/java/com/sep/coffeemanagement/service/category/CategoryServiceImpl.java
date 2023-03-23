@@ -8,7 +8,6 @@ import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.category.Category;
 import com.sep.coffeemanagement.repository.category.CategoryRepository;
 import com.sep.coffeemanagement.service.AbstractService;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -86,7 +85,13 @@ public class CategoryServiceImpl
 
   private void checkValidCategoryRequest(CategoryReq req, boolean isUpdate) {
     validate(req);
-    if(repository.checkDuplicateFieldValue("name",req.getName(), isUpdate?req.getCategoryId():"")) {
+    if (
+      repository.checkDuplicateFieldValue(
+        "name",
+        req.getName(),
+        isUpdate ? req.getCategoryId() : ""
+      )
+    ) {
       throw new InvalidRequestException(new HashMap<>(), "category name duplicate");
     }
   }
