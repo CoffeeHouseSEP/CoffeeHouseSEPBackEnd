@@ -47,7 +47,7 @@ public class AuthenticationImpl
     String token = jwtValidation.generateToken(String.valueOf(user.getInternalUserId()));
     user.setToken(token);
     repository.insertAndUpdate(user, true);
-    return Optional.of(new InternalUserLoginRes(token));
+    return Optional.of(new InternalUserLoginRes(token, user.getRole()));
   }
 
   @Override
