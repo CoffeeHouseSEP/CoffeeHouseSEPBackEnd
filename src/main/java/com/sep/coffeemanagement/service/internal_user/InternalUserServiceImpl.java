@@ -8,7 +8,6 @@ import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.dto.mail.DataMailDto;
-import com.sep.coffeemanagement.exception.BadSqlException;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.jwt.JwtValidation;
@@ -20,11 +19,11 @@ import com.sep.coffeemanagement.repository.internal_user.UserRepository;
 import com.sep.coffeemanagement.service.AbstractService;
 import com.sep.coffeemanagement.utils.DateFormat;
 import com.sep.coffeemanagement.utils.MailSenderUtil;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -125,17 +124,27 @@ public class InternalUserServiceImpl
   public String register(InternalUserRegisterReq user) {
     //CREATE USER
     validate(user);
-    if (checkExistUser(user.getRegisterName())) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "register name is existed!"
+    String rawPass = new String(
+      Base64.decodeBase64(user.getRegisterPassword()),
+      StandardCharsets.UTF_8
     );
+    Map<String, String> errors = generateError(InternalUserRegisterReq.class);
+    if (!rawPass.matches(TypeValidation.PASSWORD)) {
+      errors.put("registerPassword", "password is not well formed!");
+      throw new InvalidRequestException(errors, "register password is in wrong format!");
+    }
+    if (checkExistUser(user.getRegisterName())) {
+      errors.put("registerName", "registerName is existed");
+      throw new InvalidRequestException(errors, "register name is existed!");
+    }
     InternalUser userSave = new InternalUser()
       .builder()
       .internalUserId(UUID.randomUUID().toString())
       .loginName(user.getRegisterName())
-      .encrPassword(bCryptPasswordEncoder().encode(user.getRegisterPassword()))
+      .encrPassword(bCryptPasswordEncoder().encode(rawPass))
       .createdDate(DateFormat.getCurrentTime())
       .email(user.getEmail())
+            .role(Constant.USER_ROLE)
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
