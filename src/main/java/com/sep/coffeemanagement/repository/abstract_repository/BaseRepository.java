@@ -29,7 +29,15 @@ public class BaseRepository<T> extends AbstractRepository {
       .append("SELECT * from ")
       .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
       .append(
-        convertParamsFilterSelectQuery(allParams, g(), page, pageSize, keySort, sortField)
+        convertParamsFilterSelectQuery(
+          allParams,
+          g(),
+          page,
+          pageSize,
+          keySort,
+          sortField,
+          idField
+        )
       );
     return replaceQuery(sql.toString(), g());
   }
@@ -49,6 +57,6 @@ public class BaseRepository<T> extends AbstractRepository {
   }
 
   public int getTotal(Map<String, String> allParams) {
-    return getTotal(allParams, g());
+    return getTotal(allParams, g(), idField);
   }
 }

@@ -44,7 +44,8 @@ public class GoodsRepository extends BaseRepository<Goods> {
         page,
         pageSize,
         keySort,
-        sortField
+        sortField,
+        this.idField
       )
     );
     return replaceQuery(sb.toString(), GoodsRes.class).get();

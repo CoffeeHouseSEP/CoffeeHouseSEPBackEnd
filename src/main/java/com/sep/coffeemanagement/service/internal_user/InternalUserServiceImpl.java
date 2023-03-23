@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class InternalUserServiceImpl
-  extends AbstractService<UserRepository>
-  implements InternalUserService {
+        extends AbstractService<UserRepository>
+        implements InternalUserService {
   protected AppLogger APP_LOGGER = LoggerFactory.getLogger(LoggerType.APPLICATION);
 
   @Autowired
@@ -39,48 +39,48 @@ public class InternalUserServiceImpl
   @Override
   public Optional<InternalUserRes> getInternalUser(String field, String value) {
     InternalUser user = repository
-      .getOneByAttribute(field, value)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+            .getOneByAttribute(field, value)
+            .orElseThrow(() -> new ResourceNotFoundException("not found"));
     return Optional.of(
-      new InternalUserRes(
-        user.getInternalUserId(),
-        user.getLoginName(),
-        user.getPhoneNumber(),
-        DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
-        user.getStatus()
-      )
+            new InternalUserRes(
+                    user.getInternalUserId(),
+                    user.getLoginName(),
+                    user.getPhoneNumber(),
+                    DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+                    user.getStatus()
+            )
     );
   }
 
   public Optional<ListWrapperResponse<InternalUserRes>> getListInternalUsers(
-    Map<String, String> allParams,
-    String keySort,
-    int page,
-    int pageSize,
-    String sortField
+          Map<String, String> allParams,
+          String keySort,
+          int page,
+          int pageSize,
+          String sortField
   ) {
     List<InternalUser> list = repository
-      .getListOrEntity(allParams, keySort, page, pageSize, sortField)
-      .get();
+            .getListOrEntity(allParams, keySort, page, pageSize, sortField)
+            .get();
     return Optional.of(
-      new ListWrapperResponse<>(
-        list
-          .stream()
-          .map(
-            user ->
-              new InternalUserRes(
-                user.getInternalUserId(),
-                user.getLoginName(),
-                user.getPhoneNumber(),
-                DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
-                user.getStatus()
-              )
-          )
-          .collect(Collectors.toList()),
-        page,
-        pageSize,
-        repository.getTotal(allParams)
-      )
+            new ListWrapperResponse<>(
+                    list
+                            .stream()
+                            .map(
+                                    user ->
+                                            new InternalUserRes(
+                                                    user.getInternalUserId(),
+                                                    user.getLoginName(),
+                                                    user.getPhoneNumber(),
+                                                    DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+                                                    user.getStatus()
+                                            )
+                            )
+                            .collect(Collectors.toList()),
+                    page,
+                    pageSize,
+                    repository.getTotal(allParams)
+            )
     );
   }
 
@@ -97,8 +97,8 @@ public class InternalUserServiceImpl
 
   public void updateUser(InternalUserReq user, String id) {
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+            .getOneByAttribute("internalUserId", id)
+            .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
@@ -108,8 +108,8 @@ public class InternalUserServiceImpl
   @Override
   public void updateProfile(InternalUserReq userReq, String id) {
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+            .getOneByAttribute("internalUserId", id)
+            .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
     userSave.setEmail(userReq.getEmail());
     userSave.setAddress(userReq.getAddress());
@@ -127,13 +127,13 @@ public class InternalUserServiceImpl
       throw new InvalidRequestException(errors, "register name is existed!");
     }
     InternalUser userSave = new InternalUser()
-      .builder()
-      .internalUserId(UUID.randomUUID().toString())
-      .loginName(user.getRegisterName())
-      .encrPassword(bCryptPasswordEncoder().encode(user.getRegisterPassword()))
-      .createdDate(DateFormat.getCurrentTime())
-      .email(user.getEmail())
-      .build();
+            .builder()
+            .internalUserId(UUID.randomUUID().toString())
+            .loginName(user.getRegisterName())
+            .encrPassword(bCryptPasswordEncoder().encode(user.getRegisterPassword()))
+            .createdDate(DateFormat.getCurrentTime())
+            .email(user.getEmail())
+            .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
     try {
@@ -142,11 +142,11 @@ public class InternalUserServiceImpl
       props.put("username", user.getRegisterName());
       props.put("password", user.getRegisterPassword());
       DataMailDto dataMailDto = new DataMailDto()
-        .builder()
-        .to(user.getEmail())
-        .subject(Constant.CLIENT_REGISTER)
-        .props(props)
-        .build();
+              .builder()
+              .to(user.getEmail())
+              .subject(Constant.CLIENT_REGISTER)
+              .props(props)
+              .build();
       mailSenderUtil.sendHtmlMail(dataMailDto, Constant.REGISTER);
       return userSave.getInternalUserId();
     } catch (MessagingException e) {
@@ -159,13 +159,13 @@ public class InternalUserServiceImpl
   public void forgotPassword(String username) {
     //update password to default
     if (!checkExistUser(username)) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "user name is not existed!"
+            new HashMap<String, String>(),
+            "user name is not existed!"
     );
     String autoGenPass = mailSenderUtil.autoGeneratePassword();
     InternalUser internalUser = repository
-      .getOneByAttribute("loginName", username)
-      .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+            .getOneByAttribute("loginName", username)
+            .orElseThrow(() -> new ResourceNotFoundException("user not found"));
     String hashedPass = bCryptPasswordEncoder().encode(autoGenPass);
     System.out.println(hashedPass);
     internalUser.setEncrPassword(hashedPass);
@@ -178,11 +178,11 @@ public class InternalUserServiceImpl
       props.put("password", autoGenPass);
       System.out.println(autoGenPass);
       DataMailDto dataMailDto = new DataMailDto()
-        .builder()
-        .to(internalUser.getEmail())
-        .subject(Constant.CLIENT_REGISTER)
-        .props(props)
-        .build();
+              .builder()
+              .to(internalUser.getEmail())
+              .subject(Constant.CLIENT_REGISTER)
+              .props(props)
+              .build();
       mailSenderUtil.sendHtmlMail(dataMailDto, Constant.FORGOT);
     } catch (MessagingException e) {
       e.printStackTrace();
@@ -192,16 +192,16 @@ public class InternalUserServiceImpl
   @Override
   public void changePassword(String id, String newPass) {
     Optional<InternalUser> internalUser = repository.getOneByAttribute(
-      "internalUserId",
-      id
+            "internalUserId",
+            id
     );
     if (internalUser.isEmpty()) throw new InvalidRequestException(
-      new HashMap<>(),
-      "user is not exist"
+            new HashMap<>(),
+            "user is not exist"
     );
     if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
-      new HashMap<>(),
-      "password does not allowed to be null or empty"
+            new HashMap<>(),
+            "password does not allowed to be null or empty"
     );
     InternalUser userUpdate = internalUser.get();
     userUpdate.setEncrPassword(bCryptPasswordEncoder().encode(newPass));
@@ -210,8 +210,8 @@ public class InternalUserServiceImpl
 
   public boolean checkExistUser(String userName) {
     Optional<InternalUser> internalUser = repository.getOneByAttribute(
-      "loginName",
-      userName
+            "loginName",
+            userName
     );
     return internalUser.isPresent();
   }
