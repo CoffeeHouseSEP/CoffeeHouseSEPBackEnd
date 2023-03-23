@@ -20,4 +20,5 @@ public class InternalUser {
   private int status;
   private String token;
   private String address;
+  private String role;
 }

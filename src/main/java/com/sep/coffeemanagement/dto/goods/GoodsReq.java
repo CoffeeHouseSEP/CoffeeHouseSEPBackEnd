@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.dto.goods;
 
+import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -37,4 +38,6 @@ public class GoodsReq {
 
   @NotNull(message = "category is empty or blank")
   private String categoryId;
+
+  private ImageInfoReq image;
 }

@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InternalUserLoginRes {
   private String token;
+  private String role;
   private String tokenType = Constant.BEARER;
 
-  public InternalUserLoginRes(String token) {
+  public InternalUserLoginRes(String token, String role) {
     this.token = token;
+    this.role = role;
   }
 }
