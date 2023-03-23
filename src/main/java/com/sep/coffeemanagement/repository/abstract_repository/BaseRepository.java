@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.repository.abstract_repository;
 
+import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.utils.StringUtils;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -58,5 +59,33 @@ public class BaseRepository<T> extends AbstractRepository {
 
   public int getTotal(Map<String, String> allParams) {
     return getTotal(allParams, g(), idField);
+  }
+
+  //duongnt: only for check nvarchar field (name, code, etc ..)
+  //return true if duplicate
+  public boolean checkDuplicateFieldValue(
+    String fieldName,
+    String value,
+    String exceptId
+  ) {
+    StringBuilder sb = new StringBuilder("SELECT * FROM ");
+    sb
+      .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
+      .append(" WHERE ")
+      .append(fieldName)
+      .append(" LIKE '")
+      .append(value)
+      .append("'");
+    if (org.apache.commons.lang3.StringUtils.isNoneEmpty(exceptId)) {
+      sb
+        .append("AND ")
+        .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
+        .append("_id NOT LIKE '")
+        .append(exceptId)
+        .append("'");
+    }
+    List<T> lst = replaceQuery(sb.toString(), g())
+      .orElseThrow(() -> new ResourceNotFoundException("list object not found!"));
+    return !lst.isEmpty();
   }
 }

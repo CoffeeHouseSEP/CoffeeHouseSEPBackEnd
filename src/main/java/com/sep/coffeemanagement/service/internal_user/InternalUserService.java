@@ -4,6 +4,7 @@ import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
 import com.sep.coffeemanagement.dto.internal_user_login.InternalUserLoginReq;
+import com.sep.coffeemanagement.dto.internal_user_profile.InternalUserProfileRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.repository.internal_user.InternalUser;
 import io.opencensus.common.Internal;
@@ -33,4 +34,6 @@ public interface InternalUserService {
   void forgotPassword(String username);
 
   void changePassword(String id, String newPass);
+
+  InternalUserProfileRes getUserProfileById(String id);
 }
