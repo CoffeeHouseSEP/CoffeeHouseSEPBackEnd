@@ -112,13 +112,19 @@ public abstract class AbstractRepository {
           if (fields[i].getType() == Date.class) {
             try {
               Date date = (Date) fields[i].get(entity);
-              sql.append(
-                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-                "=" +
-                "'" +
-                new java.sql.Date(date.getTime()) +
-                "'"
-              );
+              if (date == null) {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) + "=null"
+                );
+              } else {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                  "=" +
+                  "'" +
+                  new java.sql.Date(date.getTime()) +
+                  "'"
+                );
+              }
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -197,7 +203,11 @@ public abstract class AbstractRepository {
             if (fields[i].getType() == Date.class) {
               try {
                 Date date = (Date) fields[i].get(entity);
-                valueInsert.append("'" + new java.sql.Date(date.getTime()) + "'");
+                if (date == null) {
+                  valueInsert.append("null");
+                } else {
+                  valueInsert.append("'" + new java.sql.Date(date.getTime()) + "'");
+                }
               } catch (IllegalArgumentException | IllegalAccessException e1) {
                 APP_LOGGER.error(
                   "Not found " +

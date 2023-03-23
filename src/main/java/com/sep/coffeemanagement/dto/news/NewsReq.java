@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.dto.news;
 
+import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,5 @@ public class NewsReq {
   private String createdBy;
   private Date createdDate;
   private int status;
+  private ImageInfoReq image;
 }
