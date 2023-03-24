@@ -1,0 +1,21 @@
+package com.sep.coffeemanagement.repository.orders;
+
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Orders {
+  private String ordersId;
+  private String customerId;
+  private String branchId;
+  private Date createdDate;
+  private double totalPrice;
+  private Date shippedDate;
+  private String address;
+  private String couponId;
+  private int status;
+}
