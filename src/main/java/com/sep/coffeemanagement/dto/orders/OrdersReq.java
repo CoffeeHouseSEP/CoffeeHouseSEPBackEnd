@@ -15,16 +15,11 @@ public class OrdersReq {
   @NotNull(message = "customer not found")
   private String customerId;
 
-  @NotNull(message = "branch not found")
   private String branchId;
-
   private Date createdDate;
   private double totalPrice;
   private Date shippedDate;
-
-  @NotNull(message = "address is empty or blank")
   private String address;
-
   private String couponId;
   private int status;
 }

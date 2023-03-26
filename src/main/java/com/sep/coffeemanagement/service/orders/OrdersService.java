@@ -1,6 +1,7 @@
 package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
 import java.util.Map;
 import java.util.Optional;
@@ -14,5 +15,7 @@ public interface OrdersService {
     String sortField
   );
 
-  String createOrders(OrdersRes req);
+  String createOrders(OrdersReq req);
+
+  void checkoutOrders(OrdersReq req);
 }

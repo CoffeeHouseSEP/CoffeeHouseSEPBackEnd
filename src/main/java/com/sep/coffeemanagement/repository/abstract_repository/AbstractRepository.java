@@ -80,13 +80,19 @@ public abstract class AbstractRepository {
           fields[i].setAccessible(true);
           if (fields[i].getType() == String.class) {
             try {
-              sql.append(
-                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-                "=" +
-                "'" +
-                fields[i].get(entity) +
-                "'"
-              );
+              if (fields[i].get(entity) == null) {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) + "= null"
+                );
+              } else {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                  "=" +
+                  "'" +
+                  fields[i].get(entity) +
+                  "'"
+                );
+              }
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -175,7 +181,11 @@ public abstract class AbstractRepository {
             fieldInsert.append(StringUtils.camelCaseToSnakeCase(fields[i].getName()));
             if (fields[i].getType() == String.class) {
               try {
-                valueInsert.append("'" + fields[i].get(entity) + "'");
+                if (fields[i].get(entity) == null) {
+                  valueInsert.append("null");
+                } else {
+                  valueInsert.append("'" + fields[i].get(entity) + "'");
+                }
               } catch (IllegalArgumentException | IllegalAccessException e1) {
                 APP_LOGGER.error(
                   "Not found " +

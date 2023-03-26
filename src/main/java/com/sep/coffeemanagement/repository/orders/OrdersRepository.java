@@ -25,7 +25,7 @@ public class OrdersRepository extends BaseRepository<Orders> {
     StringBuilder sb = new StringBuilder(" select T1.*, ");
     sb
       .append(
-        " (select login_name from customer where customer_id = T1.customer_id) customerName "
+        " (select login_name from internal_user where internal_user_id = T1.customer_id) customerName "
       )
       .append(" ,(select name from branch where branch_id = T1.branch_id) branchName ")
       .append(" ,(select code from coupon where coupon_id = T1.coupon_id) couponCode ");
@@ -42,5 +42,18 @@ public class OrdersRepository extends BaseRepository<Orders> {
       )
     );
     return replaceQuery(sb.toString(), OrdersRes.class).get();
+  }
+
+  public OrdersRes getUncheckoutOrderByInternalUserId(String internalUserId) {
+    StringBuilder sb = new StringBuilder(" select * ");
+    sb.append(" from orders where status=0 and customer_id = '");
+    sb.append(internalUserId);
+    sb.append("'");
+    List<OrdersRes> lst = replaceQuery(sb.toString(), OrdersRes.class).get();
+    if (lst.isEmpty()) {
+      return null;
+    } else {
+      return lst.get(0);
+    }
   }
 }

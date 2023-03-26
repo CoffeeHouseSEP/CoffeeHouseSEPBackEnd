@@ -13,8 +13,11 @@ public class OrderDetailRepository extends BaseRepository<OrderDetail> {
   }
 
   public void removeOrderDetail(String id) {
-    StringBuilder sb = new StringBuilder(" delete order_detail where order_detail_id = ");
+    StringBuilder sb = new StringBuilder(
+      " delete from order_detail where order_detail_id = '"
+    );
     sb.append(id);
+    sb.append("'");
     jdbcTemplate.execute(sb.toString());
   }
 }
