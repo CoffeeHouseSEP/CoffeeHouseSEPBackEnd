@@ -71,9 +71,9 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @PutMapping(value = "update-user")
   public ResponseEntity<CommonResponse<String>> updateUser(
     @RequestBody InternalUserReq userRequest,
-    @RequestParam String id,
     HttpServletRequest request
   ) {
+    String id = checkAuthentication(request);
     service.updateUser(userRequest, id);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -91,9 +91,9 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @PutMapping(value = "update-user-profile")
   public ResponseEntity<CommonResponse<String>> updateUserProfile(
     @RequestBody InternalUserReq userRequest,
-    @RequestParam String id,
     HttpServletRequest request
   ) {
+    String id = checkAuthentication(request);
     service.updateProfile(userRequest, id);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
