@@ -11,4 +11,5 @@ public class InternalUserProfileRes {
   private String loginName;
   private String address;
   private String phoneNumber;
-}
+  private String email;
+  }
