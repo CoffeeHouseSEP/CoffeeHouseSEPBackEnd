@@ -29,8 +29,6 @@ public class OrdersServiceImpl
   @Autowired
   private CouponRepository couponRepository;
 
-  //    @Autowired
-  //    private CustomerRepository customerRepository;
   @Override
   public Optional<ListWrapperResponse<OrdersRes>> getListOrders(
     Map<String, String> allParams,

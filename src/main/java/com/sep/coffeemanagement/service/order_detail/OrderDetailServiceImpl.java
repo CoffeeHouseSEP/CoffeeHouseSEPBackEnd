@@ -71,23 +71,20 @@ public class OrderDetailServiceImpl
   }
 
   @Override
-  public void createOrderDetail(OrderDetailReq req, HttpServletRequest request) {
+  public void createOrderDetail(OrderDetailReq req) {
     checkValidOrderDetailRequest(req);
     //1. start check exist order of customer with status 0 : uncheckout
     String ordersId = "";
-    //    InternalUserRes user = (InternalUserRes) request.getAttribute("#@@#");
-    //** TODO ** nho sua lai cho nay
-    InternalUserRes user = new InternalUserRes();
-    user.setId("e0b769dc-fd83-4a60-b89e-8073b1983929");
+    String customerId = req.getCustomerId();
     //**
-    OrdersRes order = ordersRepository.getUncheckoutOrderByInternalUserId(user.getId());
+    OrdersRes order = ordersRepository.getUncheckoutOrderByInternalUserId(customerId);
     //2. if null then create
     if (order == null) {
       //3. get goods by goodsId;
       Goods goods = goodsRepository.getOneByAttribute("goodsId", req.getGoodsId()).get();
       //4. save order
       OrdersReq newOrdersReq = new OrdersReq();
-      newOrdersReq.setCustomerId(user.getId());
+      newOrdersReq.setCustomerId(customerId);
       newOrdersReq.setTotalPrice(req.getQuantity() * goods.getApplyPrice());
       ordersId = ordersService.createOrders(newOrdersReq);
       //5. end save order get order id

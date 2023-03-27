@@ -5,7 +5,6 @@ import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailRes;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 
 public interface OrderDetailService {
   Optional<ListWrapperResponse<OrderDetailRes>> getListOrderDetail(
@@ -16,7 +15,7 @@ public interface OrderDetailService {
     String sortField
   );
 
-  void createOrderDetail(OrderDetailReq req, HttpServletRequest request);
+  void createOrderDetail(OrderDetailReq req);
 
   void updateOrderDetail(OrderDetailReq req);
 

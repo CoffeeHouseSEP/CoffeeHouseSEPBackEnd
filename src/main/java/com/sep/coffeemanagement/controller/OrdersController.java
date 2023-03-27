@@ -39,28 +39,14 @@ public class OrdersController extends AbstractController<OrdersService> {
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
-  @GetMapping(value = "get-list-order-detail")
-  public ResponseEntity<CommonResponse<ListWrapperResponse<OrderDetailRes>>> getListOrderDetail(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
-    @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
-    HttpServletRequest request
-  ) {
-    return response(
-      orderDetailService.getListOrderDetail(allParams, keySort, page, pageSize, ""),
-      "success"
-    );
-  }
-
-  @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "add-order-detail")
   public ResponseEntity<CommonResponse<String>> addOrderDetail(
     @RequestBody OrderDetailReq orderDetailReq,
     HttpServletRequest request
   ) {
-    orderDetailService.createOrderDetail(orderDetailReq, request);
+    String userId = checkAuthentication(request);
+    orderDetailReq.setCustomerId(userId);
+    orderDetailService.createOrderDetail(orderDetailReq);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
         true,

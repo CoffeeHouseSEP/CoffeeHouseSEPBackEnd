@@ -22,4 +22,6 @@ public class OrderDetailReq {
 
   @NotNull(message = "size null")
   private int size;
+
+  private String customerId;
 }
