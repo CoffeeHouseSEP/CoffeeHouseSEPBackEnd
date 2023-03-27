@@ -144,7 +144,7 @@ public class InternalUserServiceImpl
       .encrPassword(bCryptPasswordEncoder().encode(rawPass))
       .createdDate(DateFormat.getCurrentTime())
       .email(user.getEmail())
-            .role(Constant.USER_ROLE)
+      .role(Constant.USER_ROLE)
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
