@@ -6,6 +6,7 @@ import com.sep.coffeemanagement.constant.TypeValidation;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
+import com.sep.coffeemanagement.dto.internal_user_profile.InternalUserProfileRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.dto.mail.DataMailDto;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
@@ -114,7 +115,11 @@ public class InternalUserServiceImpl
       .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
-    userSave.setEmail(userReq.getEmail());
+    if (checkExistUser(userReq.getLoginName())) throw new InvalidRequestException(
+      new HashMap<String, String>(),
+      "this username is existed!!"
+    );
+    userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
     userSave.setPhoneNumber(userReq.getPhoneNumber());
     repository.insertAndUpdate(userSave, true);
@@ -203,28 +208,29 @@ public class InternalUserServiceImpl
 
   @Override
   public void changePassword(String id, String newPass) {
-    Optional<InternalUser> internalUser = repository.getOneByAttribute(
-      "internalUserId",
-      id
-    );
-    if (internalUser.isEmpty()) throw new InvalidRequestException(
-      new HashMap<>(),
-      "user is not exist"
-    );
+    if (
+      !repository.checkDuplicateFieldValue("internalUserId", id, null)
+    ) throw new InvalidRequestException(new HashMap<>(), "user is not exist");
     if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
       new HashMap<>(),
       "password does not allowed to be null or empty"
     );
-    InternalUser userUpdate = internalUser.get();
+    InternalUser userUpdate = repository
+      .getOneByAttribute("internalUserId", id)
+      .orElseThrow();
     userUpdate.setEncrPassword(bCryptPasswordEncoder().encode(newPass));
     repository.insertAndUpdate(userUpdate, true);
   }
 
+  @Override
+  public InternalUserProfileRes getUserProfileById(String id) {
+    InternalUser internalUser = repository
+      .getOneByAttribute("internalUserId", id)
+      .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+    return objectMapper.convertValue(internalUser, InternalUserProfileRes.class);
+  }
+
   public boolean checkExistUser(String userName) {
-    Optional<InternalUser> internalUser = repository.getOneByAttribute(
-      "loginName",
-      userName
-    );
-    return internalUser.isPresent();
+    return repository.checkDuplicateFieldValue("login_name", userName, null);
   }
 }

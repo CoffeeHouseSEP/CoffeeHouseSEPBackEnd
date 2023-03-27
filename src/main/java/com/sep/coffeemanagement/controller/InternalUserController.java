@@ -4,10 +4,12 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
+import com.sep.coffeemanagement.dto.internal_user_profile.InternalUserProfileRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.service.internal_user.InternalUserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +70,15 @@ public class InternalUserController extends AbstractController<InternalUserServi
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
+  @GetMapping(value = "get-user-profile")
+  public ResponseEntity<CommonResponse<InternalUserProfileRes>> getUserProfile(
+    HttpServletRequest request
+  ) {
+    String id = checkAuthentication(request);
+    return response(Optional.of(service.getUserProfileById(id)), "success");
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "update-user")
   public ResponseEntity<CommonResponse<String>> updateUser(
     @RequestBody InternalUserReq userRequest,
@@ -125,6 +136,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     );
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "forgot-password")
   public ResponseEntity<CommonResponse<String>> forgotPassword(
     @RequestBody String username,
