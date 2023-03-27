@@ -51,6 +51,8 @@ public class InternalUserServiceImpl
         user.getLoginName(),
         user.getPhoneNumber(),
         DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+        user.getEmail(),
+        user.getAddress(),
         user.getStatus()
       )
     );
@@ -77,6 +79,8 @@ public class InternalUserServiceImpl
                 user.getLoginName(),
                 user.getPhoneNumber(),
                 DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+                user.getEmail(),
+                user.getAddress(),
                 user.getStatus()
               )
           )
