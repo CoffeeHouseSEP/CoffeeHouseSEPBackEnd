@@ -103,9 +103,12 @@ public class InternalUserServiceImpl
     repository.insertAndUpdate(userSave, false);
   }
 
-  public void updateUser(InternalUserReq user, String id) {
+  public void updateUser(InternalUserReq user) {
+    if (!checkExistUser(user.getLoginName())) throw new ResourceNotFoundException(
+      "username not found!"
+    );
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", id)
+      .getOneByAttribute("loginName", user.getLoginName())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(user);
     userSave.setLoginName(user.getLoginName());

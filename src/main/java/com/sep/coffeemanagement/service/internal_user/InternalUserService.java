@@ -25,7 +25,7 @@ public interface InternalUserService {
 
   void createUser(InternalUserReq user);
 
-  void updateUser(InternalUserReq user, String id);
+  void updateUser(InternalUserReq user);
 
   void updateProfile(InternalUserReq userReq, String id);
 
