@@ -1,6 +1,8 @@
 package com.sep.coffeemanagement.dto.goods;
 
 import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -22,8 +24,8 @@ public class GoodsReq {
   @Length(max = 200, message = "goods code over length(200)")
   private String code;
 
-  @NotNull(message = "goods apply price is empty or blank")
-  @Positive(message = "goods apply price is negative or zero")
+  //  @NotNull(message = "goods apply price is empty or blank")
+  //  @Positive(message = "goods apply price is negative or zero")
   private double applyPrice;
 
   @NotNull(message = "goods inner price is empty or blank")
@@ -39,5 +41,14 @@ public class GoodsReq {
   @NotNull(message = "category is empty or blank")
   private String categoryId;
 
+  @Min(value = 0, message = "isSize must be 0 or 1")
+  @Max(value = 1, message = "isSize must be 0 or 1")
+  private int isSize;
+
+  @Min(value = 0, message = "isSold must be 0 or 1")
+  @Max(value = 1, message = "isSold must be 0 or 1")
+  private int isSold;
+
+  private String goodsUnit;
   private ImageInfoReq image;
 }
