@@ -7,4 +7,12 @@ public class Constant {
   public static final String REGISTER = "client-register";
   public static final String FORGOT = "client-forgot";
   public static final String USER_ROLE = "USER";
+
+  public enum REQUEST_STATUS {
+    CREATED,
+    PENDING,
+    APPROVED,
+    COMPLETED,
+    CANCELLED
+  }
 }
