@@ -44,6 +44,9 @@ public class GoodsServiceImpl
             goods.getDescription(),
             goods.getStatus(),
             goods.getCategoryId(),
+            goods.getIsSize(),
+            goods.getIsSold(),
+            goods.getGoodsUnit(),
             goods.getCategoryName()
           )
       );
@@ -80,6 +83,9 @@ public class GoodsServiceImpl
                 goods.getDescription(),
                 goods.getStatus(),
                 goods.getCategoryId(),
+                goods.getIsSize(),
+                goods.getIsSold(),
+                goods.getGoodsUnit(),
                 goods.getCategoryName()
               )
           )
@@ -102,6 +108,11 @@ public class GoodsServiceImpl
     ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
     validate(imageReq);
 
+    //if goods is not sold then apply price = 0
+    if (0 == req.getIsSold()) {
+      goods.setApplyPrice(0d);
+    }
+    //
     goods.setGoodsId(newId);
     goods.setStatus(1);
     repository.insertAndUpdate(goods, false);
@@ -115,11 +126,24 @@ public class GoodsServiceImpl
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     checkValidGoodsRequest(req, true);
     Goods goodsUpdate = objectMapper.convertValue(req, Goods.class);
+    //if goods is not sold then apply price = 0
+    if (0 == req.getIsSold()) {
+      goodsUpdate.setApplyPrice(0d);
+    }
+    //
     repository.insertAndUpdate(goodsUpdate, true);
   }
 
   private void checkValidGoodsRequest(GoodsReq req, boolean isUpdate) {
     validate(req);
+    if (1 == req.getIsSold()) {
+      if (req.getApplyPrice() <= 0) {
+        throw new InvalidRequestException(
+          new HashMap<>(),
+          "sold goods apply price is negative or zero"
+        );
+      }
+    }
     if (
       repository.checkDuplicateFieldValue(
         "name",

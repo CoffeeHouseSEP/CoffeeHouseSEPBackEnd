@@ -16,4 +16,7 @@ public class Goods {
   private String description;
   private int status;
   private String categoryId;
+  private int isSize;
+  private int isSold;
+  private String goodsUnit;
 }

@@ -135,6 +135,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     );
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "forgot-password")
   public ResponseEntity<CommonResponse<String>> forgotPassword(
     @RequestParam String username,
