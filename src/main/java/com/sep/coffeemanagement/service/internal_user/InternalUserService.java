@@ -31,7 +31,7 @@ public interface InternalUserService {
 
   String register(InternalUserRegisterReq user);
 
-  void forgotPassword(String username);
+  void forgotPassword(String username, String email);
 
   void changePassword(String id, String newPass);
 

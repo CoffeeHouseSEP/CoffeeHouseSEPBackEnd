@@ -138,10 +138,11 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "forgot-password")
   public ResponseEntity<CommonResponse<String>> forgotPassword(
-    @RequestBody String username,
+    @RequestParam String username,
+    @RequestParam String email,
     HttpServletRequest request
   ) {
-    service.forgotPassword(username);
+    service.forgotPassword(username, email);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
         true,

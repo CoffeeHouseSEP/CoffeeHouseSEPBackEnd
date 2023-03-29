@@ -113,6 +113,7 @@ public class InternalUserServiceImpl
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
+    userSave.setAddress(user.getAddress());
     repository.insertAndUpdate(userSave, true);
   }
 
@@ -149,6 +150,10 @@ public class InternalUserServiceImpl
       errors.put("registerName", "registerName is existed");
       throw new InvalidRequestException(errors, "register name is existed!");
     }
+    if(checkExistUser(user.getEmail())){
+      errors.put("email","register email is existed");
+      throw new InvalidRequestException(errors,"register email is existed!");
+    }
     InternalUser userSave = new InternalUser()
       .builder()
       .internalUserId(UUID.randomUUID().toString())
@@ -180,7 +185,7 @@ public class InternalUserServiceImpl
   }
 
   @Override
-  public void forgotPassword(String username) {
+  public void forgotPassword(String username, String email) {
     //update password to default
     if (!checkExistUser(username)) throw new InvalidRequestException(
       new HashMap<String, String>(),
@@ -190,6 +195,11 @@ public class InternalUserServiceImpl
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
       .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+    if(!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(new HashMap<String,String>(),"email is not well-formed!");
+    if (!email.equals(internalUser.getEmail())) throw new InvalidRequestException(
+      new HashMap<String, String>(),
+      "email is not correct!"
+    ); //if the input email is not belong to the username then reject
     String hashedPass = bCryptPasswordEncoder().encode(autoGenPass);
     System.out.println(hashedPass);
     internalUser.setEncrPassword(hashedPass);

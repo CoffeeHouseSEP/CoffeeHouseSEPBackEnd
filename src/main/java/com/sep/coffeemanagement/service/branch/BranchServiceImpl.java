@@ -101,13 +101,13 @@ public class BranchServiceImpl
       throw new InvalidRequestException(new HashMap<>(), "user has branch already");
     }
     Branch branch = objectMapper.convertValue(req, Branch.class);
-
+    String newId = UUID.randomUUID().toString();
     ImageInfoReq imageReq = req.getImage();
-    imageReq.setObjectId(branch.getBranchManagerId());
+    imageReq.setObjectId(newId);
     ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
     validate(imageReq);
 
-    String newId = UUID.randomUUID().toString();
+
     branch.setBranchId(newId);
     branch.setCreatedDate(DateFormat.getCurrentTime());
     branch.setCancelledDate(null);
