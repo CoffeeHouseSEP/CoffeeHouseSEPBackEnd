@@ -54,7 +54,9 @@ public class InternalUserServiceImpl
         DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
         user.getEmail(),
         user.getAddress(),
-        user.getStatus()
+        user.getStatus(),
+        user.getRole(),
+        user.getFullName()
       )
     );
   }
@@ -82,7 +84,9 @@ public class InternalUserServiceImpl
                 DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
                 user.getEmail(),
                 user.getAddress(),
-                user.getStatus()
+                user.getStatus(),
+                user.getRole(),
+                user.getFullName()
               )
           )
           .collect(Collectors.toList()),
@@ -247,7 +251,10 @@ public class InternalUserServiceImpl
     InternalUser userUpdate = repository
       .getOneByAttribute("internalUserId", id)
       .orElseThrow();
-    userUpdate.setEncrPassword(bCryptPasswordEncoder().encode(newPass));
+    userUpdate.setEncrPassword(
+      bCryptPasswordEncoder()
+        .encode(new String(Base64.decodeBase64(newPass), StandardCharsets.UTF_8))
+    );
     repository.insertAndUpdate(userUpdate, true);
   }
 
