@@ -1,5 +1,7 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
+import com.sep.coffeemanagement.custom_anotation.AuthorizationAnnotation;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.internal_user.InternalUserReq;
@@ -7,12 +9,15 @@ import com.sep.coffeemanagement.dto.internal_user.InternalUserRes;
 import com.sep.coffeemanagement.dto.internal_user_profile.InternalUserProfileRes;
 import com.sep.coffeemanagement.dto.internal_user_register.InternalUserRegisterReq;
 import com.sep.coffeemanagement.service.internal_user.InternalUserService;
+import com.sep.coffeemanagement.utils.AuthorizationUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +42,46 @@ public class InternalUserController extends AbstractController<InternalUserServi
         true,
         null,
         "create internal user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "active-user")
+  public ResponseEntity<CommonResponse<String>> activeUser(
+    @RequestParam String id,
+    //    @AuthorizationAnnotation(ROLES = {Constant.ADMIN_ROLE})
+    HttpServletRequest request
+  ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
+    service.updateStatus(id, 1);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "active user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "de-active-user")
+  public ResponseEntity<CommonResponse<String>> deActiveUser(
+    @RequestParam String id,
+    HttpServletRequest request
+  ) {
+    service.updateStatus(id, 0);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "deactive user success",
         HttpStatus.OK.value()
       ),
       null,
