@@ -104,10 +104,10 @@ public class InternalUserServiceImpl
     repository.insertAndUpdate(userSave, false);
   }
 
-  public void updateUser(InternalUserReq user) {
-    if (!checkExistUser(user.getLoginName())) throw new ResourceNotFoundException(
-      "username not found!"
-    );
+  public void updateUser(InternalUserReq user, String id) {
+    if (
+      checkExistUserWithExceptId(user.getLoginName(), id)
+    ) throw new ResourceNotFoundException("username is duplicate");
     InternalUser userSave = repository
       .getOneByAttribute("loginName", user.getLoginName())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -125,7 +125,9 @@ public class InternalUserServiceImpl
       .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
-    if (checkExistUser(userReq.getLoginName())) throw new InvalidRequestException(
+    if (
+      checkExistUserWithExceptId(userReq.getLoginName(), id)
+    ) throw new InvalidRequestException(
       new HashMap<String, String>(),
       "this username is existed!!"
     );
@@ -232,9 +234,12 @@ public class InternalUserServiceImpl
 
   @Override
   public void changePassword(String id, String newPass) {
-    if (
-      !repository.checkDuplicateFieldValue("internalUserId", id, null)
-    ) throw new InvalidRequestException(new HashMap<>(), "user is not exist");
+    if (StringUtils.isEmpty(id)) {
+      throw new InvalidRequestException(
+        new HashMap<String, String>(),
+        "user id from request is empty!"
+      );
+    }
     if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
       new HashMap<>(),
       "password does not allowed to be null or empty"
@@ -276,5 +281,9 @@ public class InternalUserServiceImpl
 
   public boolean checkExistUser(String userName) {
     return repository.checkDuplicateFieldValue("login_name", userName, null);
+  }
+
+  public boolean checkExistUserWithExceptId(String userName, String exceptId) {
+    return repository.checkDuplicateFieldValue("login_name", userName, exceptId);
   }
 }
