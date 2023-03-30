@@ -32,7 +32,7 @@ public class RequestRepository extends BaseRepository<Request> {
         " (select login_name from internal_user where internal_user_id = T1.approved_by) approvedByName, "
       )
       .append(" (select name from branch where branch_id = T1.branch_id) branchName ")
-      .append(" from request t1 ")
+      .append(" from request T1 ")
       .append(
         convertParamsFilterSelectQuery(
           allParams,

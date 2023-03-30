@@ -155,12 +155,30 @@ public class RequestServiceImpl
       .getOneByAttribute("requestId", req.getRequestId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     if (Constant.REQUEST_STATUS.PENDING == status) {
+      if (!Constant.REQUEST_STATUS.CREATED.toString().equals(request.getStatus())) {
+        throw new InvalidRequestException(
+          new HashMap<>(),
+          "request not in status CREATED"
+        );
+      }
       request.setStatus(Constant.REQUEST_STATUS.PENDING.toString());
     } else if (Constant.REQUEST_STATUS.APPROVED == status) {
+      if (!Constant.REQUEST_STATUS.PENDING.toString().equals(request.getStatus())) {
+        throw new InvalidRequestException(
+          new HashMap<>(),
+          "request not in status PENDING"
+        );
+      }
       request.setStatus(Constant.REQUEST_STATUS.APPROVED.toString());
       request.setApprovedBy(req.getApprovedBy());
       request.setApprovedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.COMPLETED == status) {
+      if (!Constant.REQUEST_STATUS.APPROVED.toString().equals(request.getStatus())) {
+        throw new InvalidRequestException(
+          new HashMap<>(),
+          "request not in status APPROVED"
+        );
+      }
       request.setStatus(Constant.REQUEST_STATUS.COMPLETED.toString());
       request.setCompletedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.CANCELLED == status) {
