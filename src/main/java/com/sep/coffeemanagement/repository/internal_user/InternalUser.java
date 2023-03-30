@@ -21,4 +21,5 @@ public class InternalUser {
   private String token;
   private String address;
   private String role;
+  private String fullName;
 }

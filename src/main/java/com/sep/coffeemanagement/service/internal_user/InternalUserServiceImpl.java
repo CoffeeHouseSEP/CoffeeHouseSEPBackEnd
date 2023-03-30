@@ -100,7 +100,7 @@ public class InternalUserServiceImpl
     userSave.setInternalUserId(newId);
     userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
-    userSave.setStatus(0);
+    userSave.setStatus(1);
     repository.insertAndUpdate(userSave, false);
   }
 
@@ -115,6 +115,7 @@ public class InternalUserServiceImpl
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
     userSave.setAddress(user.getAddress());
+    userSave.setFullName(user.getFullName());
     repository.insertAndUpdate(userSave, true);
   }
 
@@ -131,6 +132,7 @@ public class InternalUserServiceImpl
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
     userSave.setPhoneNumber(userReq.getPhoneNumber());
+    userSave.setFullName(userReq.getFullName());
     repository.insertAndUpdate(userSave, true);
   }
 
@@ -163,12 +165,13 @@ public class InternalUserServiceImpl
       .createdDate(DateFormat.getCurrentTime())
       .email(user.getEmail())
       .role(Constant.USER_ROLE)
+            .fullName(user.getFullName())
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
     try {
       Map<String, Object> props = new HashMap<>();
-      props.put("name", user.getRegisterName());
+      props.put("name", user.getFullName());
       props.put("username", user.getRegisterName());
       props.put("password", user.getRegisterPassword());
       DataMailDto dataMailDto = new DataMailDto()
@@ -211,7 +214,7 @@ public class InternalUserServiceImpl
     //SEND MAIL
     try {
       Map<String, Object> props = new HashMap<>();
-      props.put("name", internalUser.getLoginName());
+      props.put("name", internalUser.getFullName());
       props.put("username", internalUser.getLoginName());
       props.put("password", autoGenPass);
       System.out.println(autoGenPass);
