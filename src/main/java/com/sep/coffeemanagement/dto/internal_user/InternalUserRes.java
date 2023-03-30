@@ -12,5 +12,7 @@ public class InternalUserRes {
   private String loginName;
   private String phoneNumber;
   private String createdDate;
+  private String email;
+  private String address;
   private int status;
 }

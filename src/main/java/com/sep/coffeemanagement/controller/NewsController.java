@@ -18,7 +18,7 @@ public class NewsController extends AbstractController<NewsService> {
 
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "add-new-news")
-  public ResponseEntity<CommonResponse<String>> addNewCategory(
+  public ResponseEntity<CommonResponse<String>> addNewNews(
     @RequestBody NewsReq newsRequest,
     HttpServletRequest request
   ) {
@@ -55,7 +55,7 @@ public class NewsController extends AbstractController<NewsService> {
   }
 
   @GetMapping(value = "get-list-news")
-  public ResponseEntity<CommonResponse<ListWrapperResponse<NewsRes>>> getListCategory(
+  public ResponseEntity<CommonResponse<ListWrapperResponse<NewsRes>>> getListNews(
     @RequestParam(required = false, defaultValue = "0") int page,
     @RequestParam(required = false, defaultValue = "0") int pageSize,
     @RequestParam Map<String, String> allParams,

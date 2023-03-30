@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.repository.abstract_repository;
 
+import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.utils.StringUtils;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class BaseRepository<T> extends AbstractRepository {
       .append(" LIKE '")
       .append(value)
       .append("'");
-    if (!exceptId.isEmpty()) {
+    if (org.apache.commons.lang3.StringUtils.isNoneEmpty(exceptId)) {
       sb
         .append("AND ")
         .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
@@ -83,7 +84,8 @@ public class BaseRepository<T> extends AbstractRepository {
         .append(exceptId)
         .append("'");
     }
-    List<T> lst = replaceQuery(sb.toString(), g()).get();
+    List<T> lst = replaceQuery(sb.toString(), g())
+      .orElseThrow(() -> new ResourceNotFoundException("list object not found!"));
     return !lst.isEmpty();
   }
 }

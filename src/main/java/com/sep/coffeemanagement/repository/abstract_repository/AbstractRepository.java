@@ -80,13 +80,19 @@ public abstract class AbstractRepository {
           fields[i].setAccessible(true);
           if (fields[i].getType() == String.class) {
             try {
-              sql.append(
-                StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
-                "=" +
-                "'" +
-                fields[i].get(entity) +
-                "'"
-              );
+              if (fields[i].get(entity) == null) {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) + "=null"
+                );
+              } else {
+                sql.append(
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                  "=" +
+                  "'" +
+                  fields[i].get(entity) +
+                  "'"
+                );
+              }
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
                 "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
@@ -175,7 +181,11 @@ public abstract class AbstractRepository {
             fieldInsert.append(StringUtils.camelCaseToSnakeCase(fields[i].getName()));
             if (fields[i].getType() == String.class) {
               try {
-                valueInsert.append("'" + fields[i].get(entity) + "'");
+                if (fields[i].get(entity) == null) {
+                  valueInsert.append("null");
+                } else {
+                  valueInsert.append("'" + fields[i].get(entity) + "'");
+                }
               } catch (IllegalArgumentException | IllegalAccessException e1) {
                 APP_LOGGER.error(
                   "Not found " +
@@ -237,6 +247,10 @@ public abstract class AbstractRepository {
       }
     }
     try {
+      counting = 0;
+      hasAnd = 0;
+      maxLength = 0;
+      isFirstCondition = true;
       jdbcTemplate.execute(sql.toString());
     } catch (BadSqlGrammarException e) {
       APP_LOGGER.error("BAD SQL: " + sql.toString());
@@ -375,7 +389,9 @@ public abstract class AbstractRepository {
 
   protected int getTotal(Map<String, String> allParams, Class<?> clazz, String fieldId) {
     StringBuilder sql = new StringBuilder();
-    sql.append("SELECT COUNT(*) FROM " + clazz.getSimpleName().toLowerCase());
+    sql.append(
+      "SELECT COUNT(*) FROM " + StringUtils.camelCaseToSnakeCase(clazz.getSimpleName())
+    );
     sql.append(convertParamsFilterSelectQuery(allParams, clazz, 0, 0, "", "", fieldId));
     try {
       int result = jdbcTemplate.queryForObject(sql.toString(), Integer.class);
