@@ -269,7 +269,7 @@ public abstract class AbstractRepository {
 
   protected String generateConditionInQuery(Field field, String value, String fieldId) {
     StringBuilder result = new StringBuilder();
-    if (field.getName() == fieldId) {
+    if (field.getName().compareTo(fieldId) == 0) {
       result.append(insertFirstCondition(""));
       result
         .append(StringUtils.camelCaseToSnakeCase(field.getName()))
@@ -389,6 +389,7 @@ public abstract class AbstractRepository {
 
   protected int getTotal(Map<String, String> allParams, Class<?> clazz, String fieldId) {
     StringBuilder sql = new StringBuilder();
+    System.out.println(clazz.getSimpleName());
     sql.append(
       "SELECT COUNT(*) FROM " + StringUtils.camelCaseToSnakeCase(clazz.getSimpleName())
     );
