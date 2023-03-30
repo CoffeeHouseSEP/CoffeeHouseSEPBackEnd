@@ -183,7 +183,7 @@ public class InternalUserServiceImpl
       DataMailDto dataMailDto = new DataMailDto()
         .builder()
         .to(internalUser.getEmail())
-        .subject(Constant.CLIENT_REGISTER)
+        .subject(Constant.CLIENT_FORGOTPASSWORD)
         .props(props)
         .build();
       mailSenderUtil.sendHtmlMail(dataMailDto, Constant.FORGOT);

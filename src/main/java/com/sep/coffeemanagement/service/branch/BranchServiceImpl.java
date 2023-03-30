@@ -127,7 +127,8 @@ public class BranchServiceImpl
     if (repository.getListBranch(params, "asc", 1, 10, "").size() > 1) {
       throw new InvalidRequestException(new HashMap<>(), "user has branch already");
     }
-
+    ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
+    imageInfoRepository.insertAndUpdate(imageInfo, true);
     Branch branchUpdate = objectMapper.convertValue(req, Branch.class);
     validate(branchUpdate);
     repository.insertAndUpdate(branchUpdate, true);
