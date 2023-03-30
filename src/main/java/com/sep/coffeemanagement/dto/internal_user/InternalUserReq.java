@@ -29,6 +29,4 @@ public class InternalUserReq {
 
   @Pattern(regexp = TypeValidation.FULL_NAME, message = "invalid email")
   private String fullName;
-
-
 }
