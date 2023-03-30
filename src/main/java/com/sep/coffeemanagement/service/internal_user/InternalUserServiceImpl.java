@@ -54,7 +54,9 @@ public class InternalUserServiceImpl
         DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
         user.getEmail(),
         user.getAddress(),
-        user.getStatus()
+        user.getStatus(),
+        user.getRole(),
+        user.getFullName()
       )
     );
   }
@@ -82,7 +84,9 @@ public class InternalUserServiceImpl
                 DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
                 user.getEmail(),
                 user.getAddress(),
-                user.getStatus()
+                user.getStatus(),
+                user.getRole(),
+                user.getFullName()
               )
           )
           .collect(Collectors.toList()),
@@ -100,14 +104,14 @@ public class InternalUserServiceImpl
     userSave.setInternalUserId(newId);
     userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
-    userSave.setStatus(0);
+    userSave.setStatus(1);
     repository.insertAndUpdate(userSave, false);
   }
 
-  public void updateUser(InternalUserReq user) {
-    if (!checkExistUser(user.getLoginName())) throw new ResourceNotFoundException(
-      "username not found!"
-    );
+  public void updateUser(InternalUserReq user, String id) {
+    if (
+      checkExistUserWithExceptId(user.getLoginName(), id)
+    ) throw new ResourceNotFoundException("username is duplicate");
     InternalUser userSave = repository
       .getOneByAttribute("loginName", user.getLoginName())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -115,6 +119,7 @@ public class InternalUserServiceImpl
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
     userSave.setAddress(user.getAddress());
+    userSave.setFullName(user.getFullName());
     repository.insertAndUpdate(userSave, true);
   }
 
@@ -124,13 +129,16 @@ public class InternalUserServiceImpl
       .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
-    if (checkExistUser(userReq.getLoginName())) throw new InvalidRequestException(
+    if (
+      checkExistUserWithExceptId(userReq.getLoginName(), id)
+    ) throw new InvalidRequestException(
       new HashMap<String, String>(),
       "this username is existed!!"
     );
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
     userSave.setPhoneNumber(userReq.getPhoneNumber());
+    userSave.setFullName(userReq.getFullName());
     repository.insertAndUpdate(userSave, true);
   }
 
@@ -163,12 +171,13 @@ public class InternalUserServiceImpl
       .createdDate(DateFormat.getCurrentTime())
       .email(user.getEmail())
       .role(Constant.USER_ROLE)
+      .fullName(user.getFullName())
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
     try {
       Map<String, Object> props = new HashMap<>();
-      props.put("name", user.getRegisterName());
+      props.put("name", user.getFullName());
       props.put("username", user.getRegisterName());
       props.put("password", user.getRegisterPassword());
       DataMailDto dataMailDto = new DataMailDto()
@@ -211,7 +220,7 @@ public class InternalUserServiceImpl
     //SEND MAIL
     try {
       Map<String, Object> props = new HashMap<>();
-      props.put("name", internalUser.getLoginName());
+      props.put("name", internalUser.getFullName());
       props.put("username", internalUser.getLoginName());
       props.put("password", autoGenPass);
       System.out.println(autoGenPass);
@@ -229,9 +238,12 @@ public class InternalUserServiceImpl
 
   @Override
   public void changePassword(String id, String newPass) {
-    if (
-      !repository.checkDuplicateFieldValue("internalUserId", id, null)
-    ) throw new InvalidRequestException(new HashMap<>(), "user is not exist");
+    if (StringUtils.isEmpty(id)) {
+      throw new InvalidRequestException(
+        new HashMap<String, String>(),
+        "user id from request is empty!"
+      );
+    }
     if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
       new HashMap<>(),
       "password does not allowed to be null or empty"
@@ -239,7 +251,10 @@ public class InternalUserServiceImpl
     InternalUser userUpdate = repository
       .getOneByAttribute("internalUserId", id)
       .orElseThrow();
-    userUpdate.setEncrPassword(bCryptPasswordEncoder().encode(newPass));
+    userUpdate.setEncrPassword(
+      bCryptPasswordEncoder()
+        .encode(new String(Base64.decodeBase64(newPass), StandardCharsets.UTF_8))
+    );
     repository.insertAndUpdate(userUpdate, true);
   }
 
@@ -273,5 +288,9 @@ public class InternalUserServiceImpl
 
   public boolean checkExistUser(String userName) {
     return repository.checkDuplicateFieldValue("login_name", userName, null);
+  }
+
+  public boolean checkExistUserWithExceptId(String userName, String exceptId) {
+    return repository.checkDuplicateFieldValue("login_name", userName, exceptId);
   }
 }

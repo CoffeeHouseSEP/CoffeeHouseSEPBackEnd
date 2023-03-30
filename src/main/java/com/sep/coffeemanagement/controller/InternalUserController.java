@@ -129,7 +129,8 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestBody InternalUserReq userRequest,
     HttpServletRequest request
   ) {
-    service.updateUser(userRequest);
+    String id = checkAuthentication(request);
+    service.updateUser(userRequest, id);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
         true,

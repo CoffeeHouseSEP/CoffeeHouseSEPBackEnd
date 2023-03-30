@@ -8,7 +8,9 @@ public class StringUtils {
 
   public static String camelCaseToSnakeCase(String strInput) {
     Matcher m = Pattern.compile("(?<=[a-z])[A-Z]").matcher(strInput);
-    String result = m.replaceAll(match -> "_" + match.group().toLowerCase());
+    String result = m
+      .replaceAll(match -> "_" + match.group().toLowerCase())
+      .toLowerCase();
     return result;
   }
 
