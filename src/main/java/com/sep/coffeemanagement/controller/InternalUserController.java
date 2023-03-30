@@ -45,6 +45,44 @@ public class InternalUserController extends AbstractController<InternalUserServi
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "active-user")
+  public ResponseEntity<CommonResponse<String>> activeUser(
+    @RequestParam String id,
+    HttpServletRequest request
+  ) {
+    service.updateStatus(id, 1);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "active user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "de-active-user")
+  public ResponseEntity<CommonResponse<String>> deActiveUser(
+    @RequestParam String id,
+    HttpServletRequest request
+  ) {
+    service.updateStatus(id, 0);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "deactive user success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-users")
   public ResponseEntity<CommonResponse<ListWrapperResponse<InternalUserRes>>> getListUsers(
     @RequestParam(required = false, defaultValue = "1") int page,

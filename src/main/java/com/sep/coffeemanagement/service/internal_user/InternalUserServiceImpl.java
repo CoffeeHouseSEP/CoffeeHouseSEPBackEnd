@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -150,9 +151,9 @@ public class InternalUserServiceImpl
       errors.put("registerName", "registerName is existed");
       throw new InvalidRequestException(errors, "register name is existed!");
     }
-    if(checkExistUser(user.getEmail())){
-      errors.put("email","register email is existed");
-      throw new InvalidRequestException(errors,"register email is existed!");
+    if (checkExistUser(user.getEmail())) {
+      errors.put("email", "register email is existed");
+      throw new InvalidRequestException(errors, "register email is existed!");
     }
     InternalUser userSave = new InternalUser()
       .builder()
@@ -195,7 +196,10 @@ public class InternalUserServiceImpl
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
       .orElseThrow(() -> new ResourceNotFoundException("user not found"));
-    if(!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(new HashMap<String,String>(),"email is not well-formed!");
+    if (!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(
+      new HashMap<String, String>(),
+      "email is not well-formed!"
+    );
     if (!email.equals(internalUser.getEmail())) throw new InvalidRequestException(
       new HashMap<String, String>(),
       "email is not correct!"
@@ -245,6 +249,26 @@ public class InternalUserServiceImpl
       .getOneByAttribute("internalUserId", id)
       .orElseThrow(() -> new ResourceNotFoundException("user not found"));
     return objectMapper.convertValue(internalUser, InternalUserProfileRes.class);
+  }
+
+  @Override
+  public void updateStatus(String id, int status) {
+    Boolean checkExist = repository.checkDuplicateFieldValue(
+      "internal_user_id",
+      id,
+      null
+    );
+    Map<String, String> errors = generateError(String.class);
+    if (!checkExist) throw new ResourceNotFoundException("this user id not found!");
+    if (status < 0) {
+      errors.put("status", "status is not valid!");
+      throw new InvalidRequestException(errors, "status is not valid!");
+    }
+    InternalUser internalUser = repository
+      .getOneByAttribute("internalUserId", id)
+      .orElseThrow(() -> new ResourceNotFoundException("user is not existed!"));
+    internalUser.setStatus(status);
+    repository.insertAndUpdate(internalUser, true);
   }
 
   public boolean checkExistUser(String userName) {
