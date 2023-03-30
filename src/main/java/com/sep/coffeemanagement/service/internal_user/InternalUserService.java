@@ -36,4 +36,6 @@ public interface InternalUserService {
   void changePassword(String id, String newPass);
 
   InternalUserProfileRes getUserProfileById(String id);
+
+  void updateStatus(String id, int status);
 }
