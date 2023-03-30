@@ -165,7 +165,7 @@ public class InternalUserServiceImpl
       .createdDate(DateFormat.getCurrentTime())
       .email(user.getEmail())
       .role(Constant.USER_ROLE)
-            .fullName(user.getFullName())
+      .fullName(user.getFullName())
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
