@@ -107,7 +107,6 @@ public class BranchServiceImpl
     ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
     validate(imageReq);
 
-
     branch.setBranchId(newId);
     branch.setCreatedDate(DateFormat.getCurrentTime());
     branch.setCancelledDate(null);

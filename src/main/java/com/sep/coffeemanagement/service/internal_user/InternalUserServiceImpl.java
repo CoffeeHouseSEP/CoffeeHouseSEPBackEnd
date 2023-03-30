@@ -150,9 +150,9 @@ public class InternalUserServiceImpl
       errors.put("registerName", "registerName is existed");
       throw new InvalidRequestException(errors, "register name is existed!");
     }
-    if(checkExistUser(user.getEmail())){
-      errors.put("email","register email is existed");
-      throw new InvalidRequestException(errors,"register email is existed!");
+    if (checkExistUser(user.getEmail())) {
+      errors.put("email", "register email is existed");
+      throw new InvalidRequestException(errors, "register email is existed!");
     }
     InternalUser userSave = new InternalUser()
       .builder()
@@ -195,7 +195,10 @@ public class InternalUserServiceImpl
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
       .orElseThrow(() -> new ResourceNotFoundException("user not found"));
-    if(!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(new HashMap<String,String>(),"email is not well-formed!");
+    if (!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(
+      new HashMap<String, String>(),
+      "email is not well-formed!"
+    );
     if (!email.equals(internalUser.getEmail())) throw new InvalidRequestException(
       new HashMap<String, String>(),
       "email is not correct!"
