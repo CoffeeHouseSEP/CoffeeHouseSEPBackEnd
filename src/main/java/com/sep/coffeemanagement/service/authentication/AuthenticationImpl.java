@@ -27,13 +27,11 @@ public class AuthenticationImpl
   @Override
   public Optional<InternalUserLoginRes> login(InternalUserLoginReq internalUserLoginReq) {
     Map<String, String> error = new HashMap<>();
-    InternalUser user = checkUsername(internalUserLoginReq.getLoginName())
-      .orElseThrow(
-        () -> {
-          error.put("loginName", "not found username!");
-          return new InvalidRequestException(error, "Username is not found!");
-        }
-      );
+    if(!checkExistUser(internalUserLoginReq.getLoginName())){
+      error.put("loginName", "not found username!");
+      throw new InvalidRequestException(error, "Username is not found!");
+    }
+    InternalUser user = repository.getOneByAttribute("loginName",internalUserLoginReq.getLoginName()).orElse(null);
 
     String decodedPassword = new String(
       Base64.decodeBase64(internalUserLoginReq.getLoginPassword()),
@@ -59,15 +57,11 @@ public class AuthenticationImpl
     repository.insertAndUpdate(internalUser, true);
   }
 
-  public Optional<InternalUser> checkUsername(String username) {
-    if (username.matches(TypeValidation.EMAIL)) return repository.getOneByAttribute(
-      "email",
-      username
-    );
-    if (username.matches(TypeValidation.PHONE)) return repository.getOneByAttribute(
-      "phoneNumber",
-      username
-    );
-    return repository.getOneByAttribute("loginName", username);
+  public boolean checkExistUser(String userName) {
+    return repository.checkDuplicateFieldValue("login_name", userName, null);
+  }
+
+  public boolean checkExistUserWithExceptId(String userName, String exceptId) {
+    return repository.checkDuplicateFieldValue("login_name", userName, exceptId);
   }
 }
