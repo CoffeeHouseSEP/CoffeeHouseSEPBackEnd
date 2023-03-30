@@ -15,6 +15,6 @@ public class InternalUserRes {
   private String email;
   private String address;
   private int status;
-  private String Role;
+  private String role;
   private String fullName;
 }
