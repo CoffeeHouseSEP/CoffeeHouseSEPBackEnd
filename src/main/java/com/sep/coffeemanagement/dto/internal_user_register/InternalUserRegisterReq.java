@@ -21,4 +21,8 @@ public class InternalUserRegisterReq {
 
   @Pattern(regexp = TypeValidation.EMAIL, message = "email is not valid")
   private String email;
+
+  @Pattern(regexp = TypeValidation.FULL_NAME, message = "invalid fullname")
+  private String fullName;
+
 }
