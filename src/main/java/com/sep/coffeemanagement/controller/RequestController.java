@@ -23,9 +23,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestBody RequestReq requestRequest,
     HttpServletRequest request
   ) {
-    //TODO nho sua
-    //    String userId = checkAuthentication(request);
-    String userId = "7c642b55-ca9c-45db-bc78-287079f2c1a8";
+    String userId = checkAuthentication(request);
     requestRequest.setCreatedBy(userId);
     service.createRequest(requestRequest);
     return new ResponseEntity<CommonResponse<String>>(
@@ -78,9 +76,13 @@ public class RequestController extends AbstractController<RequestService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "cancel-request")
   public ResponseEntity<CommonResponse<String>> cancelRequest(
-    @RequestBody RequestReq requestRequest,
+    @RequestParam String requestId,
+    @RequestParam String cancelReason,
     HttpServletRequest request
   ) {
+    RequestReq requestRequest = new RequestReq();
+    requestRequest.setRequestId(requestId);
+    requestRequest.setReason(cancelReason);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.CANCELLED);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -97,9 +99,11 @@ public class RequestController extends AbstractController<RequestService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "send-request")
   public ResponseEntity<CommonResponse<String>> sendRequest(
-    @RequestBody RequestReq requestRequest,
+    @RequestParam String requestId,
     HttpServletRequest request
   ) {
+    RequestReq requestRequest = new RequestReq();
+    requestRequest.setRequestId(requestId);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.PENDING);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -116,10 +120,12 @@ public class RequestController extends AbstractController<RequestService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "approve-request")
   public ResponseEntity<CommonResponse<String>> approveRequest(
-    @RequestBody RequestReq requestRequest,
+    @RequestParam String requestId,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);
+    RequestReq requestRequest = new RequestReq();
+    requestRequest.setRequestId(requestId);
     requestRequest.setApprovedBy(userId);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.APPROVED);
     return new ResponseEntity<CommonResponse<String>>(
@@ -137,9 +143,11 @@ public class RequestController extends AbstractController<RequestService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "complete-request")
   public ResponseEntity<CommonResponse<String>> completeRequest(
-    @RequestBody RequestReq requestRequest,
+    @RequestParam String requestId,
     HttpServletRequest request
   ) {
+    RequestReq requestRequest = new RequestReq();
+    requestRequest.setRequestId(requestId);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.COMPLETED);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
