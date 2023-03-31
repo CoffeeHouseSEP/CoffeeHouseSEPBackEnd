@@ -19,4 +19,17 @@ public class Constant {
     COMPLETED,
     CANCELLED
   }
+
+  public enum ORDER_STATUS {
+    DRAFT,
+    PENDING_APPROVED,
+    APPROVED,
+    CANCELLED
+  }
+
+  public enum GOODS_SIZE {
+    S,
+    M,
+    L
+  }
 }

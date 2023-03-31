@@ -142,7 +142,7 @@ public class RequestServiceImpl
       requestDetailReq.setApplyPrice(goods.getInnerPrice());
       requestDetailRepository.insertAndUpdate(
         objectMapper.convertValue(requestDetailReq, RequestDetail.class),
-        true
+        false
       );
     }
     request.setTotalPrice(requestTotalPrice);
