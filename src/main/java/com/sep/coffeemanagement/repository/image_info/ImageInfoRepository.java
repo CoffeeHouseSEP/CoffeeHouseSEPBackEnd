@@ -13,7 +13,7 @@ public class ImageInfoRepository extends BaseRepository<ImageInfo> {
   }
 
   public void removeImageInfo(String id) {
-    StringBuilder sb = new StringBuilder(" delete image_info where id = ");
+    StringBuilder sb = new StringBuilder(" delete from image_info where id = ");
     sb.append(id);
     jdbcTemplate.execute(sb.toString());
   }

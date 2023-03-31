@@ -8,10 +8,10 @@ import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.branch.Branch;
 import com.sep.coffeemanagement.repository.branch.BranchRepository;
-import com.sep.coffeemanagement.repository.goods.Goods;
 import com.sep.coffeemanagement.repository.image_info.ImageInfo;
 import com.sep.coffeemanagement.repository.image_info.ImageInfoRepository;
-import com.sep.coffeemanagement.repository.news.News;
+import com.sep.coffeemanagement.repository.internal_user.InternalUser;
+import com.sep.coffeemanagement.repository.internal_user.UserRepository;
 import com.sep.coffeemanagement.service.AbstractService;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
@@ -25,6 +25,9 @@ public class BranchServiceImpl
   implements BranchService {
   @Autowired
   private ImageInfoRepository imageInfoRepository;
+
+  @Autowired
+  private UserRepository internalUserRepository;
 
   @Override
   public Optional<BranchRes> getBranchByManagerId(String managerId) {
@@ -96,6 +99,13 @@ public class BranchServiceImpl
   @Override
   public void createBranch(BranchReq req) throws InvalidRequestException {
     validate(req);
+    //check user active
+    InternalUser branchManager = internalUserRepository
+      .getOneByAttribute("internalUserId", req.getBranchManagerId())
+      .orElseThrow(() -> new ResourceNotFoundException("branch manager not found"));
+    if (branchManager.getStatus() != 1) {
+      throw new InvalidRequestException(new HashMap<>(), "deactivate user");
+    }
     //check branch manager co branch chua
     if (repository.getBranchByManagerId(req.getBranchManagerId()).isPresent()) {
       throw new InvalidRequestException(new HashMap<>(), "user has branch already");
