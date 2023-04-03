@@ -32,4 +32,7 @@ public class CouponReq {
 
   @NotNull(message = "coupon applied date is null")
   private Date appliedDate;
+
+  @Positive(message = "coupon max value promotion is negative or zero")
+  private double maxValuePromotion;
 }

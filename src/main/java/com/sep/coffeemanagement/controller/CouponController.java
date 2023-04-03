@@ -7,8 +7,11 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponReq;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
+import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
+import com.sep.coffeemanagement.repository.order_detail.OrderDetail;
 import com.sep.coffeemanagement.service.coupon.CouponService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -74,5 +77,13 @@ public class CouponController extends AbstractController<CouponService> {
       service.getListCoupon(allParams, keySort, page, pageSize, ""),
       "success"
     );
+  }
+
+  @PostMapping(value = "get-list-coupon-by-cart-info")
+  public ResponseEntity<CommonResponse<ListWrapperResponse<CouponRes>>> getListCouponByCartInfo(
+    @RequestBody List<OrderDetailReq> listOrderDetailReq,
+    HttpServletRequest request
+  ) {
+    return response(service.getListCouponByCartInfo(listOrderDetailReq), "success");
   }
 }

@@ -2,6 +2,7 @@ package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
@@ -148,6 +149,13 @@ public class OrdersServiceImpl
           .orElseThrow(
             () -> new InvalidRequestException(new HashMap<>(), "coupon not found")
           );
+        List<CouponRes> listValidCoupon = couponRepository.getListCouponByCartTotalPrice(
+          orders.getTotalPrice(),
+          coupon.getCouponId()
+        );
+        if (listValidCoupon.isEmpty()) {
+          throw new InvalidRequestException(new HashMap<>(), "coupon not valid");
+        }
         orders.setCouponId(coupon.getCouponId());
       }
       orders.setStatus(Constant.ORDER_STATUS.PENDING_APPROVED.toString());

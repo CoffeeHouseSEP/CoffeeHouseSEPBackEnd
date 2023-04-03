@@ -3,20 +3,26 @@ package com.sep.coffeemanagement.service.coupon;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponReq;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
+import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.coupon.Coupon;
 import com.sep.coffeemanagement.repository.coupon.CouponRepository;
+import com.sep.coffeemanagement.repository.goods.Goods;
+import com.sep.coffeemanagement.repository.goods.GoodsRepository;
 import com.sep.coffeemanagement.service.AbstractService;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CouponServiceImpl
   extends AbstractService<CouponRepository>
   implements CouponService {
+  @Autowired
+  private GoodsRepository goodsRepository;
 
   @Override
   public Optional<ListWrapperResponse<CouponRes>> getListCoupon(
@@ -43,7 +49,8 @@ public class CouponServiceImpl
                 coupon.getStatus(),
                 coupon.getCreatedDate(),
                 coupon.getExpiredDate(),
-                coupon.getAppliedDate()
+                coupon.getAppliedDate(),
+                coupon.getMaxValuePromotion()
               )
           )
           .collect(Collectors.toList()),
@@ -97,5 +104,47 @@ public class CouponServiceImpl
         "expired date must after applied date"
       );
     }
+  }
+
+  @Override
+  public Optional<ListWrapperResponse<CouponRes>> getListCouponByCartInfo(
+    List<OrderDetailReq> listOrderDetailReq
+  ) {
+    if (listOrderDetailReq == null || listOrderDetailReq.isEmpty()) {
+      throw new InvalidRequestException(new HashMap<>(), "cart info empty");
+    }
+    double totalPrice = 0;
+    for (OrderDetailReq orderDetailReq : listOrderDetailReq) {
+      validate(orderDetailReq);
+      Goods goods = goodsRepository
+        .getOneByAttribute("goodsId", orderDetailReq.getGoodsId())
+        .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
+      totalPrice += orderDetailReq.getQuantity() * goods.getApplyPrice();
+    }
+    List<CouponRes> list = repository.getListCouponByCartTotalPrice(totalPrice, null);
+    return Optional.of(
+      new ListWrapperResponse<>(
+        list
+          .stream()
+          .map(
+            coupon ->
+              new CouponRes(
+                coupon.getCouponId(),
+                coupon.getCode(),
+                coupon.getType(),
+                coupon.getValue(),
+                coupon.getStatus(),
+                coupon.getCreatedDate(),
+                coupon.getExpiredDate(),
+                coupon.getAppliedDate(),
+                coupon.getMaxValuePromotion()
+              )
+          )
+          .collect(Collectors.toList()),
+        0,
+        0,
+        list.size()
+      )
+    );
   }
 }
