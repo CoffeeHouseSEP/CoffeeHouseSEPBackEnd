@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.category.CategoryReq;
 import com.sep.coffeemanagement.dto.category.CategoryRes;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
@@ -65,6 +66,10 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    String role = getUserRoleByRequest(request);
+    if (!Constant.ADMIN_ROLE.equals(role)) {
+      allParams.put("status", "1");
+    }
     return response(
       service.getListCoupon(allParams, keySort, page, pageSize, ""),
       "success"
