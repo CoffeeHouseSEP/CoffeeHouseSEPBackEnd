@@ -46,6 +46,7 @@ public class GoodsServiceImpl
             goods.getCategoryId(),
             goods.getIsSize(),
             goods.getIsSold(),
+            goods.getIsTransfer(),
             goods.getGoodsUnit(),
             goods.getCategoryName()
           )
@@ -85,6 +86,7 @@ public class GoodsServiceImpl
                 goods.getCategoryId(),
                 goods.getIsSize(),
                 goods.getIsSold(),
+                goods.getIsTransfer(),
                 goods.getGoodsUnit(),
                 goods.getCategoryName()
               )
@@ -112,6 +114,10 @@ public class GoodsServiceImpl
     if (0 == req.getIsSold()) {
       goods.setApplyPrice(0d);
     }
+    //if goods is not transfer then inner price = 0
+    if (0 == req.getIsTransfer()) {
+      goods.setInnerPrice(0d);
+    }
     //
     goods.setGoodsId(newId);
     goods.setStatus(1);
@@ -130,6 +136,10 @@ public class GoodsServiceImpl
     if (0 == req.getIsSold()) {
       goodsUpdate.setApplyPrice(0d);
     }
+    //if goods is not transfer then inner price = 0
+    if (0 == req.getIsTransfer()) {
+      goods.setInnerPrice(0d);
+    }
     //
     repository.insertAndUpdate(goodsUpdate, true);
   }
@@ -141,6 +151,14 @@ public class GoodsServiceImpl
         throw new InvalidRequestException(
           new HashMap<>(),
           "sold goods apply price is negative or zero"
+        );
+      }
+    }
+    if (1 == req.getIsTransfer()) {
+      if (req.getInnerPrice() <= 0) {
+        throw new InvalidRequestException(
+          new HashMap<>(),
+          "transfer goods inner price is negative or zero"
         );
       }
     }

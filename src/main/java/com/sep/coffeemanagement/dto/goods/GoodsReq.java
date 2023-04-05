@@ -49,6 +49,10 @@ public class GoodsReq {
   @Max(value = 1, message = "isSold must be 0 or 1")
   private int isSold;
 
+  @Min(value = 0, message = "isTransfer must be 0 or 1")
+  @Max(value = 1, message = "isTransfer must be 0 or 1")
+  private int isTransfer;
+
   private String goodsUnit;
   private ImageInfoReq image;
 }
