@@ -77,6 +77,7 @@ public class NewsServiceImpl
     validate(imageReq);
 
     news.setNewsId(newId);
+    news.setCreatedBy(req.getCreatedBy());
     news.setCreatedDate(DateFormat.getCurrentTime());
     news.setStatus(1);
     repository.insertAndUpdate(news, false);

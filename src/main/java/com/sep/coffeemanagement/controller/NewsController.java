@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.news.NewsReq;
@@ -22,6 +23,8 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestBody NewsReq newsRequest,
     HttpServletRequest request
   ) {
+    String userId = checkAuthentication(request);
+    newsRequest.setCreatedBy(userId);
     service.createNews(newsRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -63,6 +66,10 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    String role = getUserRoleByRequest(request);
+    if (!Constant.ADMIN_ROLE.equals(role)) {
+      allParams.put("status", "1");
+    }
     return response(
       service.getListNews(allParams, keySort, page, pageSize, ""),
       "success"
