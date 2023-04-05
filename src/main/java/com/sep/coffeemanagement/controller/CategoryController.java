@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.category.CategoryReq;
 import com.sep.coffeemanagement.dto.category.CategoryRes;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
@@ -63,7 +64,10 @@ public class CategoryController extends AbstractController<CategoryService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
-    //    allParams.put("status", "1");
+    String role = getUserRoleByRequest(request);
+    if (!Constant.ADMIN_ROLE.equals(role) && !Constant.BRANCH_ROLE.equals(role)) {
+      allParams.put("status", "1");
+    }
     return response(
       service.getListCategory(allParams, keySort, page, pageSize, ""),
       "success"

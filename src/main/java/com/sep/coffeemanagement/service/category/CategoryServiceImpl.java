@@ -70,7 +70,7 @@ public class CategoryServiceImpl
     Category category = objectMapper.convertValue(req, Category.class);
     String newId = UUID.randomUUID().toString();
     category.setCategoryId(newId);
-    category.setStatus(0);
+    category.setStatus(1);
     repository.insertAndUpdate(category, false);
   }
 
