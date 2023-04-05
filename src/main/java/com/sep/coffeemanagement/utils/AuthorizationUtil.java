@@ -23,4 +23,11 @@ public class AuthorizationUtil {
       throw new ForbiddenException("Forbidden Role!");
     }
   }
+
+  public String getUserRoleByUserId(String userId) {
+    InternalUser user = userRepository
+      .getOneByAttribute("internalUserId", userId)
+      .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+    return user.getRole();
+  }
 }
