@@ -28,12 +28,12 @@ public class GoodsReq {
   //  @Positive(message = "goods apply price is negative or zero")
   private double applyPrice;
 
-  @NotNull(message = "goods inner price is empty or blank")
-  @Positive(message = "goods inner price is negative or zero")
+  //  @NotNull(message = "goods inner price is empty or blank")
+  //  @Positive(message = "goods inner price is negative or zero")
   private double innerPrice;
 
   @NotNull(message = "description is empty or blank")
-  @Length(max = 4000, message = "description over length(200)")
+  @Length(max = 4000, message = "description over length(4000)")
   private String description;
 
   private int status;
