@@ -24,7 +24,7 @@ public class BranchGoodsDisableController
   ) {
     BranchGoodsDisableReq req = new BranchGoodsDisableReq();
     req.setGoodsId(goodsId);
-    req.setUserId("7c642b55-ca9c-45db-bc78-287079f2c1a8");
+    req.setUserId(checkAuthentication(request));
     service.createBranchGoodsDisable(req);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -46,7 +46,7 @@ public class BranchGoodsDisableController
   ) {
     BranchGoodsDisableReq req = new BranchGoodsDisableReq();
     req.setGoodsId(goodsId);
-    req.setUserId("7c642b55-ca9c-45db-bc78-287079f2c1a8");
+    req.setUserId(checkAuthentication(request));
     service.removeBranchGoodsDisable(req);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
