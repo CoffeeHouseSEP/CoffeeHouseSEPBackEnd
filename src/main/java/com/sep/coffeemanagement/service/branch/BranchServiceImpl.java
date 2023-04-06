@@ -47,6 +47,9 @@ public class BranchServiceImpl
             branch.getStatus(),
             branch.getCreatedDate(),
             branch.getCancelledDate(),
+            branch.getWard(),
+            branch.getDistrict(),
+            branch.getProvince(),
             branch.getBranchManagerName()
           )
       );
@@ -85,6 +88,9 @@ public class BranchServiceImpl
                 branch.getStatus(),
                 branch.getCreatedDate(),
                 branch.getCancelledDate(),
+                branch.getWard(),
+                branch.getDistrict(),
+                branch.getProvince(),
                 branch.getBranchManagerName()
               )
           )
