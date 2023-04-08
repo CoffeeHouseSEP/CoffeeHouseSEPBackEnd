@@ -45,19 +45,4 @@ public class OrdersRepository extends BaseRepository<Orders> {
     );
     return replaceQuery(sb.toString(), OrdersRes.class).get();
   }
-
-  public Orders getDraftOrderByUserId(String internalUserId) {
-    StringBuilder sb = new StringBuilder(" select * from orders where status = '");
-    sb.append(Constant.ORDER_STATUS.DRAFT.toString());
-    sb.append("'");
-    sb.append(" and customer_id = '");
-    sb.append(internalUserId);
-    sb.append("'");
-    Optional<List<Orders>> lst = replaceQuery(sb.toString(), Orders.class);
-    if (lst.isPresent() && lst.get().size() > 0) {
-      return lst.get().get(0);
-    } else {
-      return null;
-    }
-  }
 }

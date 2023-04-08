@@ -21,4 +21,7 @@ public class Orders {
   private Date approvedDate;
   private Date cancelledDate;
   private String reason;
+  private String province;
+  private String ward;
+  private String district;
 }

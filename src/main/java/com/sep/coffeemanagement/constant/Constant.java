@@ -21,7 +21,6 @@ public class Constant {
   }
 
   public enum ORDER_STATUS {
-    DRAFT,
     PENDING_APPROVED,
     APPROVED,
     CANCELLED

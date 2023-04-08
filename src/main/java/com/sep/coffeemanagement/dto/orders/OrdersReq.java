@@ -29,6 +29,15 @@ public class OrdersReq {
   @Length(max = 2000, message = "address over length(2000)")
   private String address;
 
+  @NotNull(message = "province is null")
+  private String province;
+
+  @NotNull(message = "ward is null")
+  private String ward;
+
+  @NotNull(message = "district is null")
+  private String district;
+
   private String couponId;
   private String status;
   private Date approvedDate;

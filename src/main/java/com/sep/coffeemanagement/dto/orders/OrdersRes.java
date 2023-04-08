@@ -18,6 +18,9 @@ public class OrdersRes {
   private double totalPrice;
   private Date shippedDate;
   private String address;
+  private String province;
+  private String ward;
+  private String district;
   private String couponId;
   private String couponCode;
   private String status;

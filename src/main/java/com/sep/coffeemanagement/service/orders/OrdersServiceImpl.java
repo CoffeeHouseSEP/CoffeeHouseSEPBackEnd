@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrdersServiceImpl
@@ -75,6 +76,9 @@ public class OrdersServiceImpl
                 orders.getTotalPrice(),
                 orders.getShippedDate(),
                 orders.getAddress(),
+                orders.getProvince(),
+                orders.getWard(),
+                orders.getDistrict(),
                 orders.getCouponId(),
                 orders.getCouponCode(),
                 orders.getStatus(),
@@ -92,39 +96,29 @@ public class OrdersServiceImpl
   }
 
   @Override
+  @Transactional
   public void insertOrUpdateOrders(OrdersReq req) {
-    //check user already has draft orders
-    Orders orders = repository.getDraftOrderByUserId(req.getCustomerId());
-    if (orders == null) {
-      //insert
-      String newId = UUID.randomUUID().toString();
-      if (req.getListOrderDetail() == null || req.getListOrderDetail().isEmpty()) {
-        throw new InvalidRequestException(new HashMap<>(), "orders no content");
-      }
-      req.setOrdersId(newId);
-      double orderTotalPrice = saveOrderDetailReturnTotalPrice(req);
-      Orders ordersSave = new Orders();
-      ordersSave.setOrdersId(newId);
-      ordersSave.setCustomerId(req.getCustomerId());
-      ordersSave.setStatus(Constant.ORDER_STATUS.DRAFT.toString());
-      ordersSave.setTotalPrice(orderTotalPrice);
-      repository.insertAndUpdate(ordersSave, false);
-    } else {
-      //update
-      String orderId = orders.getOrdersId();
-      if (Constant.ORDER_STATUS.DRAFT.toString().equals(orders.getStatus())) {
-        throw new InvalidRequestException(new HashMap<>(), "orders not in status DRAFT");
-      }
-      if (req.getListOrderDetail() == null || req.getListOrderDetail().isEmpty()) {
-        throw new InvalidRequestException(new HashMap<>(), "orders no content");
-      }
-      //clear order detail
-      orderDetailRepository.removeOrderDetailByOrdersId(orderId);
-      //
-      double orderTotalPrice = saveOrderDetailReturnTotalPrice(req);
-      orders.setTotalPrice(orderTotalPrice);
-      repository.insertAndUpdate(orders, true);
+    String newId = UUID.randomUUID().toString();
+    req.setOrdersId(newId);
+    double orderTotalPrice = saveOrderDetailReturnTotalPrice(req);
+    req.setTotalPrice(orderTotalPrice);
+    checkValidOrdersRequest(req);
+    if (req.getListOrderDetail() == null || req.getListOrderDetail().isEmpty()) {
+      throw new InvalidRequestException(new HashMap<>(), "orders no content");
     }
+    Orders ordersSave = new Orders();
+    ordersSave.setOrdersId(newId);
+    ordersSave.setCustomerId(req.getCustomerId());
+    ordersSave.setStatus(Constant.ORDER_STATUS.PENDING_APPROVED.toString());
+    ordersSave.setCreatedDate(DateFormat.getCurrentTime());
+    ordersSave.setTotalPrice(orderTotalPrice);
+    ordersSave.setCouponId(req.getCouponId());
+    ordersSave.setBranchId(req.getBranchId());
+    ordersSave.setAddress(req.getAddress());
+    ordersSave.setProvince(req.getProvince());
+    ordersSave.setWard(req.getWard());
+    ordersSave.setDistrict(req.getDistrict());
+    repository.insertAndUpdate(ordersSave, false);
   }
 
   @Override
@@ -133,34 +127,7 @@ public class OrdersServiceImpl
     Orders orders = repository
       .getOneByAttribute("ordersId", req.getOrdersId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
-    if (Constant.ORDER_STATUS.PENDING_APPROVED == status) {
-      if (!Constant.ORDER_STATUS.DRAFT.toString().equals(orders.getStatus())) {
-        throw new InvalidRequestException(new HashMap<>(), "orders not in status DRAFT");
-      }
-      Branch branch = branchRepository
-        .getOneByAttribute("branchId", req.getBranchId())
-        .orElseThrow(
-          () -> new InvalidRequestException(new HashMap<>(), "branch not found")
-        );
-      orders.setBranchId(branch.getBranchId());
-      if (StringUtils.isNoneEmpty(req.getCouponId())) {
-        Coupon coupon = couponRepository
-          .getOneByAttribute("couponId", req.getCouponId())
-          .orElseThrow(
-            () -> new InvalidRequestException(new HashMap<>(), "coupon not found")
-          );
-        List<CouponRes> listValidCoupon = couponRepository.getListCouponByCartTotalPrice(
-          orders.getTotalPrice(),
-          coupon.getCouponId()
-        );
-        if (listValidCoupon.isEmpty()) {
-          throw new InvalidRequestException(new HashMap<>(), "coupon not valid");
-        }
-        orders.setCouponId(coupon.getCouponId());
-      }
-      orders.setStatus(Constant.ORDER_STATUS.PENDING_APPROVED.toString());
-      orders.setCreatedDate(DateFormat.getCurrentTime());
-    } else if (Constant.ORDER_STATUS.APPROVED == status) {
+    if (Constant.ORDER_STATUS.APPROVED == status) {
       if (!Constant.ORDER_STATUS.PENDING_APPROVED.toString().equals(orders.getStatus())) {
         throw new InvalidRequestException(
           new HashMap<>(),
@@ -201,5 +168,28 @@ public class OrdersServiceImpl
       );
     }
     return orderTotalPrice;
+  }
+
+  public void checkValidOrdersRequest(OrdersReq req) {
+    validate(req);
+    Branch branch = branchRepository
+      .getOneByAttribute("branchId", req.getBranchId())
+      .orElseThrow(
+        () -> new InvalidRequestException(new HashMap<>(), "branch not found")
+      );
+    if (StringUtils.isNoneEmpty(req.getCouponId())) {
+      Coupon coupon = couponRepository
+        .getOneByAttribute("couponId", req.getCouponId())
+        .orElseThrow(
+          () -> new InvalidRequestException(new HashMap<>(), "coupon not found")
+        );
+      List<CouponRes> listValidCoupon = couponRepository.getListCouponByCartTotalPrice(
+        req.getTotalPrice(),
+        coupon.getCouponId()
+      );
+      if (listValidCoupon.isEmpty()) {
+        throw new InvalidRequestException(new HashMap<>(), "coupon not valid");
+      }
+    }
   }
 }
