@@ -17,7 +17,6 @@ public class OrderDetailReq {
   @Positive(message = "quantity is negative or zero")
   private double quantity;
 
-  @NotNull(message = "size null")
   private String size;
 
   private double applyPrice;

@@ -34,16 +34,21 @@ public class OrdersController extends AbstractController<OrdersService> {
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
-  @PostMapping(value = "save-orders")
-  public ResponseEntity<CommonResponse<String>> saveOrders(
+  @PostMapping(value = "create-orders")
+  public ResponseEntity<CommonResponse<String>> createOrders(
     @RequestBody OrdersReq ordersReq,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);
     ordersReq.setCustomerId(userId);
-    service.insertOrUpdateOrders(ordersReq);
+    service.createOrders(ordersReq);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(true, null, "save order success", HttpStatus.OK.value()),
+      new CommonResponse<String>(
+        true,
+        null,
+        "create order success",
+        HttpStatus.OK.value()
+      ),
       null,
       HttpStatus.OK.value()
     );
@@ -73,25 +78,6 @@ public class OrdersController extends AbstractController<OrdersService> {
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
-  @PutMapping(value = "checkout-orders")
-  public ResponseEntity<CommonResponse<String>> checkoutOrders(
-    @RequestBody OrdersReq ordersReq,
-    HttpServletRequest request
-  ) {
-    service.changeStatusOrders(ordersReq, Constant.ORDER_STATUS.PENDING_APPROVED);
-    return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "cancel order success",
-        HttpStatus.OK.value()
-      ),
-      null,
-      HttpStatus.OK.value()
-    );
-  }
-
-  @SecurityRequirement(name = "Bearer Authentication")
   @PutMapping(value = "approve-orders")
   public ResponseEntity<CommonResponse<String>> approveOrders(
     @RequestParam String ordersId,
@@ -104,7 +90,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       new CommonResponse<String>(
         true,
         null,
-        "cancel order success",
+        "approve order success",
         HttpStatus.OK.value()
       ),
       null,

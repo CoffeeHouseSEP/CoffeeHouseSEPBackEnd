@@ -16,7 +16,7 @@ public interface OrdersService {
     String sortField
   );
 
-  void insertOrUpdateOrders(OrdersReq req);
+  void createOrders(OrdersReq req);
 
   void changeStatusOrders(OrdersReq req, Constant.ORDER_STATUS status);
 }
