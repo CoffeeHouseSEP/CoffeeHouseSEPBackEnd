@@ -152,12 +152,12 @@ public class BranchServiceImpl
       .orElseThrow(() -> new ResourceNotFoundException("branch manager not found"));
     if (branchManager.getStatus() != 1) {
       errors.put("branchManagerId", "deactivate user");
-      throw new InvalidRequestException(new HashMap<>(), "deactivate user");
+      throw new InvalidRequestException(errors, "deactivate user");
     }
     //check branch manager co branch chua
     if (repository.getBranchByManagerId(req.getBranchManagerId()).isPresent()) {
       errors.put("branchManagerId", "user has branch already");
-      throw new InvalidRequestException(new HashMap<>(), "user has branch already");
+      throw new InvalidRequestException(errors, "user has branch already");
     }
   }
 }

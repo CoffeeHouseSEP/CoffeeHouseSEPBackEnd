@@ -47,7 +47,7 @@ public class BranchController extends AbstractController<BranchService> {
       new CommonResponse<String>(
         true,
         null,
-        "update news success",
+        "update branch success",
         HttpStatus.OK.value()
       ),
       null,
