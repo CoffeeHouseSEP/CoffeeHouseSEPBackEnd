@@ -25,10 +25,4 @@ public class Constant {
     APPROVED,
     CANCELLED
   }
-
-  public enum GOODS_SIZE {
-    S,
-    M,
-    L
-  }
 }

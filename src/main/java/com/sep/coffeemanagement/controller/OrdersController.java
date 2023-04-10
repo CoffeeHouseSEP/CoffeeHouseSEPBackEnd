@@ -5,10 +5,12 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
+import com.sep.coffeemanagement.service.branch.BranchService;
 import com.sep.coffeemanagement.service.orders.OrdersService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "orders")
 public class OrdersController extends AbstractController<OrdersService> {
+  @Autowired
+  private BranchService branchService;
 
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-orders")
@@ -27,6 +31,18 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    String userId = checkAuthentication(request);
+    String role = getUserRoleByRequest(request);
+    if (Constant.BRANCH_ROLE.equals(role)) {
+      allParams.put(
+        "branchId",
+        branchService.getBranchByManagerId(userId).get().getBranchId()
+      );
+    } else if (Constant.USER_ROLE.equals(role)) {
+      allParams.put("customerId", userId);
+    } else if (Constant.ADMIN_ROLE.equals(role)) {
+      allParams.put("status", Constant.ORDER_STATUS.APPROVED.toString());
+    }
     return response(
       service.getListOrders(allParams, keySort, page, pageSize, ""),
       "success"
