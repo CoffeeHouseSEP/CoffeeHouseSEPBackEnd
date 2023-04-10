@@ -77,6 +77,7 @@ public class NewsServiceImpl
     validate(imageReq);
 
     news.setNewsId(newId);
+    news.setCreatedBy(req.getCreatedBy());
     news.setCreatedDate(DateFormat.getCurrentTime());
     news.setStatus(1);
     repository.insertAndUpdate(news, false);
@@ -88,6 +89,8 @@ public class NewsServiceImpl
     News news = repository
       .getOneByAttribute("newsId", req.getNewsId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
+    imageInfoRepository.insertAndUpdate(imageInfo, true);
     validate(news);
     news.setTitle(req.getTitle());
     news.setContent(req.getContent());

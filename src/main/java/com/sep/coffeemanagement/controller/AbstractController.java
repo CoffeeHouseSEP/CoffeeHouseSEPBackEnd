@@ -52,4 +52,14 @@ public class AbstractController<s> {
     String id = checkAuthentication(r);
     authorizationUtil.checkAuthorize(id, roles);
   }
+
+  protected String getUserRoleByRequest(HttpServletRequest request) {
+    String token = jwtValidation.getJwtFromRequest(request);
+    if (token == null) {
+      return null;
+    } else {
+      String userId = jwtValidation.getUserIdFromJwt(token);
+      return authorizationUtil.getUserRoleByUserId(userId);
+    }
+  }
 }
