@@ -34,7 +34,6 @@ public class AuthenticationImpl
     InternalUser user = repository
       .getOneByAttribute("loginName", internalUserLoginReq.getLoginName())
       .orElse(null);
-
     String decodedPassword = new String(
       Base64.decodeBase64(internalUserLoginReq.getLoginPassword()),
       StandardCharsets.UTF_8
