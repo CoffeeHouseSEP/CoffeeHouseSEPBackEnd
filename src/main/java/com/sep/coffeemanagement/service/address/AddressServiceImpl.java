@@ -6,9 +6,7 @@ import com.sep.coffeemanagement.dto.address.ProvinceResponse;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.repository.internal_user.UserRepository;
 import com.sep.coffeemanagement.service.AbstractService;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
@@ -24,15 +22,16 @@ public class AddressServiceImpl
   extends AbstractService<UserRepository>
   implements AddressService {
   private final JSONParser jsonParser = new JSONParser();
+
   @Value("classpath:Vietnam.json")
   private Resource resource;
-
 
   @Override
   public Optional<ProvinceResponse> getListAdrdress() {
     try {
-      File file = resource.getFile();
-      Object obj = jsonParser.parse(new FileReader(file));
+      InputStream is = this.getClass().getResourceAsStream("/Vietnam.json");
+      Reader reader = new InputStreamReader(is, "UTF-8");
+      Object obj = jsonParser.parse(reader);
       JSONObject jsonObject = (JSONObject) obj;
       ProvinceResponse provices = objectMapper.convertValue(
         jsonObject,
@@ -51,7 +50,9 @@ public class AddressServiceImpl
   @Override
   public Optional<DistrictResponse> getListDistrctByProvince(String provinceCode) {
     try {
-      Object obj = jsonParser.parse(new FileReader(resource.getFile()));
+      InputStream is = this.getClass().getResourceAsStream("/Vietnam.json");
+      Reader reader = new InputStreamReader(is, "UTF-8");
+      Object obj = jsonParser.parse(reader);
       JSONObject jsonObject = (JSONObject) obj;
       ProvinceResponse provices = objectMapper.convertValue(
         jsonObject,
