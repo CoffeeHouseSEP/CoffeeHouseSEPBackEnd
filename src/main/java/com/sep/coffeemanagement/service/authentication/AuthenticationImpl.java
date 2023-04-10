@@ -26,7 +26,7 @@ public class AuthenticationImpl
 
   @Override
   public Optional<InternalUserLoginRes> login(InternalUserLoginReq internalUserLoginReq) {
-    Map<String, String> error = new HashMap<>();
+    Map<String, String> error = generateError(InternalUserLoginReq.class);
     InternalUser user = checkUsername(internalUserLoginReq.getLoginName())
       .orElseThrow(
         () -> {
