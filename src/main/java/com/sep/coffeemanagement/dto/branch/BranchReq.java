@@ -51,5 +51,24 @@ public class BranchReq {
   private int status;
   private Date createdDate;
   private Date cancelledDate;
+
+  @NotEmpty(message = "ward is empty")
+  @NotBlank(message = "ward is blank")
+  @NotNull(message = "ward is null")
+  @Length(max = 100, message = "ward over length(100)")
+  private String ward;
+
+  @NotEmpty(message = "district is empty")
+  @NotBlank(message = "district is blank")
+  @NotNull(message = "district is null")
+  @Length(max = 100, message = "district over length(100)")
+  private String district;
+
+  @NotEmpty(message = "province is empty")
+  @NotBlank(message = "province is blank")
+  @NotNull(message = "province is null")
+  @Length(max = 100, message = "province over length(100)")
+  private String province;
+
   private ImageInfoReq image;
 }

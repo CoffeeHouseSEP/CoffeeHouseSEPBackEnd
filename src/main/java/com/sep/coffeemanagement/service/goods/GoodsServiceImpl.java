@@ -46,6 +46,7 @@ public class GoodsServiceImpl
             goods.getCategoryId(),
             goods.getIsSize(),
             goods.getIsSold(),
+            goods.getIsTransfer(),
             goods.getGoodsUnit(),
             goods.getCategoryName()
           )
@@ -85,6 +86,7 @@ public class GoodsServiceImpl
                 goods.getCategoryId(),
                 goods.getIsSize(),
                 goods.getIsSold(),
+                goods.getIsTransfer(),
                 goods.getGoodsUnit(),
                 goods.getCategoryName()
               )
@@ -112,6 +114,10 @@ public class GoodsServiceImpl
     if (0 == req.getIsSold()) {
       goods.setApplyPrice(0d);
     }
+    //if goods is not transfer then inner price = 0
+    if (0 == req.getIsTransfer()) {
+      goods.setInnerPrice(0d);
+    }
     //
     goods.setGoodsId(newId);
     goods.setStatus(1);
@@ -130,17 +136,32 @@ public class GoodsServiceImpl
     if (0 == req.getIsSold()) {
       goodsUpdate.setApplyPrice(0d);
     }
+    //if goods is not transfer then inner price = 0
+    if (0 == req.getIsTransfer()) {
+      goods.setInnerPrice(0d);
+    }
     //
     repository.insertAndUpdate(goodsUpdate, true);
   }
 
   private void checkValidGoodsRequest(GoodsReq req, boolean isUpdate) {
     validate(req);
+    Map<String, String> errors = generateError(GoodsReq.class);
     if (1 == req.getIsSold()) {
       if (req.getApplyPrice() <= 0) {
+        errors.put("applyPrice", "sold goods apply price is negative or zero");
         throw new InvalidRequestException(
-          new HashMap<>(),
+          errors,
           "sold goods apply price is negative or zero"
+        );
+      }
+    }
+    if (1 == req.getIsTransfer()) {
+      if (req.getInnerPrice() <= 0) {
+        errors.put("innerPrice", "transfer goods inner price is negative or zero");
+        throw new InvalidRequestException(
+          errors,
+          "transfer goods inner price is negative or zero"
         );
       }
     }
@@ -151,7 +172,8 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      throw new InvalidRequestException(new HashMap<>(), "goods name duplicate");
+      errors.put("goodsName", "goods name duplicate");
+      throw new InvalidRequestException(errors, "goods name duplicate");
     }
     if (
       repository.checkDuplicateFieldValue(
@@ -160,7 +182,8 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      throw new InvalidRequestException(new HashMap<>(), "goods code duplicate");
+      errors.put("goodsCode", "goods code duplicate");
+      throw new InvalidRequestException(errors, "goods code duplicate");
     }
     Category category = categoryRepository
       .getOneByAttribute("categoryId", req.getCategoryId())

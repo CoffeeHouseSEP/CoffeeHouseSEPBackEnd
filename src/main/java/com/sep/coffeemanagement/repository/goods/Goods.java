@@ -18,5 +18,6 @@ public class Goods {
   private String categoryId;
   private int isSize;
   private int isSold;
+  private int isTransfer;
   private String goodsUnit;
 }

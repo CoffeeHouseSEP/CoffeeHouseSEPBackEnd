@@ -20,5 +20,8 @@ public class BranchRes {
   private int status;
   private Date createdDate;
   private Date cancelledDate;
+  private String ward;
+  private String district;
+  private String province;
   private String branchManagerName;
 }
