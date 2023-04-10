@@ -79,8 +79,7 @@ public class BranchGoodsDisableServiceImpl
     BranchGoodsDisableReq req,
     boolean isCreate
   ) {
-    Map<String, String> errors = new HashMap<>();
-    errors.put("goodsId", "");
+    Map<String, String> errors = generateError(BranchGoodsDisableReq.class);
     setUpBranch(req);
     validate(req);
     Goods goods = goodsRepository
