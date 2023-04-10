@@ -84,6 +84,7 @@ public class CategoryServiceImpl
   }
 
   private void checkValidCategoryRequest(CategoryReq req, boolean isUpdate) {
+    Map<String, String> errors = generateError(CategoryReq.class);
     validate(req);
     if (
       repository.checkDuplicateFieldValue(
@@ -92,7 +93,8 @@ public class CategoryServiceImpl
         isUpdate ? req.getCategoryId() : ""
       )
     ) {
-      throw new InvalidRequestException(new HashMap<>(), "category name duplicate");
+      errors.put("name", "category name duplicate");
+      throw new InvalidRequestException(errors, "category name duplicate");
     }
   }
 }
