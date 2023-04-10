@@ -22,4 +22,7 @@ public class Branch {
   private int status;
   private Date createdDate;
   private Date cancelledDate;
+  private String ward;
+  private String district;
+  private String province;
 }
