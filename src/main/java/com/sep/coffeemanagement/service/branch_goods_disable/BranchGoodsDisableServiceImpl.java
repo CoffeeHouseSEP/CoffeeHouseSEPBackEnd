@@ -15,6 +15,7 @@ import com.sep.coffeemanagement.repository.goods.GoodsRepository;
 import com.sep.coffeemanagement.service.AbstractService;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,8 @@ public class BranchGoodsDisableServiceImpl
     BranchGoodsDisableReq req,
     boolean isCreate
   ) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("goodsId", "");
     setUpBranch(req);
     validate(req);
     Goods goods = goodsRepository
@@ -93,13 +96,12 @@ public class BranchGoodsDisableServiceImpl
       .getListOrEntity(allParams, "asc", 0, 0, "")
       .get();
     if (!list.isEmpty() && isCreate) {
-      throw new InvalidRequestException(
-        new HashMap<>(),
-        "goods is disabled in branch already"
-      );
+      errors.put("goodsId", "goods is disabled in branch already");
+      throw new InvalidRequestException(errors, "goods is disabled in branch already");
     }
     if (list.isEmpty() && !isCreate) {
-      throw new ResourceNotFoundException("goods is not disabled in branch");
+      errors.put("goodsId", "goods is not disabled in branch");
+      throw new InvalidRequestException(errors, "goods is not disabled in branch");
     }
     return list;
   }
@@ -107,9 +109,7 @@ public class BranchGoodsDisableServiceImpl
   private BranchGoodsDisableReq setUpBranch(BranchGoodsDisableReq req) {
     BranchRes branch = branchRepository
       .getBranchByManagerId(req.getUserId())
-      .orElseThrow(
-        () -> new InvalidRequestException(new HashMap<>(), "not branch manager role")
-      );
+      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
     req.setBranchId(branch.getBranchId());
     return req;
   }

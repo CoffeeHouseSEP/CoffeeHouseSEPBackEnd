@@ -50,6 +50,7 @@ public class BranchServiceImpl
             branch.getWard(),
             branch.getDistrict(),
             branch.getProvince(),
+            branch.getStreet(),
             branch.getBranchManagerName()
           )
       );
@@ -91,6 +92,7 @@ public class BranchServiceImpl
                 branch.getWard(),
                 branch.getDistrict(),
                 branch.getProvince(),
+                branch.getStreet(),
                 branch.getBranchManagerName()
               )
           )
