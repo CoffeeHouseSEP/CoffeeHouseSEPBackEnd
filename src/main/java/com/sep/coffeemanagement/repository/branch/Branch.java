@@ -25,4 +25,5 @@ public class Branch {
   private String ward;
   private String district;
   private String province;
+  private String street;
 }

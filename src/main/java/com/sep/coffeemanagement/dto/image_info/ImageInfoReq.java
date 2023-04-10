@@ -12,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
 public class ImageInfoReq {
   private int id;
 
-  @NotNull(message = "object is undefined")
   private String objectId;
 
   @NotNull(message = "content is empty or blank")

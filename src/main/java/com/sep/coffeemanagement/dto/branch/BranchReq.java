@@ -70,5 +70,11 @@ public class BranchReq {
   @Length(max = 100, message = "province over length(100)")
   private String province;
 
+  @NotEmpty(message = "street is empty")
+  @NotBlank(message = "street is blank")
+  @NotNull(message = "street is null")
+  @Length(max = 100, message = "street over length(100)")
+  private String street;
+
   private ImageInfoReq image;
 }
