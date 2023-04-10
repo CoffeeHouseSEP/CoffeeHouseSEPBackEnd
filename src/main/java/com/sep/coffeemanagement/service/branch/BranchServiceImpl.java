@@ -104,18 +104,7 @@ public class BranchServiceImpl
 
   @Override
   public void createBranch(BranchReq req) throws InvalidRequestException {
-    validate(req);
-    //check user active
-    InternalUser branchManager = internalUserRepository
-      .getOneByAttribute("internalUserId", req.getBranchManagerId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch manager not found"));
-    if (branchManager.getStatus() != 1) {
-      throw new InvalidRequestException(new HashMap<>(), "deactivate user");
-    }
-    //check branch manager co branch chua
-    if (repository.getBranchByManagerId(req.getBranchManagerId()).isPresent()) {
-      throw new InvalidRequestException(new HashMap<>(), "user has branch already");
-    }
+    checkValidBranchRequest(req);
     Branch branch = objectMapper.convertValue(req, Branch.class);
     String newId = UUID.randomUUID().toString();
     ImageInfoReq imageReq = req.getImage();
@@ -135,16 +124,40 @@ public class BranchServiceImpl
     Branch branch = repository
       .getOneByAttribute("branchId", req.getBranchId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
-
-    HashMap<String, String> params = new HashMap<>();
-    params.put("branchManagerId", req.getBranchManagerId());
-    if (repository.getListBranch(params, "asc", 1, 10, "").size() > 1) {
-      throw new InvalidRequestException(new HashMap<>(), "user has branch already");
+    checkValidBranchRequest(req);
+    ImageInfo imageInfo = imageInfoRepository
+      .getOneByAttribute("objectId", req.getBranchId())
+      .orElse(null);
+    if (imageInfo == null) {
+      imageInfo = new ImageInfo();
+      imageInfo.setObjectId(req.getBranchId());
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, false);
+    } else {
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, true);
     }
-    ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
-    imageInfoRepository.insertAndUpdate(imageInfo, true);
     Branch branchUpdate = objectMapper.convertValue(req, Branch.class);
     validate(branchUpdate);
     repository.insertAndUpdate(branchUpdate, true);
+  }
+
+  public void checkValidBranchRequest(BranchReq req) {
+    validate(req);
+    Map<String, String> errors = generateError(BranchReq.class);
+    InternalUser branchManager = internalUserRepository
+      .getOneByAttribute("internalUserId", req.getBranchManagerId())
+      .orElseThrow(() -> new ResourceNotFoundException("branch manager not found"));
+    if (branchManager.getStatus() != 1) {
+      errors.put("branchManagerId", "deactivate user");
+      throw new InvalidRequestException(errors, "deactivate user");
+    }
+    //check branch manager co branch chua
+    if (repository.getBranchByManagerId(req.getBranchManagerId()).isPresent()) {
+      errors.put("branchManagerId", "user has branch already");
+      throw new InvalidRequestException(errors, "user has branch already");
+    }
   }
 }

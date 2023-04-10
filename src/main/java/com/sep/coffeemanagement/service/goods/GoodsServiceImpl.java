@@ -142,6 +142,20 @@ public class GoodsServiceImpl
     }
     //
     repository.insertAndUpdate(goodsUpdate, true);
+    ImageInfo imageInfo = imageInfoRepository
+      .getOneByAttribute("objectId", req.getGoodsId())
+      .orElse(null);
+    if (imageInfo == null) {
+      imageInfo = new ImageInfo();
+      imageInfo.setObjectId(req.getGoodsId());
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, false);
+    } else {
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, true);
+    }
   }
 
   private void checkValidGoodsRequest(GoodsReq req, boolean isUpdate) {
