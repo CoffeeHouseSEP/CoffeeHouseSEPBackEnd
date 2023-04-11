@@ -26,7 +26,7 @@ public class CouponRepository extends BaseRepository<Coupon> {
       .append(" where status = 1 ")
       .append(" and applied_date <= curdate() ")
       .append(" and expired_date >= curdate() ")
-      .append(" and max_value_promotion <=  ")
+      .append(" and max_value_promotion >=  ")
       .append(totalPrice);
     if (StringUtils.hasText(couponId)) {
       sb.append(" and coupon_id = '").append(couponId).append("'");
