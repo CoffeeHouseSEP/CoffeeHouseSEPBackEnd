@@ -228,7 +228,7 @@ public class OrdersServiceImpl
   }
 
   public Goods checkIsGoodsDisabledByBranch(String goodsId, String branchId) {
-    Map<String, String> errors = generateError(BranchGoodsDisableReq.class);
+    Map<String, String> errors = generateError(OrderDetailReq.class);
     Goods goods = goodsRepository
       .getOneByAttribute("goodsId", goodsId)
       .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
