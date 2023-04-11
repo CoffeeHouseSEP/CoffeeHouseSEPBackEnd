@@ -178,6 +178,11 @@ public class OrdersServiceImpl
         errors.put("couponId", "coupon not valid");
         throw new InvalidRequestException(errors, "coupon not valid");
       }
+      orderTotalPrice -=
+        Math.min(
+          orderTotalPrice * coupon.getValue() / 100,
+          coupon.getMaxValuePromotion()
+        );
     }
     //Step 3: END
     //Step 4: save orders
