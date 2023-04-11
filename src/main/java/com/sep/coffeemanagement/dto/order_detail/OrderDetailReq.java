@@ -10,14 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailReq {
-  private String orderDetailId;
-  private String ordersId;
   private String goodsId;
 
   @Positive(message = "quantity is negative or zero")
   private double quantity;
 
   private String size;
-
-  private double applyPrice;
 }

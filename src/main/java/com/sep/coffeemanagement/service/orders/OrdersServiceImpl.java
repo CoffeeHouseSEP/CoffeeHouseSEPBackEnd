@@ -2,6 +2,7 @@ package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.app_param.AppParamRes;
+import com.sep.coffeemanagement.dto.branch_goods_disable.BranchGoodsDisableReq;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
@@ -23,6 +24,7 @@ import com.sep.coffeemanagement.repository.order_detail.OrderDetailRepository;
 import com.sep.coffeemanagement.repository.orders.Orders;
 import com.sep.coffeemanagement.repository.orders.OrdersRepository;
 import com.sep.coffeemanagement.service.AbstractService;
+import com.sep.coffeemanagement.utils.AppParamUtils;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,6 +108,7 @@ public class OrdersServiceImpl
   @Override
   @Transactional
   public void createOrders(OrdersReq req) {
+    Map<String, String> errors = generateError(OrdersReq.class);
     //Step 0: generate orders_id and get list app param for goods size:
     String ordersId = UUID.randomUUID().toString();
     List<AppParamRes> listGoodsSize = appParamRepository.getListAppParamByParType(
@@ -116,13 +119,12 @@ public class OrdersServiceImpl
     validate(req);
     Branch branch = branchRepository
       .getOneByAttribute("branchId", req.getBranchId())
-      .orElseThrow(
-        () -> new InvalidRequestException(new HashMap<>(), "branch not found")
-      );
+      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
     //Step 1: END
     //Step 2: check valid, save order_detail, get total_price
     if (req.getListOrderDetail() == null || req.getListOrderDetail().isEmpty()) {
-      throw new InvalidRequestException(new HashMap<>(), "orders no content");
+      errors.put("listOrderDetail", "no content");
+      throw new InvalidRequestException(errors, "orders no content");
     }
     double orderTotalPrice = 0;
     for (OrderDetailReq orderDetailReq : req.getListOrderDetail()) {
@@ -138,37 +140,43 @@ public class OrdersServiceImpl
         orderTotalPrice +=
           goods.getApplyPrice() *
           orderDetailReq.getQuantity() *
-          getRatioValueFromListSizeGoods(listGoodsSize, orderDetailReq.getSize());
+          AppParamUtils.getRatioValueFromListSizeGoods(
+            listGoodsSize,
+            orderDetailReq.getSize()
+          );
       } else {
         orderTotalPrice += goods.getApplyPrice() * orderDetailReq.getQuantity();
       }
       //Step 2.4: save order_detail
       String orderDetailId = UUID.randomUUID().toString();
-      orderDetailReq.setOrderDetailId(orderDetailId);
-      orderDetailReq.setOrdersId(ordersId);
-      orderDetailReq.setApplyPrice(
+      OrderDetail orderDetail = new OrderDetail();
+      orderDetail.setOrderDetailId(orderDetailId);
+      orderDetail.setOrdersId(ordersId);
+      orderDetail.setGoodsId(orderDetailReq.getGoodsId());
+      orderDetail.setQuantity(orderDetailReq.getQuantity());
+      orderDetail.setSize(orderDetailReq.getSize());
+      orderDetail.setApplyPrice(
         goods.getApplyPrice() *
-        getRatioValueFromListSizeGoods(listGoodsSize, orderDetailReq.getSize())
+        AppParamUtils.getRatioValueFromListSizeGoods(
+          listGoodsSize,
+          orderDetailReq.getSize()
+        )
       );
-      orderDetailRepository.insertAndUpdate(
-        objectMapper.convertValue(orderDetailReq, OrderDetail.class),
-        false
-      );
+      orderDetailRepository.insertAndUpdate(orderDetail, false);
     }
     //Step 2: END
     //Step 3: Check valid coupon
     if (StringUtils.isNoneEmpty(req.getCouponId())) {
       Coupon coupon = couponRepository
         .getOneByAttribute("couponId", req.getCouponId())
-        .orElseThrow(
-          () -> new InvalidRequestException(new HashMap<>(), "coupon not found")
-        );
+        .orElseThrow(() -> new ResourceNotFoundException("coupon not found"));
       List<CouponRes> listValidCoupon = couponRepository.getListCouponByCartTotalPrice(
         orderTotalPrice,
         coupon.getCouponId()
       );
       if (listValidCoupon.isEmpty()) {
-        throw new InvalidRequestException(new HashMap<>(), "coupon not valid");
+        errors.put("couponId", "coupon not valid");
+        throw new InvalidRequestException(errors, "coupon not valid");
       }
     }
     //Step 3: END
@@ -192,13 +200,15 @@ public class OrdersServiceImpl
 
   @Override
   public void changeStatusOrders(OrdersReq req, Constant.ORDER_STATUS status) {
+    Map<String, String> errors = generateError(OrdersReq.class);
     Orders orders = repository
       .getOneByAttribute("ordersId", req.getOrdersId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     if (Constant.ORDER_STATUS.APPROVED == status) {
       if (!Constant.ORDER_STATUS.PENDING_APPROVED.toString().equals(orders.getStatus())) {
+        errors.put("status", "orders not in status PENDING_APPROVED");
         throw new InvalidRequestException(
-          new HashMap<>(),
+          errors,
           "orders not in status PENDING_APPROVED"
         );
       }
@@ -210,24 +220,21 @@ public class OrdersServiceImpl
         orders.setCancelledDate(DateFormat.getCurrentTime());
         orders.setReason(req.getReason());
       } else {
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "cancel reason is null or empty"
-        );
+        errors.put("reason", "cancel reason is null or empty");
+        throw new InvalidRequestException(errors, "cancel reason is null or empty");
       }
     }
     repository.insertAndUpdate(orders, true);
   }
 
   public Goods checkIsGoodsDisabledByBranch(String goodsId, String branchId) {
+    Map<String, String> errors = generateError(BranchGoodsDisableReq.class);
     Goods goods = goodsRepository
       .getOneByAttribute("goodsId", goodsId)
       .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
     if (1 != goods.getIsSold()) {
-      throw new InvalidRequestException(
-        new HashMap<>(),
-        goods.getName() + " is not for sold"
-      );
+      errors.put("goodsId", "goods not for sold");
+      throw new InvalidRequestException(errors, goods.getName() + " is not for sold");
     }
     HashMap<String, String> allParams = new HashMap<>();
     allParams.put("branchId", branchId);
@@ -236,37 +243,12 @@ public class OrdersServiceImpl
       .getListOrEntity(allParams, "asc", 0, 0, "")
       .get();
     if (!list.isEmpty()) {
+      errors.put("goodsId", "goods is disable from branch");
       throw new InvalidRequestException(
-        new HashMap<>(),
+        errors,
         goods.getName() + " is disable from branch"
       );
     }
     return goods;
-  }
-
-  public double getRatioValueFromListSizeGoods(List<AppParamRes> listSize, String size) {
-    switch (size) {
-      case "S":
-        return 1d;
-      case "M":
-        for (AppParamRes appParam : listSize) {
-          if ("M".equals(appParam.getName())) {
-            return Double.parseDouble(appParam.getCode());
-          }
-        }
-        throw new InvalidRequestException(new HashMap<>(), "something wrong!");
-      case "L":
-        for (AppParamRes appParam : listSize) {
-          if ("L".equals(appParam.getName())) {
-            return Double.parseDouble(appParam.getCode());
-          }
-        }
-        throw new InvalidRequestException(new HashMap<>(), "something wrong!");
-      default:
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "wrong size input (only S,M,L)"
-        );
-    }
   }
 }
