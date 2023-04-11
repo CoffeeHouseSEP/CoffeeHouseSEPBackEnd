@@ -19,4 +19,10 @@ public class Constant {
     COMPLETED,
     CANCELLED
   }
+
+  public enum ORDER_STATUS {
+    PENDING_APPROVED,
+    APPROVED,
+    CANCELLED
+  }
 }

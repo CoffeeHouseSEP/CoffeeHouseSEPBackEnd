@@ -17,4 +17,5 @@ public class Coupon {
   private Date createdDate;
   private Date expiredDate;
   private Date appliedDate;
+  private double maxValuePromotion;
 }
