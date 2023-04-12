@@ -5,10 +5,12 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.request.RequestReq;
 import com.sep.coffeemanagement.dto.request.RequestRes;
+import com.sep.coffeemanagement.service.branch.BranchService;
 import com.sep.coffeemanagement.service.request.RequestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "request")
 public class RequestController extends AbstractController<RequestService> {
+  @Autowired
+  private BranchService branchService;
 
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "add-new-request")
@@ -67,6 +71,18 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    validateAuthorize(
+      request,
+      new String[] { Constant.BRANCH_ROLE, Constant.ADMIN_ROLE }
+    );
+    String userId = checkAuthentication(request);
+    String role = getUserRoleByRequest(request);
+    if (Constant.BRANCH_ROLE.equals(role)) {
+      allParams.put(
+        "branchId",
+        branchService.getBranchByManagerId(userId).get().getBranchId()
+      );
+    }
     return response(
       service.getListRequest(allParams, keySort, page, pageSize, ""),
       "success"

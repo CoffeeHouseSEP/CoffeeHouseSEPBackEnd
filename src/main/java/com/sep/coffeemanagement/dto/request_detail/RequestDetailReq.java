@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDetailReq {
-  private String requestDetailId;
-  private String requestId;
   private String goodsId;
 
   @Positive(message = "quantity is negative or zero")

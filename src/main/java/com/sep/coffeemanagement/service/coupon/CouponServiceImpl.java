@@ -1,16 +1,19 @@
 package com.sep.coffeemanagement.service.coupon;
 
+import com.sep.coffeemanagement.dto.app_param.AppParamRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponReq;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
+import com.sep.coffeemanagement.repository.app_param.AppParamRepository;
 import com.sep.coffeemanagement.repository.coupon.Coupon;
 import com.sep.coffeemanagement.repository.coupon.CouponRepository;
 import com.sep.coffeemanagement.repository.goods.Goods;
 import com.sep.coffeemanagement.repository.goods.GoodsRepository;
 import com.sep.coffeemanagement.service.AbstractService;
+import com.sep.coffeemanagement.utils.AppParamUtils;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +26,9 @@ public class CouponServiceImpl
   implements CouponService {
   @Autowired
   private GoodsRepository goodsRepository;
+
+  @Autowired
+  private AppParamRepository appParamRepository;
 
   @Override
   public Optional<ListWrapperResponse<CouponRes>> getListCoupon(
@@ -109,15 +115,24 @@ public class CouponServiceImpl
     List<OrderDetailReq> listOrderDetailReq
   ) {
     if (listOrderDetailReq == null || listOrderDetailReq.isEmpty()) {
-      throw new InvalidRequestException(new HashMap<>(), "cart info empty");
+      throw new ResourceNotFoundException("cart info empty");
     }
+    List<AppParamRes> listGoodsSize = appParamRepository.getListAppParamByParType(
+      "UPSIZE_GOODS"
+    );
     double totalPrice = 0;
     for (OrderDetailReq orderDetailReq : listOrderDetailReq) {
       validate(orderDetailReq);
       Goods goods = goodsRepository
         .getOneByAttribute("goodsId", orderDetailReq.getGoodsId())
         .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
-      totalPrice += orderDetailReq.getQuantity() * goods.getApplyPrice();
+      totalPrice +=
+        orderDetailReq.getQuantity() *
+        goods.getApplyPrice() *
+        AppParamUtils.getRatioValueFromListSizeGoods(
+          listGoodsSize,
+          orderDetailReq.getSize()
+        );
     }
     List<CouponRes> list = repository.getListCouponByCartTotalPrice(totalPrice, null);
     return Optional.of(

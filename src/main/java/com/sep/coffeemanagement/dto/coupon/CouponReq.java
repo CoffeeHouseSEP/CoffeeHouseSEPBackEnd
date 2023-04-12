@@ -1,9 +1,7 @@
 package com.sep.coffeemanagement.dto.coupon;
 
 import java.util.Date;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +19,8 @@ public class CouponReq {
 
   private int type;
 
-  @Positive(message = "coupon value is negative or zero")
+  @Max(value = 70, message = "coupon value not in [0,70]")
+  @Min(value = 0, message = "coupon value not in [0,70]")
   private double value;
 
   private int status;

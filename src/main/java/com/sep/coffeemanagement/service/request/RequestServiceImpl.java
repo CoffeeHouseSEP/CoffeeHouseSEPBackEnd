@@ -87,21 +87,20 @@ public class RequestServiceImpl
     double requestTotalPrice = 0;
     checkValidRequestRequest(req);
     String newId = UUID.randomUUID().toString();
-    if (req.getListRequestDetail() == null || req.getListRequestDetail().isEmpty()) {
-      throw new InvalidRequestException(new HashMap<>(), "request no content");
-    }
     for (RequestDetailReq requestDetailReq : req.getListRequestDetail()) {
       validate(requestDetailReq);
       Goods goods = goodsRepository
         .getOneByAttribute("goodsId", requestDetailReq.getGoodsId())
         .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
-      requestTotalPrice += goods.getApplyPrice() * requestDetailReq.getQuantity();
-      requestDetailReq.setRequestId(newId);
-      requestDetailReq.setApplyPrice(goods.getApplyPrice());
-      requestDetailRepository.insertAndUpdate(
-        objectMapper.convertValue(requestDetailReq, RequestDetail.class),
-        false
-      );
+      requestTotalPrice += goods.getInnerPrice() * requestDetailReq.getQuantity();
+
+      RequestDetail saveRequestDetail = new RequestDetail();
+      saveRequestDetail.setRequestId(newId);
+      saveRequestDetail.setRequestDetailId(UUID.randomUUID().toString());
+      saveRequestDetail.setQuantity(requestDetailReq.getQuantity());
+      saveRequestDetail.setGoodsId(requestDetailReq.getGoodsId());
+      saveRequestDetail.setApplyPrice(goods.getInnerPrice());
+      requestDetailRepository.insertAndUpdate(saveRequestDetail, false);
     }
     Request requestSave = new Request();
     requestSave.setRequestId(newId);
@@ -115,19 +114,15 @@ public class RequestServiceImpl
 
   @Override
   public void updateRequest(RequestReq req) {
+    Map<String, String> errors = generateError(RequestReq.class);
     double requestTotalPrice = 0;
     checkValidRequestRequest(req);
     Request request = repository
       .getOneByAttribute("requestId", req.getRequestId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
-    if (req.getListRequestDetail() == null || req.getListRequestDetail().isEmpty()) {
-      throw new InvalidRequestException(new HashMap<>(), "request no content");
-    }
     if (Constant.REQUEST_STATUS.CREATED.toString().equals(req.getStatus())) {
-      throw new InvalidRequestException(
-        new HashMap<>(),
-        "request not in status : CREATED"
-      );
+      errors.put("status", "request not in status : CREATED");
+      throw new InvalidRequestException(errors, "request not in status : CREATED");
     }
     //clear detail
     requestDetailRepository.removeRequestDetailByRequestId(req.getRequestId());
@@ -138,12 +133,14 @@ public class RequestServiceImpl
         .getOneByAttribute("goodsId", requestDetailReq.getGoodsId())
         .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
       requestTotalPrice += goods.getInnerPrice() * requestDetailReq.getQuantity();
-      requestDetailReq.setRequestId(req.getRequestId());
-      requestDetailReq.setApplyPrice(goods.getInnerPrice());
-      requestDetailRepository.insertAndUpdate(
-        objectMapper.convertValue(requestDetailReq, RequestDetail.class),
-        false
-      );
+
+      RequestDetail saveRequestDetail = new RequestDetail();
+      saveRequestDetail.setRequestId(req.getRequestId());
+      saveRequestDetail.setRequestDetailId(UUID.randomUUID().toString());
+      saveRequestDetail.setQuantity(requestDetailReq.getQuantity());
+      saveRequestDetail.setGoodsId(requestDetailReq.getGoodsId());
+      saveRequestDetail.setApplyPrice(goods.getInnerPrice());
+      requestDetailRepository.insertAndUpdate(saveRequestDetail, false);
     }
     request.setTotalPrice(requestTotalPrice);
     repository.insertAndUpdate(request, true);
@@ -151,33 +148,28 @@ public class RequestServiceImpl
 
   @Override
   public void changeStatusRequest(RequestReq req, Constant.REQUEST_STATUS status) {
+    Map<String, String> errors = generateError(RequestReq.class);
     Request request = repository
       .getOneByAttribute("requestId", req.getRequestId())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     if (Constant.REQUEST_STATUS.PENDING == status) {
       if (!Constant.REQUEST_STATUS.CREATED.toString().equals(request.getStatus())) {
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "request not in status CREATED"
-        );
+        errors.put("status", "request not in status CREATED");
+        throw new InvalidRequestException(errors, "request not in status CREATED");
       }
       request.setStatus(Constant.REQUEST_STATUS.PENDING.toString());
     } else if (Constant.REQUEST_STATUS.APPROVED == status) {
       if (!Constant.REQUEST_STATUS.PENDING.toString().equals(request.getStatus())) {
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "request not in status PENDING"
-        );
+        errors.put("status", "request not in status PENDING");
+        throw new InvalidRequestException(errors, "request not in status PENDING");
       }
       request.setStatus(Constant.REQUEST_STATUS.APPROVED.toString());
       request.setApprovedBy(req.getApprovedBy());
       request.setApprovedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.COMPLETED == status) {
       if (!Constant.REQUEST_STATUS.APPROVED.toString().equals(request.getStatus())) {
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "request not in status APPROVED"
-        );
+        errors.put("status", "request not in status APPROVED");
+        throw new InvalidRequestException(errors, "request not in status APPROVED");
       }
       request.setStatus(Constant.REQUEST_STATUS.COMPLETED.toString());
       request.setCompletedDate(DateFormat.getCurrentTime());
@@ -185,21 +177,25 @@ public class RequestServiceImpl
       if (StringUtils.isNoneEmpty(req.getReason())) {
         request.setStatus(Constant.REQUEST_STATUS.CANCELLED.toString());
         request.setCancelledDate(DateFormat.getCurrentTime());
+        request.setReason(req.getReason());
       } else {
-        throw new InvalidRequestException(
-          new HashMap<>(),
-          "cancel reason is null or empty"
-        );
+        errors.put("reason", "cancel reason is null or empty");
+        throw new InvalidRequestException(errors, "cancel reason is null or empty");
       }
     }
     repository.insertAndUpdate(request, true);
   }
 
   public void checkValidRequestRequest(RequestReq req) {
+    Map<String, String> errors = generateError(RequestReq.class);
     validate(req);
     BranchRes branch = branchRepository
       .getBranchByManagerId(req.getCreatedBy())
       .orElseThrow(() -> new ResourceNotFoundException("not branch manager role"));
     req.setBranchId(branch.getBranchId());
+    if (req.getListRequestDetail() == null || req.getListRequestDetail().isEmpty()) {
+      errors.put("listRequestDetail", "no content");
+      throw new InvalidRequestException(errors, "request no content");
+    }
   }
 }

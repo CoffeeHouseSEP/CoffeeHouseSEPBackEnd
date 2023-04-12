@@ -36,7 +36,7 @@ public class RequestRepository extends BaseRepository<Request> {
       .append(
         convertParamsFilterSelectQuery(
           allParams,
-          News.class,
+          Request.class,
           page,
           pageSize,
           keySort,
