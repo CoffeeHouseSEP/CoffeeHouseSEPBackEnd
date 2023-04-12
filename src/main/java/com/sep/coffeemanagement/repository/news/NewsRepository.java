@@ -52,4 +52,11 @@ public class NewsRepository extends BaseRepository<News> {
     );
     return replaceQuery(sb.toString(), NewsRes.class).get();
   }
+
+  public void removeNews(String newsId) {
+    StringBuilder sb = new StringBuilder(" delete from news where news_id = '");
+    sb.append(newsId);
+    sb.append("'");
+    jdbcTemplate.execute(sb.toString());
+  }
 }

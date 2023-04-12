@@ -18,4 +18,6 @@ public interface NewsService {
   void createNews(NewsReq req);
 
   void updateNews(NewsReq req);
+
+  void removeNews(String id);
 }

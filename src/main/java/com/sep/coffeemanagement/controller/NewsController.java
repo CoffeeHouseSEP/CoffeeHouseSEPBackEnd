@@ -66,13 +66,48 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    allParams.put("status", "1");
+    return response(
+      service.getListNews(allParams, keySort, page, pageSize, ""),
+      "success"
+    );
+  }
+
+  @GetMapping(value = "get-list-news-authorized")
+  public ResponseEntity<CommonResponse<ListWrapperResponse<NewsRes>>> getListNewsAuthorized(
+    @RequestParam(required = false, defaultValue = "0") int page,
+    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam Map<String, String> allParams,
+    @RequestParam(defaultValue = "asc") String keySort,
+    @RequestParam(defaultValue = "modified") String sortField,
+    HttpServletRequest request
+  ) {
     String role = getUserRoleByRequest(request);
-    if (!Constant.ADMIN_ROLE.equals(role)) {
+    if (!Constant.ADMIN_ROLE.equals(role) && !Constant.BRANCH_ROLE.equals(role)) {
       allParams.put("status", "1");
     }
     return response(
       service.getListNews(allParams, keySort, page, pageSize, ""),
       "success"
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @DeleteMapping(value = "remove-news")
+  public ResponseEntity<CommonResponse<String>> removeNews(
+    @RequestParam String newsId,
+    HttpServletRequest request
+  ) {
+    service.removeNews(newsId);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "remove news success",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
     );
   }
 }
