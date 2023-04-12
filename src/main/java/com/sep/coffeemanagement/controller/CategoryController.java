@@ -64,8 +64,25 @@ public class CategoryController extends AbstractController<CategoryService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    allParams.put("status", "1");
+    return response(
+      service.getListCategory(allParams, keySort, page, pageSize, ""),
+      "success"
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @GetMapping(value = "get-list-category-authorized")
+  public ResponseEntity<CommonResponse<ListWrapperResponse<CategoryRes>>> getListCategoryAuthorized(
+    @RequestParam(required = false, defaultValue = "0") int page,
+    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam Map<String, String> allParams,
+    @RequestParam(defaultValue = "asc") String keySort,
+    @RequestParam(defaultValue = "modified") String sortField,
+    HttpServletRequest request
+  ) {
     String role = getUserRoleByRequest(request);
-    if (!Constant.ADMIN_ROLE.equals(role) && !Constant.BRANCH_ROLE.equals(role)) {
+    if (!Constant.ADMIN_ROLE.equals(role)) {
       allParams.put("status", "1");
     }
     return response(
@@ -73,18 +90,4 @@ public class CategoryController extends AbstractController<CategoryService> {
       "success"
     );
   }
-  //  @GetMapping(value = "get-list-category-admin")
-  //  public ResponseEntity<CommonResponse<ListWrapperResponse<CategoryRes>>> getListCategoryAdmin(
-  //    @RequestParam(required = false, defaultValue = "1") int page,
-  //    @RequestParam(required = false, defaultValue = "10") int pageSize,
-  //    @RequestParam Map<String, String> allParams,
-  //    @RequestParam(defaultValue = "asc") String keySort,
-  //    @RequestParam(defaultValue = "modified") String sortField,
-  //    HttpServletRequest request
-  //  ) {
-  //    return response(
-  //      service.getListCategory(allParams, keySort, page, pageSize, ""),
-  //      "success"
-  //    );
-  //  }
 }

@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.goods.GoodsReq;
@@ -26,10 +27,44 @@ public class GoodsController extends AbstractController<GoodsService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    allParams.put("status", "1");
+    allParams.put("isSold", "1");
     return response(
-      service.getListGoods(allParams, keySort, page, pageSize, ""),
+      service.getListGoods(allParams, keySort, page, pageSize, "", false),
       "success"
     );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @GetMapping(value = "get-list-goods-authorized")
+  public ResponseEntity<CommonResponse<ListWrapperResponse<GoodsRes>>> getListGoodsAuthorize(
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
+    @RequestParam Map<String, String> allParams,
+    @RequestParam(defaultValue = "asc") String keySort,
+    @RequestParam(defaultValue = "modified") String sortField,
+    HttpServletRequest request
+  ) {
+    String role = getUserRoleByRequest(request);
+    if (Constant.BRANCH_ROLE.equals(role)) {
+      allParams.put("status", "1");
+      return response(
+        service.getListGoods(allParams, keySort, page, pageSize, "", true),
+        "success"
+      );
+    } else if (Constant.ADMIN_ROLE.equals(role)) {
+      return response(
+        service.getListGoods(allParams, keySort, page, pageSize, "", true),
+        "success"
+      );
+    } else {
+      allParams.put("status", "1");
+      allParams.put("isSold", "1");
+      return response(
+        service.getListGoods(allParams, keySort, page, pageSize, "", false),
+        "success"
+      );
+    }
   }
 
   @SecurityRequirement(name = "Bearer Authentication")

@@ -97,4 +97,12 @@ public class NewsServiceImpl
     news.setStatus(req.getStatus());
     repository.insertAndUpdate(news, true);
   }
+
+  @Override
+  public void removeNews(String id) {
+    News news = repository
+      .getOneByAttribute("newsId", id)
+      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+    repository.removeNews(id);
+  }
 }

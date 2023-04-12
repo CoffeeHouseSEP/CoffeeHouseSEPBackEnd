@@ -59,7 +59,8 @@ public class GoodsServiceImpl
     String keySort,
     int page,
     int pageSize,
-    String sortField
+    String sortField,
+    boolean isAbleToViewAll
   ) {
     List<GoodsRes> list = repository.getListGoods(
       allParams,
@@ -79,14 +80,13 @@ public class GoodsServiceImpl
                 goods.getName(),
                 goods.getCode(),
                 goods.getApplyPrice(),
-                //                                                        goods.getInnerPrice(),
-                0d,
+                isAbleToViewAll ? goods.getInnerPrice() : 0d,
                 goods.getDescription(),
                 goods.getStatus(),
                 goods.getCategoryId(),
                 goods.getIsSize(),
                 goods.getIsSold(),
-                goods.getIsTransfer(),
+                isAbleToViewAll ? goods.getIsTransfer() : 0,
                 goods.getGoodsUnit(),
                 goods.getCategoryName()
               )

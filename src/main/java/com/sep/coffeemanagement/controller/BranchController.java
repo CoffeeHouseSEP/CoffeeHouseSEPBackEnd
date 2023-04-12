@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.branch.BranchReq;
 import com.sep.coffeemanagement.dto.branch.BranchRes;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
@@ -55,6 +56,7 @@ public class BranchController extends AbstractController<BranchService> {
     );
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-branch")
   public ResponseEntity<CommonResponse<ListWrapperResponse<BranchRes>>> getListBranch(
     @RequestParam(required = false, defaultValue = "0") int page,
@@ -64,6 +66,10 @@ public class BranchController extends AbstractController<BranchService> {
     @RequestParam(defaultValue = "modified") String sortField,
     HttpServletRequest request
   ) {
+    String role = getUserRoleByRequest(request);
+    if (!Constant.ADMIN_ROLE.equals(role)) {
+      allParams.put("status", "1");
+    }
     return response(
       service.getListBranch(allParams, keySort, page, pageSize, ""),
       "success"

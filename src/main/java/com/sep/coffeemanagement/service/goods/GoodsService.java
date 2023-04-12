@@ -14,7 +14,8 @@ public interface GoodsService {
     String keySort,
     int page,
     int pageSize,
-    String sortField
+    String sortField,
+    boolean isAbleToViewAll
   );
 
   void createGoods(GoodsReq req);
