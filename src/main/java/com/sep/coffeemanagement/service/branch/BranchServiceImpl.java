@@ -164,9 +164,12 @@ public class BranchServiceImpl
       throw new InvalidRequestException(errors, "deactivate user");
     }
     //check branch manager co branch chua
-    if (repository.getBranchByManagerId(req.getBranchManagerId()).isPresent()) {
-      errors.put("branchManagerId", "user has branch already");
-      throw new InvalidRequestException(errors, "user has branch already");
+    Optional<BranchRes> br = repository.getBranchByManagerId(req.getBranchManagerId());
+    if (br.isPresent()) {
+      if(!br.get().getBranchId().equals(req.getBranchId())) {
+        errors.put("branchManagerId", "user has branch already");
+        throw new InvalidRequestException(errors, "user has branch already");
+      }
     }
   }
 }
