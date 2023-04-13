@@ -30,7 +30,7 @@ public class GoodsController extends AbstractController<GoodsService> {
     allParams.put("status", "1");
     allParams.put("isSold", "1");
     return response(
-      service.getListGoods(allParams, keySort, page, pageSize, "", false),
+      service.getListGoods(allParams, keySort, page, pageSize, sortField, false),
       "success"
     );
   }
@@ -49,19 +49,19 @@ public class GoodsController extends AbstractController<GoodsService> {
     if (Constant.BRANCH_ROLE.equals(role)) {
       allParams.put("status", "1");
       return response(
-        service.getListGoods(allParams, keySort, page, pageSize, "", true),
+        service.getListGoods(allParams, keySort, page, pageSize, sortField, true),
         "success"
       );
     } else if (Constant.ADMIN_ROLE.equals(role)) {
       return response(
-        service.getListGoods(allParams, keySort, page, pageSize, "", true),
+        service.getListGoods(allParams, keySort, page, pageSize, sortField, true),
         "success"
       );
     } else {
       allParams.put("status", "1");
       allParams.put("isSold", "1");
       return response(
-        service.getListGoods(allParams, keySort, page, pageSize, "", false),
+        service.getListGoods(allParams, keySort, page, pageSize, sortField, false),
         "success"
       );
     }
