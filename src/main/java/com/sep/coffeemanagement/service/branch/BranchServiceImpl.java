@@ -31,29 +31,31 @@ public class BranchServiceImpl
 
   @Override
   public Optional<BranchRes> getBranchByManagerId(String managerId) {
-    return repository
+    BranchRes branch = repository
       .getBranchByManagerId(managerId)
-      .map(
-        branch ->
-          new BranchRes(
-            branch.getBranchId(),
-            branch.getName(),
-            branch.getAddress(),
-            branch.getPhoneNumber(),
-            branch.getDescription(),
-            branch.getBranchManagerId(),
-            branch.getLongitude(),
-            branch.getLatitude(),
-            branch.getStatus(),
-            branch.getCreatedDate(),
-            branch.getCancelledDate(),
-            branch.getWard(),
-            branch.getDistrict(),
-            branch.getProvince(),
-            branch.getStreet(),
-            branch.getBranchManagerName()
-          )
+      .orElseThrow(
+        () -> new ResourceNotFoundException("no branch found by this manager")
       );
+    return Optional.of(
+      new BranchRes(
+        branch.getBranchId(),
+        branch.getName(),
+        branch.getAddress(),
+        branch.getPhoneNumber(),
+        branch.getDescription(),
+        branch.getBranchManagerId(),
+        branch.getLongitude(),
+        branch.getLatitude(),
+        branch.getStatus(),
+        branch.getCreatedDate(),
+        branch.getCancelledDate(),
+        branch.getWard(),
+        branch.getDistrict(),
+        branch.getProvince(),
+        branch.getStreet(),
+        branch.getBranchManagerName()
+      )
+    );
   }
 
   @Override
@@ -116,6 +118,11 @@ public class BranchServiceImpl
     branch.setBranchId(newId);
     branch.setCreatedDate(DateFormat.getCurrentTime());
     branch.setCancelledDate(null);
+    branch.setAddress(req.getAddress());
+    branch.setStreet(req.getStreet());
+    branch.setWard(req.getWard());
+    branch.setDistrict(req.getDistrict());
+    branch.setProvince(req.getProvince());
     branch.setStatus(1);
     repository.insertAndUpdate(branch, false);
     imageInfoRepository.insertAndUpdate(imageInfo, false);
@@ -125,7 +132,7 @@ public class BranchServiceImpl
   public void updateBranch(BranchReq req) {
     Branch branch = repository
       .getOneByAttribute("branchId", req.getBranchId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
     checkValidBranchRequest(req);
     ImageInfo imageInfo = imageInfoRepository
       .getOneByAttribute("objectId", req.getBranchId())
