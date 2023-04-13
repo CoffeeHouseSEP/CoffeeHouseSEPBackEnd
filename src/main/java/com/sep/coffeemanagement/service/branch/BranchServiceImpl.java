@@ -166,7 +166,7 @@ public class BranchServiceImpl
     //check branch manager co branch chua
     Optional<BranchRes> br = repository.getBranchByManagerId(req.getBranchManagerId());
     if (br.isPresent()) {
-      if(!br.get().getBranchId().equals(req.getBranchId())) {
+      if (!br.get().getBranchId().equals(req.getBranchId())) {
         errors.put("branchManagerId", "user has branch already");
         throw new InvalidRequestException(errors, "user has branch already");
       }
