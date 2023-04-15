@@ -3,6 +3,7 @@ package com.sep.coffeemanagement.controller;
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.dto.orders.OrdersCreateReq;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
@@ -53,7 +54,7 @@ public class OrdersController extends AbstractController<OrdersService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "create-orders")
   public ResponseEntity<CommonResponse<String>> createOrders(
-    @RequestBody OrdersReq ordersReq,
+    @RequestBody OrdersCreateReq ordersReq,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);

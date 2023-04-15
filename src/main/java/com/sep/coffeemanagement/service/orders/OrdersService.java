@@ -2,6 +2,7 @@ package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.dto.orders.OrdersCreateReq;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
 import java.util.Map;
@@ -16,7 +17,7 @@ public interface OrdersService {
     String sortField
   );
 
-  void createOrders(OrdersReq req);
+  void createOrders(OrdersCreateReq req);
 
   void changeStatusOrders(OrdersReq req, Constant.ORDER_STATUS status);
 }
