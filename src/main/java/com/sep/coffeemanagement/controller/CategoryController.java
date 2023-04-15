@@ -57,16 +57,16 @@ public class CategoryController extends AbstractController<CategoryService> {
 
   @GetMapping(value = "get-list-category")
   public ResponseEntity<CommonResponse<ListWrapperResponse<CategoryRes>>> getListCategory(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     allParams.put("status", "1");
     return response(
-      service.getListCategory(allParams, keySort, page, pageSize, ""),
+      service.getListCategory(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }
@@ -74,11 +74,11 @@ public class CategoryController extends AbstractController<CategoryService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-category-authorized")
   public ResponseEntity<CommonResponse<ListWrapperResponse<CategoryRes>>> getListCategoryAuthorized(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String role = getUserRoleByRequest(request);
@@ -86,7 +86,7 @@ public class CategoryController extends AbstractController<CategoryService> {
       allParams.put("status", "1");
     }
     return response(
-      service.getListCategory(allParams, keySort, page, pageSize, ""),
+      service.getListCategory(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }

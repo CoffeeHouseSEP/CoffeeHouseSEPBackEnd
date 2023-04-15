@@ -28,8 +28,8 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam(required = false, defaultValue = "1") int page,
     @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);
@@ -45,7 +45,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       allParams.put("status", Constant.ORDER_STATUS.APPROVED.toString());
     }
     return response(
-      service.getListOrders(allParams, keySort, page, pageSize, ""),
+      service.getListOrders(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }

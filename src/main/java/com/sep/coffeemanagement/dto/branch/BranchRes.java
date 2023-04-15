@@ -15,8 +15,6 @@ public class BranchRes {
   private String phoneNumber;
   private String description;
   private String branchManagerId;
-  private String longitude;
-  private String latitude;
   private int status;
   private Date createdDate;
   private Date cancelledDate;

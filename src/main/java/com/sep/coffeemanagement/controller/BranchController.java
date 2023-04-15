@@ -59,11 +59,11 @@ public class BranchController extends AbstractController<BranchService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-branch")
   public ResponseEntity<CommonResponse<ListWrapperResponse<BranchRes>>> getListBranch(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String role = getUserRoleByRequest(request);
@@ -71,7 +71,7 @@ public class BranchController extends AbstractController<BranchService> {
       allParams.put("status", "1");
     }
     return response(
-      service.getListBranch(allParams, keySort, page, pageSize, ""),
+      service.getListBranch(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }

@@ -42,12 +42,6 @@ public class BranchReq {
   @NotNull(message = "branch manager is empty ")
   private String branchManagerId;
 
-  @NotNull(message = "longitude is empty ")
-  private String longitude;
-
-  @NotNull(message = "latitude is empty ")
-  private String latitude;
-
   private int status;
   private Date createdDate;
   private Date cancelledDate;
