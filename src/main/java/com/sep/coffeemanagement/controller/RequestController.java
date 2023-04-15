@@ -48,6 +48,8 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestBody RequestReq requestRequest,
     HttpServletRequest request
   ) {
+    String userId = checkAuthentication(request);
+    requestRequest.setCreatedBy(userId);
     service.updateRequest(requestRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
