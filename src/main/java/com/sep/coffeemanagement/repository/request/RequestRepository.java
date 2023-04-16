@@ -26,10 +26,10 @@ public class RequestRepository extends BaseRepository<Request> {
     StringBuilder sb = new StringBuilder(" select T1.*, ");
     sb
       .append(
-        " (select login_name from internal_user where internal_user_id = T1.created_by) createdByName, "
+        " (select full_name from internal_user where internal_user_id = T1.created_by) createdByName, "
       )
       .append(
-        " (select login_name from internal_user where internal_user_id = T1.approved_by) approvedByName, "
+        " (select full_name from internal_user where internal_user_id = T1.approved_by) approvedByName, "
       )
       .append(" (select name from branch where branch_id = T1.branch_id) branchName ")
       .append(" from request T1 ")
