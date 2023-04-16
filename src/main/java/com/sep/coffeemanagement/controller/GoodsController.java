@@ -5,10 +5,13 @@ import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.goods.GoodsReq;
 import com.sep.coffeemanagement.dto.goods.GoodsRes;
+import com.sep.coffeemanagement.dto.goods_branch.GoodsBranchRes;
+import com.sep.coffeemanagement.service.branch.BranchService;
 import com.sep.coffeemanagement.service.goods.GoodsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "goods")
 public class GoodsController extends AbstractController<GoodsService> {
+  @Autowired
+  private BranchService branchService;
 
   //unauthen
   @GetMapping(value = "get-list-goods")
@@ -65,6 +70,28 @@ public class GoodsController extends AbstractController<GoodsService> {
         "success"
       );
     }
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @GetMapping(value = "get-list-goods-branch-manager")
+  public ResponseEntity<CommonResponse<ListWrapperResponse<GoodsBranchRes>>> getListGoodsBranchManager(
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
+    @RequestParam Map<String, String> allParams,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
+    HttpServletRequest request
+  ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
+    String userId = checkAuthentication(request);
+    allParams.put(
+      "branchId",
+      branchService.getBranchByManagerId(userId).get().getBranchId()
+    );
+    return response(
+      service.getListGoodsBranchManager(allParams, keySort, page, pageSize, sortField),
+      "success"
+    );
   }
 
   @SecurityRequirement(name = "Bearer Authentication")

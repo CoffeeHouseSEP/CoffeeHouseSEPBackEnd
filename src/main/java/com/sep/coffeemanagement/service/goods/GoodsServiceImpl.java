@@ -3,6 +3,7 @@ package com.sep.coffeemanagement.service.goods;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.goods.GoodsReq;
 import com.sep.coffeemanagement.dto.goods.GoodsRes;
+import com.sep.coffeemanagement.dto.goods_branch.GoodsBranchRes;
 import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
@@ -95,6 +96,48 @@ public class GoodsServiceImpl
         page,
         pageSize,
         repository.getTotal(allParams)
+      )
+    );
+  }
+
+  @Override
+  public Optional<ListWrapperResponse<GoodsBranchRes>> getListGoodsBranchManager(
+    Map<String, String> allParams,
+    String keySort,
+    int page,
+    int pageSize,
+    String sortField
+  ) {
+    List<GoodsBranchRes> list = repository
+      .getListGoodsBranch(allParams, keySort, page, pageSize, sortField)
+      .get();
+    return Optional.of(
+      new ListWrapperResponse<>(
+        list
+          .stream()
+          .map(
+            goods ->
+              new GoodsBranchRes(
+                goods.getGoodsId(),
+                goods.getName(),
+                goods.getCode(),
+                goods.getApplyPrice(),
+                goods.getInnerPrice(),
+                goods.getDescription(),
+                goods.getStatus(),
+                goods.getCategoryId(),
+                goods.getIsSize(),
+                goods.getIsSold(),
+                goods.getIsTransfer(),
+                goods.getGoodsUnit(),
+                goods.getCategoryName(),
+                goods.getIsDisabled()
+              )
+          )
+          .collect(Collectors.toList()),
+        page,
+        pageSize,
+        list.size()
       )
     );
   }
