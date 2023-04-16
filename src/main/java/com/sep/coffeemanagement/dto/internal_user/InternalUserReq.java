@@ -27,6 +27,6 @@ public class InternalUserReq {
   @NotNull(message = "address is null ")
   private String address;
 
-  @Pattern(regexp = TypeValidation.FULL_NAME, message = "invalid email")
+  @Pattern(regexp = TypeValidation.FULL_NAME, message = "invalid username")
   private String fullName;
 }

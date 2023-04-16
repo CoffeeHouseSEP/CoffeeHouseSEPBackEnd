@@ -125,16 +125,15 @@ public class InternalUserServiceImpl
 
   @Override
   public void updateProfile(InternalUserReq userReq, String id) {
+    Map<String, String> er = generateError(InternalUser.class);
     InternalUser userSave = repository
-      .getOneByAttribute("internalUserId", id)
+      .getOneByAttribute("internalUserId", id.trim())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     validate(userReq);
-    if (
-      checkExistUserWithExceptId(userReq.getLoginName(), id)
-    ) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "this username is existed!!"
-    );
+    if (checkExistUserWithExceptId(userReq.getLoginName().trim(), id)) {
+      er.put("loginName", "existed!");
+      throw new InvalidRequestException(er, "this username is existed!!");
+    }
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
     userSave.setPhoneNumber(userReq.getPhoneNumber());
@@ -172,6 +171,7 @@ public class InternalUserServiceImpl
       .email(user.getEmail())
       .role(Constant.USER_ROLE)
       .fullName(user.getFullName())
+      .status(1)
       .build();
     repository.insertAndUpdate(userSave, false);
     //SEND MAIL
@@ -197,22 +197,23 @@ public class InternalUserServiceImpl
   @Override
   public void forgotPassword(String username, String email) {
     //update password to default
-    if (!checkExistUser(username)) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "user name is not existed!"
-    );
+    Map<String, String> er = new HashMap<>();
+    if (!checkExistUser(username)) {
+      er.put("username", "not existed!!");
+      throw new InvalidRequestException(er, "user name is not existed!");
+    }
     String autoGenPass = mailSenderUtil.autoGeneratePassword();
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
       .orElseThrow(() -> new ResourceNotFoundException("user not found"));
-    if (!email.matches(TypeValidation.EMAIL)) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "email is not well-formed!"
-    );
-    if (!email.equals(internalUser.getEmail())) throw new InvalidRequestException(
-      new HashMap<String, String>(),
-      "email is not correct!"
-    ); //if the input email is not belong to the username then reject
+    if (!email.matches(TypeValidation.EMAIL)) {
+      er.put("email", "not well-formatted!");
+      throw new InvalidRequestException(er, "email is not well-formed!");
+    }
+    if (!email.equals(internalUser.getEmail())) {
+      er.put("email", "not well-formatted!");
+      throw new InvalidRequestException(er, "email is not correct!");
+    } //if the input email is not belong to the username then reject
     String hashedPass = bCryptPasswordEncoder().encode(autoGenPass);
     System.out.println(hashedPass);
     internalUser.setEncrPassword(hashedPass);
@@ -248,6 +249,15 @@ public class InternalUserServiceImpl
       new HashMap<>(),
       "password does not allowed to be null or empty"
     );
+    String decodedPassword = new String(
+      Base64.decodeBase64(newPass),
+      StandardCharsets.UTF_8
+    );
+    if (!decodedPassword.matches(TypeValidation.PASSWORD)) {
+      Map<String, String> er = generateError(String.class);
+      er.put("new pass", "not well formed!");
+      throw new InvalidRequestException(er, "password is not in valid form!");
+    }
     InternalUser userUpdate = repository
       .getOneByAttribute("internalUserId", id)
       .orElseThrow();
