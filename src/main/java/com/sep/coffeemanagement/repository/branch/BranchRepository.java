@@ -19,7 +19,7 @@ public class BranchRepository extends BaseRepository<Branch> {
   public Optional<BranchRes> getBranchByManagerId(String managerId) {
     StringBuilder sb = new StringBuilder(" select t1.*, ");
     sb.append(
-      " (select login_name from internal_user where internal_user_id = t1.branch_manager_id) branchManagerName from "
+      " (select full_name from internal_user where internal_user_id = t1.branch_manager_id) branchManagerName from "
     );
     sb.append(" branch t1 ");
     sb.append(" where t1.status = 1 and t1.branch_manager_id = '");
@@ -41,7 +41,7 @@ public class BranchRepository extends BaseRepository<Branch> {
   ) {
     StringBuilder sb = new StringBuilder(" select T1.*, ");
     sb.append(
-      " (select login_name from internal_user where internal_user_id = T1.branch_manager_id) branchManagerName from"
+      " (select full_name from internal_user where internal_user_id = T1.branch_manager_id) branchManagerName from"
     );
     sb.append(" branch T1 ");
     sb.append(

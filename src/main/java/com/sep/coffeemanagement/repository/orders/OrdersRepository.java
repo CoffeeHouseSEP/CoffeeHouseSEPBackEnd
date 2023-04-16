@@ -27,7 +27,7 @@ public class OrdersRepository extends BaseRepository<Orders> {
     StringBuilder sb = new StringBuilder(" select T1.*, ");
     sb
       .append(
-        " (select login_name from internal_user where internal_user_id = T1.customer_id) customerName "
+        " (select full_name from internal_user where internal_user_id = T1.customer_id) customerName "
       )
       .append(" ,(select name from branch where branch_id = T1.branch_id) branchName ")
       .append(" ,(select code from coupon where coupon_id = T1.coupon_id) couponCode ");

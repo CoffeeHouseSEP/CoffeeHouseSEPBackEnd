@@ -18,7 +18,7 @@ public class NewsRepository extends BaseRepository<News> {
 
   public Optional<NewsRes> getNews(int id) {
     StringBuilder sb = new StringBuilder(
-      " select t1.*, t2.login_name createdByName from "
+      " select t1.*, t2.full_name createdByName from "
     );
     sb.append(" news t1 ");
     sb.append(" left join internal_user t2 on t1.created_by = t2.internal_user_id ");
@@ -36,7 +36,7 @@ public class NewsRepository extends BaseRepository<News> {
   ) {
     StringBuilder sb = new StringBuilder(" select T1.*, ");
     sb.append(
-      " (select login_name from internal_user where internal_user_id = T1.created_by) createdByName from"
+      " (select full_name from internal_user where internal_user_id = T1.created_by) createdByName from"
     );
     sb.append(" news T1 ");
     sb.append(
