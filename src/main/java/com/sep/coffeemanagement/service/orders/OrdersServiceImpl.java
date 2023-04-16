@@ -2,7 +2,6 @@ package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.app_param.AppParamRes;
-import com.sep.coffeemanagement.dto.branch_goods_disable.BranchGoodsDisableReq;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
@@ -29,10 +28,10 @@ import com.sep.coffeemanagement.utils.AppParamUtils;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class OrdersServiceImpl
@@ -167,7 +166,7 @@ public class OrdersServiceImpl
     }
     //Step 2: END
     //Step 3: Check valid coupon
-    if (StringUtils.isNoneEmpty(req.getCouponId())) {
+    if (StringUtils.hasText(req.getCouponId())) {
       Coupon coupon = couponRepository
         .getOneByAttribute("couponId", req.getCouponId())
         .orElseThrow(() -> new ResourceNotFoundException("coupon not found"));
@@ -220,7 +219,7 @@ public class OrdersServiceImpl
       orders.setStatus(Constant.ORDER_STATUS.APPROVED.toString());
       orders.setApprovedDate(DateFormat.getCurrentTime());
     } else if (Constant.ORDER_STATUS.CANCELLED == status) {
-      if (StringUtils.isNoneEmpty(req.getReason())) {
+      if (StringUtils.hasText(req.getReason())) {
         orders.setStatus(Constant.REQUEST_STATUS.CANCELLED.toString());
         orders.setCancelledDate(DateFormat.getCurrentTime());
         orders.setReason(req.getReason());

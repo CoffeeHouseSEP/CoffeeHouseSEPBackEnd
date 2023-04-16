@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class CouponRes {
   private String couponId;
   private String code;
-  private int type;
   private double value;
   private int status;
   private Date createdDate;

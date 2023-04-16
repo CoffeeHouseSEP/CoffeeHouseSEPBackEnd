@@ -50,7 +50,6 @@ public class CouponServiceImpl
               new CouponRes(
                 coupon.getCouponId(),
                 coupon.getCode(),
-                coupon.getType(),
                 coupon.getValue(),
                 coupon.getStatus(),
                 coupon.getCreatedDate(),
@@ -144,7 +143,6 @@ public class CouponServiceImpl
               new CouponRes(
                 coupon.getCouponId(),
                 coupon.getCode(),
-                coupon.getType(),
                 coupon.getValue(),
                 coupon.getStatus(),
                 coupon.getCreatedDate(),
