@@ -3,6 +3,7 @@ package com.sep.coffeemanagement.controller;
 import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
+import com.sep.coffeemanagement.dto.orders.OrdersCreateReq;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
@@ -28,8 +29,8 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam(required = false, defaultValue = "1") int page,
     @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);
@@ -45,7 +46,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       allParams.put("status", Constant.ORDER_STATUS.APPROVED.toString());
     }
     return response(
-      service.getListOrders(allParams, keySort, page, pageSize, ""),
+      service.getListOrders(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }
@@ -53,7 +54,7 @@ public class OrdersController extends AbstractController<OrdersService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping(value = "create-orders")
   public ResponseEntity<CommonResponse<String>> createOrders(
-    @RequestBody OrdersReq ordersReq,
+    @RequestBody OrdersCreateReq ordersReq,
     HttpServletRequest request
   ) {
     String userId = checkAuthentication(request);

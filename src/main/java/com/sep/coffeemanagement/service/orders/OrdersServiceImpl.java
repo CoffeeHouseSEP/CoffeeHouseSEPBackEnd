@@ -6,6 +6,7 @@ import com.sep.coffeemanagement.dto.branch_goods_disable.BranchGoodsDisableReq;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
+import com.sep.coffeemanagement.dto.orders.OrdersCreateReq;
 import com.sep.coffeemanagement.dto.orders.OrdersReq;
 import com.sep.coffeemanagement.dto.orders.OrdersRes;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
@@ -107,8 +108,8 @@ public class OrdersServiceImpl
 
   @Override
   @Transactional
-  public void createOrders(OrdersReq req) {
-    Map<String, String> errors = generateError(OrdersReq.class);
+  public void createOrders(OrdersCreateReq req) {
+    Map<String, String> errors = generateError(OrdersCreateReq.class);
     //Step 0: generate orders_id and get list app param for goods size:
     String ordersId = UUID.randomUUID().toString();
     List<AppParamRes> listGoodsSize = appParamRepository.getListAppParamByParType(
@@ -191,7 +192,6 @@ public class OrdersServiceImpl
     ordersSave.setCustomerId(req.getCustomerId());
     ordersSave.setBranchId(req.getBranchId());
     ordersSave.setTotalPrice(orderTotalPrice);
-    ordersSave.setShippedDate(req.getShippedDate());
     ordersSave.setCouponId(req.getCouponId());
     ordersSave.setCreatedDate(DateFormat.getCurrentTime());
     ordersSave.setStatus(Constant.ORDER_STATUS.PENDING_APPROVED.toString());

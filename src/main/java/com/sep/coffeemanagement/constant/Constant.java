@@ -11,6 +11,7 @@ public class Constant {
   public static final String USER_ROLE = "USER";
   public static final String ADMIN_ROLE = "ADMIN";
   public static final String BRANCH_ROLE = "BRANCH_MANAGER";
+  public static final String ORDER_STATUS_SUMMARY_REVENUE = "APPROVED";
 
   public enum REQUEST_STATUS {
     CREATED,

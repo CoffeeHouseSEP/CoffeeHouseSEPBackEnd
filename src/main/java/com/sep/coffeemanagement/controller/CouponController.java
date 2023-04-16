@@ -62,11 +62,11 @@ public class CouponController extends AbstractController<CouponService> {
 
   @GetMapping(value = "get-list-coupon")
   public ResponseEntity<CommonResponse<ListWrapperResponse<CouponRes>>> getListCoupon(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String role = getUserRoleByRequest(request);
@@ -74,7 +74,7 @@ public class CouponController extends AbstractController<CouponService> {
       allParams.put("status", "1");
     }
     return response(
-      service.getListCoupon(allParams, keySort, page, pageSize, ""),
+      service.getListCoupon(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }

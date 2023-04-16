@@ -48,6 +48,8 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestBody RequestReq requestRequest,
     HttpServletRequest request
   ) {
+    String userId = checkAuthentication(request);
+    requestRequest.setCreatedBy(userId);
     service.updateRequest(requestRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -64,11 +66,11 @@ public class RequestController extends AbstractController<RequestService> {
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-request")
   public ResponseEntity<CommonResponse<ListWrapperResponse<RequestRes>>> getListRequest(
-    @RequestParam(required = false, defaultValue = "0") int page,
-    @RequestParam(required = false, defaultValue = "0") int pageSize,
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     validateAuthorize(
@@ -84,7 +86,7 @@ public class RequestController extends AbstractController<RequestService> {
       );
     }
     return response(
-      service.getListRequest(allParams, keySort, page, pageSize, ""),
+      service.getListRequest(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }

@@ -62,24 +62,25 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestParam(required = false, defaultValue = "0") int page,
     @RequestParam(required = false, defaultValue = "0") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     allParams.put("status", "1");
     return response(
-      service.getListNews(allParams, keySort, page, pageSize, ""),
+      service.getListNews(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(value = "get-list-news-authorized")
   public ResponseEntity<CommonResponse<ListWrapperResponse<NewsRes>>> getListNewsAuthorized(
     @RequestParam(required = false, defaultValue = "1") int page,
     @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc", required = false) String keySort,
-    @RequestParam(defaultValue = "modified", required = false) String sortField,
+    @RequestParam(required = false, defaultValue = "") String keySort,
+    @RequestParam(required = false, defaultValue = "") String sortField,
     HttpServletRequest request
   ) {
     String role = getUserRoleByRequest(request);
@@ -87,7 +88,7 @@ public class NewsController extends AbstractController<NewsService> {
       allParams.put("status", "1");
     }
     return response(
-      service.getListNews(allParams, keySort, page, pageSize, ""),
+      service.getListNews(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }
