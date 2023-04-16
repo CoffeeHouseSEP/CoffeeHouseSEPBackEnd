@@ -17,8 +17,6 @@ public class CouponReq {
   @Length(max = 50, message = "coupon code over length(50)")
   private String code;
 
-  private int type;
-
   @Max(value = 70, message = "coupon value not in [0,70]")
   @Min(value = 0, message = "coupon value not in [0,70]")
   private double value;

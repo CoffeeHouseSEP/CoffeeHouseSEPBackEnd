@@ -19,9 +19,9 @@ import com.sep.coffeemanagement.service.AbstractService;
 import com.sep.coffeemanagement.utils.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class RequestServiceImpl
@@ -174,7 +174,7 @@ public class RequestServiceImpl
       request.setStatus(Constant.REQUEST_STATUS.COMPLETED.toString());
       request.setCompletedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.CANCELLED == status) {
-      if (StringUtils.isNoneEmpty(req.getReason())) {
+      if (StringUtils.hasText(req.getReason())) {
         request.setStatus(Constant.REQUEST_STATUS.CANCELLED.toString());
         request.setCancelledDate(DateFormat.getCurrentTime());
         request.setReason(req.getReason());

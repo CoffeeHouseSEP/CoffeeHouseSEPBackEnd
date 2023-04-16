@@ -76,7 +76,7 @@ public class BaseRepository<T> extends AbstractRepository {
       .append(" LIKE '")
       .append(value)
       .append("'");
-    if (org.apache.commons.lang3.StringUtils.isNoneEmpty(exceptId)) {
+    if (org.springframework.util.StringUtils.hasText(exceptId)) {
       sb
         .append("AND ")
         .append(StringUtils.camelCaseToSnakeCase(g().getSimpleName()).toLowerCase())
