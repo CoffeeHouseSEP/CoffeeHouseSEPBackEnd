@@ -162,6 +162,9 @@ public class BranchServiceImpl
       imageInfoRepository.insertAndUpdate(imageInfo, true);
     }
     Branch branchUpdate = objectMapper.convertValue(req, Branch.class);
+    if (0 == req.getStatus()) {
+      branchUpdate.setCancelledDate(DateFormat.getCurrentTime());
+    }
     validate(branchUpdate);
     repository.insertAndUpdate(branchUpdate, true);
   }
