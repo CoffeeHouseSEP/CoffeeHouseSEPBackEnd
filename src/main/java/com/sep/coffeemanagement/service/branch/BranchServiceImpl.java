@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.service.branch;
 
+import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.branch.BranchReq;
 import com.sep.coffeemanagement.dto.branch.BranchRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
@@ -45,8 +46,16 @@ public class BranchServiceImpl
         branch.getDescription(),
         branch.getBranchManagerId(),
         branch.getStatus(),
-        branch.getCreatedDate(),
-        branch.getCancelledDate(),
+        DateFormat.convertDateStringFormat(
+          branch.getCreatedDate(),
+          DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+          DateTime.YYYY_MM_DD
+        ),
+        DateFormat.convertDateStringFormat(
+          branch.getCancelledDate(),
+          DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+          DateTime.YYYY_MM_DD
+        ),
         branch.getWard(),
         branch.getDistrict(),
         branch.getProvince(),
@@ -85,8 +94,16 @@ public class BranchServiceImpl
                 branch.getDescription(),
                 branch.getBranchManagerId(),
                 branch.getStatus(),
-                branch.getCreatedDate(),
-                branch.getCancelledDate(),
+                DateFormat.convertDateStringFormat(
+                  branch.getCreatedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
+                DateFormat.convertDateStringFormat(
+                  branch.getCancelledDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 branch.getWard(),
                 branch.getDistrict(),
                 branch.getProvince(),

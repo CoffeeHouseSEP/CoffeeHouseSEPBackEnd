@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.service.coupon;
 
+import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.app_param.AppParamRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponReq;
@@ -52,9 +53,9 @@ public class CouponServiceImpl
                 coupon.getCode(),
                 coupon.getValue(),
                 coupon.getStatus(),
-                coupon.getCreatedDate(),
-                coupon.getExpiredDate(),
-                coupon.getAppliedDate(),
+                DateFormat.toDateString(coupon.getCreatedDate(), DateTime.YYYY_MM_DD),
+                DateFormat.toDateString(coupon.getExpiredDate(), DateTime.YYYY_MM_DD),
+                DateFormat.toDateString(coupon.getAppliedDate(), DateTime.YYYY_MM_DD),
                 coupon.getMaxValuePromotion()
               )
           )

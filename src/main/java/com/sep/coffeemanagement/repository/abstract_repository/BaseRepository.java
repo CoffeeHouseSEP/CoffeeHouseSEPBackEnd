@@ -2,7 +2,6 @@ package com.sep.coffeemanagement.repository.abstract_repository;
 
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.utils.StringUtils;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -53,7 +52,7 @@ public class BaseRepository<T> extends AbstractRepository {
         countFieldName++;
       }
     }
-    if(countFieldName==0) {
+    if (countFieldName == 0) {
       return Optional.empty();
     }
     Map<String, String> condition = new HashMap<>();

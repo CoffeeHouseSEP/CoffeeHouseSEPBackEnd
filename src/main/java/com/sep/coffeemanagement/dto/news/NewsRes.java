@@ -13,7 +13,7 @@ public class NewsRes {
   private String title;
   private String content;
   private String createdBy;
-  private Date createdDate;
+  private String createdDate;
   private int status;
   private String createdByName;
 }
