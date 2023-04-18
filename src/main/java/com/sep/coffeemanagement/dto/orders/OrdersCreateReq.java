@@ -20,24 +20,24 @@ public class OrdersCreateReq {
   private String branchId;
 
   @NotNull(message = "address is null")
-  @NotBlank(message = "address is null")
-  @NotEmpty(message = "address is null")
+  @NotBlank(message = "address is blank")
+  @NotEmpty(message = "address is empty")
   @Length(max = 2000, message = "address over length(2000)")
   private String address;
 
   @NotNull(message = "province is null")
-  @NotBlank(message = "province is null")
-  @NotEmpty(message = "province is null")
+  @NotBlank(message = "province is blank")
+  @NotEmpty(message = "province is empty")
   private String province;
 
   @NotNull(message = "ward is null")
-  @NotBlank(message = "ward is null")
-  @NotEmpty(message = "ward is null")
+  @NotBlank(message = "ward is blank")
+  @NotEmpty(message = "ward is empty")
   private String ward;
 
   @NotNull(message = "district is null")
-  @NotBlank(message = "district is null")
-  @NotEmpty(message = "district is null")
+  @NotBlank(message = "district is blank")
+  @NotEmpty(message = "district is empty")
   private String district;
 
   private String couponId;
