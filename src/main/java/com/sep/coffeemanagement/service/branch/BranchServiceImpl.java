@@ -125,7 +125,7 @@ public class BranchServiceImpl
     Branch branch = objectMapper.convertValue(req, Branch.class);
     String newId = UUID.randomUUID().toString();
     ImageInfoReq imageReq = req.getImage();
-    imageReq.setObjectId(newId);
+    imageReq.setObjectId(branch.getBranchManagerId());
     ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
     validate(imageReq);
     branch.setBranchId(newId);

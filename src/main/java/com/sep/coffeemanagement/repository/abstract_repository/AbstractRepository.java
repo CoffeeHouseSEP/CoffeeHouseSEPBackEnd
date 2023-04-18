@@ -370,7 +370,13 @@ public abstract class AbstractRepository {
     hasAnd = 0;
     maxLength = 0;
     isFirstCondition = true;
-    if (keySort.trim().compareTo("") != 0 && sortField.trim().compareTo("") != 0) {
+    if (
+      !org.springframework.util.StringUtils.hasText(keySort) |
+      !org.springframework.util.StringUtils.hasText(sortField)
+    ) {} else if (
+      !org.springframework.util.StringUtils.hasText(keySort) &&
+      !org.springframework.util.StringUtils.hasText(sortField)
+    ) {} else {
       result
         .append(" ORDER BY ")
         .append(StringUtils.camelCaseToSnakeCase(sortField))

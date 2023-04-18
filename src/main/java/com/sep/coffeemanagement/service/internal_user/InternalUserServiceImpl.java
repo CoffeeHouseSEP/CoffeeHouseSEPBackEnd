@@ -111,9 +111,14 @@ public class InternalUserServiceImpl
   }
 
   public void updateUser(InternalUserReq user, String id) {
+    Map<String,String> er = generateError(InternalUserReq.class);
     if (
       checkExistUserWithExceptId(user.getLoginName(), id)
     ) throw new ResourceNotFoundException("username is duplicate");
+    if (checkExistUserWithExceptId(user.getEmail().trim(), id)) {
+      er.put("email", "existed!");
+      throw new InvalidRequestException(er, "this email is existed!!");
+    }
     InternalUser userSave = repository
       .getOneByAttribute("loginName", user.getLoginName())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -127,7 +132,7 @@ public class InternalUserServiceImpl
 
   @Override
   public void updateProfile(InternalUserReq userReq, String id) {
-    Map<String, String> er = generateError(InternalUser.class);
+    Map<String, String> er = generateError(InternalUserReq.class);
     InternalUser userSave = repository
       .getOneByAttribute("internalUserId", id.trim())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
