@@ -2,6 +2,7 @@ package com.sep.coffeemanagement.repository.abstract_repository;
 
 import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.utils.StringUtils;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,16 @@ public class BaseRepository<T> extends AbstractRepository {
   }
 
   public Optional<T> getOneByAttribute(String field, String value) {
+    int countFieldName = 0;
+    Field[] fields = g().getDeclaredFields();
+    for (Field declaredField : fields) {
+      if (declaredField.getName().compareTo(field) == 0) {
+        countFieldName++;
+      }
+    }
+    if (countFieldName == 0) {
+      return Optional.empty();
+    }
     Map<String, String> condition = new HashMap<>();
     condition.put(field, value);
     List<T> list = getListOrEntity(condition, "", 0, 0, "").get();
