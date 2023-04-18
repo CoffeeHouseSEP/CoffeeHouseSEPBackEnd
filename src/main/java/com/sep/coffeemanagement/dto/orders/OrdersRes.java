@@ -1,6 +1,5 @@
 package com.sep.coffeemanagement.dto.orders;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +13,9 @@ public class OrdersRes {
   private String customerName;
   private String branchId;
   private String branchName;
-  private Date createdDate;
+  private String createdDate;
   private double totalPrice;
-  private Date shippedDate;
+  private String shippedDate;
   private String address;
   private String province;
   private String ward;
@@ -24,7 +23,7 @@ public class OrdersRes {
   private String couponId;
   private String couponCode;
   private String status;
-  private Date approvedDate;
-  private Date cancelledDate;
+  private String approvedDate;
+  private String cancelledDate;
   private String reason;
 }

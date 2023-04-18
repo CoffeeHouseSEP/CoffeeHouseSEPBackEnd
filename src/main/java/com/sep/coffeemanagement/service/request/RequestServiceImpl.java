@@ -1,6 +1,7 @@
 package com.sep.coffeemanagement.service.request;
 
 import com.sep.coffeemanagement.constant.Constant;
+import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.branch.BranchRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.request.RequestReq;
@@ -61,12 +62,28 @@ public class RequestServiceImpl
                 request.getRequestId(),
                 request.getBranchId(),
                 request.getCreatedBy(),
-                request.getCreatedDate(),
+                DateFormat.convertDateStringFormat(
+                  request.getCreatedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 request.getStatus(),
                 request.getApprovedBy(),
-                request.getApprovedDate(),
-                request.getCompletedDate(),
-                request.getCancelledDate(),
+                DateFormat.convertDateStringFormat(
+                  request.getApprovedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
+                DateFormat.convertDateStringFormat(
+                  request.getCompletedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
+                DateFormat.convertDateStringFormat(
+                  request.getCancelledDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 request.getReason(),
                 request.getTotalPrice(),
                 request.getBranchName(),

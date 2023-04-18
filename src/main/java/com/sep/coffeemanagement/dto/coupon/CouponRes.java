@@ -1,6 +1,5 @@
 package com.sep.coffeemanagement.dto.coupon;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,8 @@ public class CouponRes {
   private String code;
   private double value;
   private int status;
-  private Date createdDate;
-  private Date expiredDate;
-  private Date appliedDate;
+  private String createdDate;
+  private String expiredDate;
+  private String appliedDate;
   private double maxValuePromotion;
 }

@@ -1,6 +1,5 @@
 package com.sep.coffeemanagement.dto.branch;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +15,8 @@ public class BranchRes {
   private String description;
   private String branchManagerId;
   private int status;
-  private Date createdDate;
-  private Date cancelledDate;
+  private String createdDate;
+  private String cancelledDate;
   private String ward;
   private String district;
   private String province;
