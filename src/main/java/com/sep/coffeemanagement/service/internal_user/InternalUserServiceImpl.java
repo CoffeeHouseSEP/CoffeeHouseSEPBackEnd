@@ -105,6 +105,8 @@ public class InternalUserServiceImpl
     userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(1);
+    userSave.setRole(Constant.BRANCH_ROLE);
+    userSave.setFullName(user.getFullName());
     repository.insertAndUpdate(userSave, false);
   }
 
@@ -133,6 +135,10 @@ public class InternalUserServiceImpl
     if (checkExistUserWithExceptId(userReq.getLoginName().trim(), id)) {
       er.put("loginName", "existed!");
       throw new InvalidRequestException(er, "this username is existed!!");
+    }
+    if (checkExistUserWithExceptId(userReq.getEmail().trim(), id)) {
+      er.put("email", "existed!");
+      throw new InvalidRequestException(er, "this email is existed!!");
     }
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());

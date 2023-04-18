@@ -95,12 +95,12 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestParam(required = false, defaultValue = "1") int page,
     @RequestParam(required = false, defaultValue = "10") int pageSize,
     @RequestParam Map<String, String> allParams,
-    @RequestParam(defaultValue = "asc") String keySort,
-    @RequestParam(defaultValue = "modified") String sortField,
+    @RequestParam(required = false) String keySort,
+    @RequestParam(required = false) String sortField,
     HttpServletRequest request
   ) {
     return response(
-      service.getListInternalUsers(allParams, keySort, page, pageSize, ""),
+      service.getListInternalUsers(allParams, keySort, page, pageSize, sortField),
       "success"
     );
   }
