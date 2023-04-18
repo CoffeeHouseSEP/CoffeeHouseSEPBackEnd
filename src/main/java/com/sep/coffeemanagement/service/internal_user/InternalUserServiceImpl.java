@@ -51,7 +51,7 @@ public class InternalUserServiceImpl
         user.getInternalUserId(),
         user.getLoginName(),
         user.getPhoneNumber(),
-        DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+        DateFormat.toDateString(user.getCreatedDate(), DateTime.DD_MM_YYYY),
         user.getEmail(),
         user.getAddress(),
         user.getStatus(),
@@ -81,7 +81,7 @@ public class InternalUserServiceImpl
                 user.getInternalUserId(),
                 user.getLoginName(),
                 user.getPhoneNumber(),
-                DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
+                DateFormat.toDateString(user.getCreatedDate(), DateTime.DD_MM_YYYY),
                 user.getEmail(),
                 user.getAddress(),
                 user.getStatus(),
@@ -105,6 +105,7 @@ public class InternalUserServiceImpl
     userSave.setEncrPassword(bCryptPasswordEncoder().encode(Constant.DEFAULT_PASSWORD));
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(1);
+    userSave.setRole(Constant.BRANCH_ROLE);
     repository.insertAndUpdate(userSave, false);
   }
 
