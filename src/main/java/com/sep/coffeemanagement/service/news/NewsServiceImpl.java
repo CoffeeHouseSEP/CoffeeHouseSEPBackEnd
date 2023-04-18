@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.service.news;
 
+import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
 import com.sep.coffeemanagement.dto.news.NewsReq;
@@ -52,7 +53,11 @@ public class NewsServiceImpl
                 news.getTitle(),
                 news.getContent(),
                 news.getCreatedBy(),
-                news.getCreatedDate(),
+                DateFormat.convertDateStringFormat(
+                  news.getCreatedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 news.getStatus(),
                 news.getCreatedByName()
               )
@@ -91,7 +96,7 @@ public class NewsServiceImpl
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
     imageInfoRepository.insertAndUpdate(imageInfo, true);
-    validate(news);
+    validate(req);
     news.setTitle(req.getTitle());
     news.setContent(req.getContent());
     news.setStatus(req.getStatus());

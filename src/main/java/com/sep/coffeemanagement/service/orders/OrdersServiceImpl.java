@@ -1,6 +1,7 @@
 package com.sep.coffeemanagement.service.orders;
 
 import com.sep.coffeemanagement.constant.Constant;
+import com.sep.coffeemanagement.constant.DateTime;
 import com.sep.coffeemanagement.dto.app_param.AppParamRes;
 import com.sep.coffeemanagement.dto.common.ListWrapperResponse;
 import com.sep.coffeemanagement.dto.coupon.CouponRes;
@@ -82,9 +83,17 @@ public class OrdersServiceImpl
                 orders.getCustomerName(),
                 orders.getBranchId(),
                 orders.getBranchName(),
-                orders.getCreatedDate(),
+                DateFormat.convertDateStringFormat(
+                  orders.getCreatedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 orders.getTotalPrice(),
-                orders.getShippedDate(),
+                DateFormat.convertDateStringFormat(
+                  orders.getShippedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 orders.getAddress(),
                 orders.getProvince(),
                 orders.getWard(),
@@ -92,8 +101,16 @@ public class OrdersServiceImpl
                 orders.getCouponId(),
                 orders.getCouponCode(),
                 orders.getStatus(),
-                orders.getApprovedDate(),
-                orders.getCancelledDate(),
+                DateFormat.convertDateStringFormat(
+                  orders.getApprovedDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
+                DateFormat.convertDateStringFormat(
+                  orders.getCancelledDate(),
+                  DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
+                  DateTime.YYYY_MM_DD
+                ),
                 orders.getReason()
               )
           )

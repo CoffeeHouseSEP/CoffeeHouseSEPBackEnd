@@ -44,4 +44,16 @@ public class DateFormat {
     }
     return combineDateAndHourString;
   }
+
+  public static String convertDateStringFormat(
+    String date,
+    String fromFormat,
+    String toFormat
+  ) {
+    if (date == null) {
+      return null;
+    }
+    Date convertFromDate = convertStringToDate(date, fromFormat);
+    return toDateString(convertFromDate, toFormat);
+  }
 }
