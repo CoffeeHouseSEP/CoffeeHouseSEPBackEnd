@@ -96,7 +96,7 @@ public class NewsServiceImpl
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
     imageInfoRepository.insertAndUpdate(imageInfo, true);
-    validate(news);
+    validate(req);
     news.setTitle(req.getTitle());
     news.setContent(req.getContent());
     news.setStatus(req.getStatus());
