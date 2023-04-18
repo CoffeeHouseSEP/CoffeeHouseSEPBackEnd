@@ -44,7 +44,7 @@ public class InternalUserServiceImpl
   @Override
   public Optional<InternalUserRes> getInternalUser(String field, String value) {
     InternalUser user = repository
-      .getOneByAttribute(field, value)
+      .getOneByAttribute(field.trim(), value.trim())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
     return Optional.of(
       new InternalUserRes(
@@ -99,6 +99,15 @@ public class InternalUserServiceImpl
 
   public void createUser(InternalUserReq user) {
     validate(user);
+    Map<String, String> er = generateError(InternalUserReq.class);
+    if (checkExistUser(user.getLoginName().trim())) {
+      er.put("loginName", "existed!");
+      throw new InvalidRequestException(er, "this userName is existed!!");
+    }
+    if (checkExistEmail(user.getEmail().trim())) {
+      er.put("email", "existed!");
+      throw new InvalidRequestException(er, "this email is existed!!");
+    }
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
     String newId = UUID.randomUUID().toString();
     userSave.setInternalUserId(newId);
@@ -111,11 +120,11 @@ public class InternalUserServiceImpl
   }
 
   public void updateUser(InternalUserReq user, String id) {
-    Map<String,String> er = generateError(InternalUserReq.class);
+    Map<String, String> er = generateError(InternalUserReq.class);
     if (
       checkExistUserWithExceptId(user.getLoginName(), id)
     ) throw new ResourceNotFoundException("username is duplicate");
-    if (checkExistUserWithExceptId(user.getEmail().trim(), id)) {
+    if (checkExistEmailWithExceptId(user.getEmail().trim(), id)) {
       er.put("email", "existed!");
       throw new InvalidRequestException(er, "this email is existed!!");
     }
@@ -141,7 +150,7 @@ public class InternalUserServiceImpl
       er.put("loginName", "existed!");
       throw new InvalidRequestException(er, "this username is existed!!");
     }
-    if (checkExistUserWithExceptId(userReq.getEmail().trim(), id)) {
+    if (checkExistEmailWithExceptId(userReq.getEmail().trim(), id)) {
       er.put("email", "existed!");
       throw new InvalidRequestException(er, "this email is existed!!");
     }
@@ -169,7 +178,7 @@ public class InternalUserServiceImpl
       errors.put("registerName", "registerName is existed");
       throw new InvalidRequestException(errors, "register name is existed!");
     }
-    if (checkExistUser(user.getEmail())) {
+    if (checkExistEmail(user.getEmail())) {
       errors.put("email", "register email is existed");
       throw new InvalidRequestException(errors, "register email is existed!");
     }
@@ -207,6 +216,8 @@ public class InternalUserServiceImpl
 
   @Override
   public void forgotPassword(String username, String email) {
+    username = username.trim();
+    email = email.trim();
     //update password to default
     Map<String, String> er = new HashMap<>();
     if (!checkExistUser(username)) {
@@ -250,6 +261,7 @@ public class InternalUserServiceImpl
 
   @Override
   public void changePassword(String id, String newPass) {
+    newPass =  newPass.trim();
     if (StringUtils.isEmpty(id)) {
       throw new InvalidRequestException(
         new HashMap<String, String>(),
@@ -311,7 +323,15 @@ public class InternalUserServiceImpl
     return repository.checkDuplicateFieldValue("login_name", userName, null);
   }
 
+  public boolean checkExistEmail(String email) {
+    return repository.checkDuplicateFieldValue("email", email, null);
+  }
+
   public boolean checkExistUserWithExceptId(String userName, String exceptId) {
     return repository.checkDuplicateFieldValue("login_name", userName, exceptId);
+  }
+
+  public boolean checkExistEmailWithExceptId(String email, String exceptId) {
+    return repository.checkDuplicateFieldValue("email", email, exceptId);
   }
 }
