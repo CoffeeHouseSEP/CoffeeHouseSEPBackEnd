@@ -51,7 +51,7 @@ public class InternalUserServiceImpl
         user.getInternalUserId(),
         user.getLoginName(),
         user.getPhoneNumber(),
-        DateFormat.toDateString(user.getCreatedDate(), DateTime.DD_MM_YYYY),
+        DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
         user.getEmail(),
         user.getAddress(),
         user.getStatus(),
@@ -81,7 +81,7 @@ public class InternalUserServiceImpl
                 user.getInternalUserId(),
                 user.getLoginName(),
                 user.getPhoneNumber(),
-                DateFormat.toDateString(user.getCreatedDate(), DateTime.DD_MM_YYYY),
+                DateFormat.toDateString(user.getCreatedDate(), DateTime.YYYY_MM_DD),
                 user.getEmail(),
                 user.getAddress(),
                 user.getStatus(),
@@ -106,13 +106,19 @@ public class InternalUserServiceImpl
     userSave.setCreatedDate(DateFormat.getCurrentTime());
     userSave.setStatus(1);
     userSave.setRole(Constant.BRANCH_ROLE);
+    userSave.setFullName(user.getFullName());
     repository.insertAndUpdate(userSave, false);
   }
 
   public void updateUser(InternalUserReq user, String id) {
+    Map<String,String> er = generateError(InternalUserReq.class);
     if (
       checkExistUserWithExceptId(user.getLoginName(), id)
     ) throw new ResourceNotFoundException("username is duplicate");
+    if (checkExistUserWithExceptId(user.getEmail().trim(), id)) {
+      er.put("email", "existed!");
+      throw new InvalidRequestException(er, "this email is existed!!");
+    }
     InternalUser userSave = repository
       .getOneByAttribute("loginName", user.getLoginName())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -126,7 +132,7 @@ public class InternalUserServiceImpl
 
   @Override
   public void updateProfile(InternalUserReq userReq, String id) {
-    Map<String, String> er = generateError(InternalUser.class);
+    Map<String, String> er = generateError(InternalUserReq.class);
     InternalUser userSave = repository
       .getOneByAttribute("internalUserId", id.trim())
       .orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -134,6 +140,10 @@ public class InternalUserServiceImpl
     if (checkExistUserWithExceptId(userReq.getLoginName().trim(), id)) {
       er.put("loginName", "existed!");
       throw new InvalidRequestException(er, "this username is existed!!");
+    }
+    if (checkExistUserWithExceptId(userReq.getEmail().trim(), id)) {
+      er.put("email", "existed!");
+      throw new InvalidRequestException(er, "this email is existed!!");
     }
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
