@@ -13,23 +13,25 @@ import org.hibernate.validator.constraints.Length;
 public class CouponReq {
   private String couponId;
 
-  @NotNull(message = "coupon code is null")
-  @Length(max = 50, message = "coupon code over length(50)")
+  @NotNull(message = "Mã không được để trống")
+  @NotEmpty(message = "Mã không được để trống")
+  @NotBlank(message = "Mã không được để trống")
+  @Length(max = 50, message = "Mã không được vượt quá 50 ký tự")
   private String code;
 
-  @Max(value = 70, message = "coupon value not in [0,70]")
-  @Min(value = 0, message = "coupon value not in [0,70]")
+  @Max(value = 70, message = "Giá trị mã giảm giá phải trong khoảng 0 đến 70")
+  @Min(value = 0, message = "Giá trị mã giảm giá phải trong khoảng 0 đến 70")
   private double value;
 
   private int status;
   private Date createdDate;
 
-  @NotNull(message = "coupon expired date is null")
+  @NotNull(message = "Ngày hết hạn không được để trống")
   private Date expiredDate;
 
-  @NotNull(message = "coupon applied date is null")
+  @NotNull(message = "Ngày áp dụng không được để trống")
   private Date appliedDate;
 
-  @Positive(message = "coupon max value promotion is negative or zero")
+  @Positive(message = "Giá trị giảm giá tối đa phải lớn hơn 0")
   private double maxValuePromotion;
 }

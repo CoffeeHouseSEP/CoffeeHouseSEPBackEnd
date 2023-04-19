@@ -16,16 +16,16 @@ import org.hibernate.validator.constraints.Length;
 public class NewsReq {
   private String newsId;
 
-  @NotNull(message = "title is null")
-  @NotEmpty(message = "title is empty")
-  @NotBlank(message = "title is blank")
-  @Length(max = 2000, message = "title over length(2000)")
+  @NotNull(message = "Tiêu đề không được để trống")
+  @NotEmpty(message = "Tiêu đề không được để trống")
+  @NotBlank(message = "Tiêu đề không được để trống")
+  @Length(max = 2000, message = "Tiêu đề không được vượt qu 2000 ký tự")
   private String title;
 
-  @NotNull(message = "content is null")
-  @NotEmpty(message = "content is empty")
-  @NotBlank(message = "content is blank")
-  @Length(max = 16000, message = "content over length(16000)")
+  @NotNull(message = "Nội dung không được để trống")
+  @NotEmpty(message = "Nội dung không được để trống")
+  @NotBlank(message = "Nội dung không được để trống")
+  @Length(max = 16000, message = "Nội dung không được vượt quá 16000 ký tự")
   private String content;
 
   private String createdBy;

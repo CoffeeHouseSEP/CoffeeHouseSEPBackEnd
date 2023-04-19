@@ -20,14 +20,16 @@ public class AddressController extends AbstractController<AddressService> {
   public ResponseEntity<CommonResponse<ProvinceResponse>> getListProvince(
     HttpServletRequest request
   ) {
-    return response(service.getListAdrdress(), "success");
+    return response(service.getListAdrdress(), "Thành công");
   }
 
   @GetMapping(value = "get-list-district-by-province-code")
   public ResponseEntity<CommonResponse<DistrictResponse>> getListDistrictByProvinceCode(
-    @RequestParam @NotNull(message = "provinceCode is null") String provinceCode,
+    @RequestParam @NotNull(
+      message = "Tỉnh/Thành phố không được để trống"
+    ) String provinceCode,
     HttpServletRequest request
   ) {
-    return response(service.getListDistrctByProvince(provinceCode), "success");
+    return response(service.getListDistrctByProvince(provinceCode), "Thành công");
   }
 }

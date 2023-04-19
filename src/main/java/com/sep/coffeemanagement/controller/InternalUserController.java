@@ -41,7 +41,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "create internal user success",
+        "Tạo mới người dùng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -62,7 +62,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "active user success",
+        "Kích hoạt người dùng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -81,7 +81,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "deactive user success",
+        "Vô hiệu hóa người dùng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -101,7 +101,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
   ) {
     return response(
       service.getListInternalUsers(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -111,7 +111,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestParam String field,
     @RequestParam String value
   ) {
-    return response(service.getInternalUser(field, value), "success");
+    return response(service.getInternalUser(field, value), "Thành công");
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -120,7 +120,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     HttpServletRequest request
   ) {
     String id = checkAuthentication(request);
-    return response(Optional.of(service.getUserProfileById(id)), "success");
+    return response(Optional.of(service.getUserProfileById(id)), "Thành công");
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -135,7 +135,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "update internal user success",
+        "Cập nhật người dùng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -155,7 +155,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "update internal user success",
+        "Cập nhật thông tin người dùng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -170,12 +170,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
   ) {
     service.register(userRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "register internal user success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Đăng ký thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -193,7 +188,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "change internal user's  password success",
+        "Đổi password thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -212,7 +207,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "change password successfully",
+        "Đổi password thành công",
         HttpStatus.OK.value()
       ),
       null,

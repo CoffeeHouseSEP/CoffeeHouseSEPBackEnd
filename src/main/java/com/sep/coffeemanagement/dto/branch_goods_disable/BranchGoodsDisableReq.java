@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BranchGoodsDisableReq {
-  @NotNull(message = "branch id null")
+  @NotNull(message = "Chi nhánh không được để trống")
   private String branchId;
 
-  @NotNull(message = "goods id null")
+  @NotNull(message = "Sản phẩm không được để trống")
   private String goodsId;
 
   private String userId;

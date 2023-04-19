@@ -172,7 +172,7 @@ public class GoodsServiceImpl
   public void updateGoods(GoodsReq req) {
     Goods goods = repository
       .getOneByAttribute("goodsId", req.getGoodsId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm"));
     checkValidGoodsRequest(req, true);
     Goods goodsUpdate = objectMapper.convertValue(req, Goods.class);
     //if goods is not sold then apply price = 0
@@ -206,19 +206,19 @@ public class GoodsServiceImpl
     Map<String, String> errors = generateError(GoodsReq.class);
     if (1 == req.getIsSold()) {
       if (req.getApplyPrice() <= 0) {
-        errors.put("applyPrice", "sold goods apply price is negative or zero");
+        errors.put("applyPrice", "Giá bản của sản phẩm bán phải lớn hơn 0");
         throw new InvalidRequestException(
           errors,
-          "sold goods apply price is negative or zero"
+          "Giá bản của sản phẩm bán phải lớn hơn 0"
         );
       }
     }
     if (1 == req.getIsTransfer()) {
       if (req.getInnerPrice() <= 0) {
-        errors.put("innerPrice", "transfer goods inner price is negative or zero");
+        errors.put("innerPrice", "Giá nhập của sản phẩm nhập phải lớn hơn 0");
         throw new InvalidRequestException(
           errors,
-          "transfer goods inner price is negative or zero"
+          "Giá nhập của sản phẩm nhập phải lớn hơn 0"
         );
       }
     }
@@ -229,8 +229,8 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      errors.put("goodsName", "goods name duplicate");
-      throw new InvalidRequestException(errors, "goods name duplicate");
+      errors.put("goodsName", "Trùng tên sản phẩm");
+      throw new InvalidRequestException(errors, "Trùng tên sản phẩm");
     }
     if (
       repository.checkDuplicateFieldValue(
@@ -239,11 +239,11 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      errors.put("goodsCode", "goods code duplicate");
-      throw new InvalidRequestException(errors, "goods code duplicate");
+      errors.put("goodsCode", "Trùng mã sản phẩm");
+      throw new InvalidRequestException(errors, "Trùng mã sản phẩm");
     }
     Category category = categoryRepository
       .getOneByAttribute("categoryId", req.getCategoryId())
-      .orElseThrow(() -> new ResourceNotFoundException("category not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục"));
   }
 }

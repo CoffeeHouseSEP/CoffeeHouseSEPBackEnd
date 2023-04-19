@@ -136,12 +136,12 @@ public class OrdersServiceImpl
     validate(req);
     Branch branch = branchRepository
       .getOneByAttribute("branchId", req.getBranchId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chi nhánh"));
     //Step 1: END
     //Step 2: check valid, save order_detail, get total_price
     if (req.getListOrderDetail() == null || req.getListOrderDetail().isEmpty()) {
-      errors.put("listOrderDetail", "no content");
-      throw new InvalidRequestException(errors, "orders no content");
+      errors.put("listOrderDetail", "Giỏ hàng trống");
+      throw new InvalidRequestException(errors, "Giỏ hàng trống");
     }
     double orderTotalPrice = 0;
     for (OrderDetailReq orderDetailReq : req.getListOrderDetail()) {
@@ -186,14 +186,14 @@ public class OrdersServiceImpl
     if (StringUtils.hasText(req.getCouponId())) {
       Coupon coupon = couponRepository
         .getOneByAttribute("couponId", req.getCouponId())
-        .orElseThrow(() -> new ResourceNotFoundException("coupon not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mã giảm giá"));
       List<CouponRes> listValidCoupon = couponRepository.getListCouponByCartTotalPrice(
         orderTotalPrice,
         coupon.getCouponId()
       );
       if (listValidCoupon.isEmpty()) {
-        errors.put("couponId", "coupon not valid");
-        throw new InvalidRequestException(errors, "coupon not valid");
+        errors.put("couponId", "Mã giảm giá không hợp lệ");
+        throw new InvalidRequestException(errors, "Mã giảm giá không hợp lệ");
       }
       orderTotalPrice -=
         Math.min(
@@ -224,13 +224,13 @@ public class OrdersServiceImpl
     Map<String, String> errors = generateError(OrdersReq.class);
     Orders orders = repository
       .getOneByAttribute("ordersId", req.getOrdersId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng"));
     if (Constant.ORDER_STATUS.APPROVED == status) {
       if (!Constant.ORDER_STATUS.PENDING_APPROVED.toString().equals(orders.getStatus())) {
-        errors.put("status", "orders not in status PENDING_APPROVED");
+        errors.put("status", "Đơn hàng không ở trong trạng thái CHỜ DUYỆT");
         throw new InvalidRequestException(
           errors,
-          "orders not in status PENDING_APPROVED"
+          "Đơn hàng không ở trong trạng thái CHỜ DUYỆT"
         );
       }
       orders.setStatus(Constant.ORDER_STATUS.APPROVED.toString());
@@ -241,8 +241,8 @@ public class OrdersServiceImpl
         orders.setCancelledDate(DateFormat.getCurrentTime());
         orders.setReason(req.getReason());
       } else {
-        errors.put("reason", "cancel reason is null or empty");
-        throw new InvalidRequestException(errors, "cancel reason is null or empty");
+        errors.put("reason", "Lý do hủy không được để trống");
+        throw new InvalidRequestException(errors, "Lý do hủy không được để trống");
       }
     }
     repository.insertAndUpdate(orders, true);
@@ -252,10 +252,10 @@ public class OrdersServiceImpl
     Map<String, String> errors = generateError(OrderDetailReq.class);
     Goods goods = goodsRepository
       .getOneByAttribute("goodsId", goodsId)
-      .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm"));
     if (1 != goods.getIsSold()) {
-      errors.put("goodsId", "goods not for sold");
-      throw new InvalidRequestException(errors, goods.getName() + " is not for sold");
+      errors.put("goodsId", "Sản phẩm không được mở bán");
+      throw new InvalidRequestException(errors, goods.getName() + " không được mở bán");
     }
     HashMap<String, String> allParams = new HashMap<>();
     allParams.put("branchId", branchId);
@@ -264,10 +264,10 @@ public class OrdersServiceImpl
       .getListOrEntity(allParams, "asc", 0, 0, "")
       .get();
     if (!list.isEmpty()) {
-      errors.put("goodsId", "goods is disable from branch");
+      errors.put("goodsId", "Sản phẩm đã tạm dừng bán tại chi nhánh");
       throw new InvalidRequestException(
         errors,
-        goods.getName() + " is disable from branch"
+        goods.getName() + " đã tạm dừng bán tại chi nhánh"
       );
     }
     return goods;

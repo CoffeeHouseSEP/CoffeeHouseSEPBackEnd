@@ -23,6 +23,6 @@ public class OrderDetailController extends AbstractController<OrderDetailService
     @RequestParam String orderId,
     HttpServletRequest request
   ) {
-    return response(service.getListOrderDetailByOrdersId(orderId), "success");
+    return response(service.getListOrderDetailByOrdersId(orderId), "Thành công");
   }
 }

@@ -30,7 +30,7 @@ public class BranchGoodsDisableController
       new CommonResponse<String>(
         true,
         null,
-        "disable goods success",
+        "Ẩn sản phẩm thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -52,7 +52,7 @@ public class BranchGoodsDisableController
       new CommonResponse<String>(
         true,
         null,
-        "enable goods success",
+        "Hiện sản phẩm thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -66,6 +66,6 @@ public class BranchGoodsDisableController
     @RequestParam String branchId,
     HttpServletRequest request
   ) {
-    return response(service.getListGoodsIdDisableByBranch(branchId), "success");
+    return response(service.getListGoodsIdDisableByBranch(branchId), "Thành công");
   }
 }

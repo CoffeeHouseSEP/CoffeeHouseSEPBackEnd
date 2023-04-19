@@ -29,15 +29,15 @@ public class AuthenticationImpl
   public Optional<InternalUserLoginRes> login(InternalUserLoginReq internalUserLoginReq) {
     Map<String, String> error = new HashMap<>();
     if (!checkExistUser(internalUserLoginReq.getLoginName().trim())) {
-      error.put("loginName", "not found username!");
-      throw new InvalidRequestException(error, "Username is not found!");
+      error.put("loginName", "Không tìm thấy tên đăng nhập");
+      throw new InvalidRequestException(error, "Không tìm thấy tên đăng nhập");
     }
     InternalUser user = repository
       .getOneByAttribute("loginName", internalUserLoginReq.getLoginName().trim())
       .orElse(null);
     if (user.getStatus() != 1) {
-      error.put("status", "user is deactivate");
-      throw new InvalidRequestException(error, "User is deactivated");
+      error.put("status", "Người dùng đã bị vô hiệu hóa");
+      throw new InvalidRequestException(error, "Người dùng đã bị vô hiệu hóa");
     }
     String decodedPassword = new String(
       Base64.decodeBase64(internalUserLoginReq.getLoginPassword()),
@@ -45,8 +45,8 @@ public class AuthenticationImpl
     );
     System.out.println(decodedPassword);
     if (!bCryptPasswordEncoder().matches(decodedPassword, user.getEncrPassword())) {
-      error.put("loginPassword", "is wrong!");
-      throw new InvalidRequestException(error, "loginPassword is wrong");
+      error.put("loginPassword", "Mật khẩu không chính xác");
+      throw new InvalidRequestException(error, "Mật khẩu không chính xác");
     }
     String token = jwtValidation.generateToken(String.valueOf(user.getInternalUserId()));
     user.setToken(token);
@@ -58,7 +58,7 @@ public class AuthenticationImpl
   public void logout(String id) {
     InternalUser internalUser = repository
       .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new NotFoundException("user not found"));
+      .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
     internalUser.setToken("");
     repository.insertAndUpdate(internalUser, true);
   }

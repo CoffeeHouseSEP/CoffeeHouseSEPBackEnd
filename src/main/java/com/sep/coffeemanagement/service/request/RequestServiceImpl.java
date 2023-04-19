@@ -108,7 +108,7 @@ public class RequestServiceImpl
       validate(requestDetailReq);
       Goods goods = goodsRepository
         .getOneByAttribute("goodsId", requestDetailReq.getGoodsId())
-        .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm"));
       requestTotalPrice += goods.getInnerPrice() * requestDetailReq.getQuantity();
 
       RequestDetail saveRequestDetail = new RequestDetail();
@@ -136,10 +136,13 @@ public class RequestServiceImpl
     checkValidRequestRequest(req);
     Request request = repository
       .getOneByAttribute("requestId", req.getRequestId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy yêu cầu nhập"));
     if (Constant.REQUEST_STATUS.CREATED.toString().equals(req.getStatus())) {
-      errors.put("status", "request not in status : CREATED");
-      throw new InvalidRequestException(errors, "request not in status : CREATED");
+      errors.put("status", "Yêu cầu nhập không ở trong trạng thái MỚI TẠO");
+      throw new InvalidRequestException(
+        errors,
+        "Yêu cầu nhập không ở trong trạng thái MỚI TẠO"
+      );
     }
     //clear detail
     requestDetailRepository.removeRequestDetailByRequestId(req.getRequestId());
@@ -148,7 +151,7 @@ public class RequestServiceImpl
       validate(requestDetailReq);
       Goods goods = goodsRepository
         .getOneByAttribute("goodsId", requestDetailReq.getGoodsId())
-        .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm"));
       requestTotalPrice += goods.getInnerPrice() * requestDetailReq.getQuantity();
 
       RequestDetail saveRequestDetail = new RequestDetail();
@@ -168,25 +171,34 @@ public class RequestServiceImpl
     Map<String, String> errors = generateError(RequestReq.class);
     Request request = repository
       .getOneByAttribute("requestId", req.getRequestId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy yêu cầu nhâp"));
     if (Constant.REQUEST_STATUS.PENDING == status) {
       if (!Constant.REQUEST_STATUS.CREATED.toString().equals(request.getStatus())) {
-        errors.put("status", "request not in status CREATED");
-        throw new InvalidRequestException(errors, "request not in status CREATED");
+        errors.put("status", "Yêu cầu nhập không ở trong trạng thái MỚI TẠO");
+        throw new InvalidRequestException(
+          errors,
+          "Yêu cầu nhập không ở trong trạng thái MỚI TẠO"
+        );
       }
       request.setStatus(Constant.REQUEST_STATUS.PENDING.toString());
     } else if (Constant.REQUEST_STATUS.APPROVED == status) {
       if (!Constant.REQUEST_STATUS.PENDING.toString().equals(request.getStatus())) {
-        errors.put("status", "request not in status PENDING");
-        throw new InvalidRequestException(errors, "request not in status PENDING");
+        errors.put("status", "Yêu cầu nhập không ở trong trạng thái ĐANG XỬ LÝ");
+        throw new InvalidRequestException(
+          errors,
+          "Yêu cầu nhập không ở trong trạng thái ĐANG XỬ LÝ"
+        );
       }
       request.setStatus(Constant.REQUEST_STATUS.APPROVED.toString());
       request.setApprovedBy(req.getApprovedBy());
       request.setApprovedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.COMPLETED == status) {
       if (!Constant.REQUEST_STATUS.APPROVED.toString().equals(request.getStatus())) {
-        errors.put("status", "request not in status APPROVED");
-        throw new InvalidRequestException(errors, "request not in status APPROVED");
+        errors.put("status", "Yêu cầu nhập không ở trong trạng thái ĐÃ DUYỆT");
+        throw new InvalidRequestException(
+          errors,
+          "Yêu cầu nhập không ở trong trạng thái ĐÃ DUYỆT"
+        );
       }
       request.setStatus(Constant.REQUEST_STATUS.COMPLETED.toString());
       request.setCompletedDate(DateFormat.getCurrentTime());
@@ -196,8 +208,8 @@ public class RequestServiceImpl
         request.setCancelledDate(DateFormat.getCurrentTime());
         request.setReason(req.getReason());
       } else {
-        errors.put("reason", "cancel reason is null or empty");
-        throw new InvalidRequestException(errors, "cancel reason is null or empty");
+        errors.put("reason", "Lý do hủy không được để trống");
+        throw new InvalidRequestException(errors, "Lý do hủy không được để trống");
       }
     }
     repository.insertAndUpdate(request, true);
@@ -208,11 +220,13 @@ public class RequestServiceImpl
     validate(req);
     BranchRes branch = branchRepository
       .getBranchByManagerId(req.getCreatedBy())
-      .orElseThrow(() -> new ResourceNotFoundException("not branch manager role"));
+      .orElseThrow(
+        () -> new ResourceNotFoundException("Không tìm thấy chi nhánh đối với người dùng")
+      );
     req.setBranchId(branch.getBranchId());
     if (req.getListRequestDetail() == null || req.getListRequestDetail().isEmpty()) {
-      errors.put("listRequestDetail", "no content");
-      throw new InvalidRequestException(errors, "request no content");
+      errors.put("listRequestDetail", "Chi tiết hàng hóa không được để trống");
+      throw new InvalidRequestException(errors, "Chi tiết hàng hóa không được để trống");
     }
   }
 }

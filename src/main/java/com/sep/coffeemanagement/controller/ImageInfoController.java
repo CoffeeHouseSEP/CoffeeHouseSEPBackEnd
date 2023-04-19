@@ -23,7 +23,7 @@ public class ImageInfoController extends AbstractController<ImageInfoService> {
   ) {
     service.createImageInfo(imageInfoReq);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(true, null, "save image success", HttpStatus.OK.value()),
+      new CommonResponse<String>(true, null, "Lưu ảnh thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -37,12 +37,7 @@ public class ImageInfoController extends AbstractController<ImageInfoService> {
   ) {
     service.removeImageInfo(id);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "remove image success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Xóa ảnh thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -53,6 +48,6 @@ public class ImageInfoController extends AbstractController<ImageInfoService> {
   public ResponseEntity<CommonResponse<ImageInfoRes>> getImageByObjectId(
     @RequestParam String objectId
   ) {
-    return response(service.getImageByObjectId(objectId), "success");
+    return response(service.getImageByObjectId(objectId), "Thành công");
   }
 }

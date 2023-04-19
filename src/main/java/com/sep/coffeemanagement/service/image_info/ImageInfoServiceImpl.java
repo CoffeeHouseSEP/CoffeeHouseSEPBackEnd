@@ -18,7 +18,7 @@ public class ImageInfoServiceImpl
   public Optional<ImageInfoRes> getImageByObjectId(String id) {
     ImageInfo imageInfo = repository
       .getOneByAttribute("objectId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy ảnh"));
     return Optional.of(
       new ImageInfoRes(
         imageInfo.getId(),
@@ -40,7 +40,7 @@ public class ImageInfoServiceImpl
   public void removeImageInfo(String id) {
     ImageInfo imageInfo = repository
       .getOneByAttribute("id", id)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy ảnh"));
     repository.removeImageInfo(id);
   }
 }

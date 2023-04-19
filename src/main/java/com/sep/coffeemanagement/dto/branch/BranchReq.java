@@ -18,56 +18,52 @@ import org.hibernate.validator.constraints.Length;
 public class BranchReq {
   private String branchId;
 
-  @NotEmpty
-  @NotBlank
-  @NotNull(message = "branch name is blank or empty ")
-  @Length(max = 200, message = "branch name over length(200)")
+  @NotEmpty(message = "Tên không được để trống")
+  @NotBlank(message = "Tên không được để trống")
+  @NotNull(message = "Tên không được để trống")
+  @Length(max = 200, message = "Tên không được vượt quá 200 ký tự")
   private String name;
 
-  @NotEmpty
-  @NotBlank
-  @NotNull(message = "branch address is blank or empty ")
-  @Length(max = 1000, message = "branch address over length(1000)")
+  @NotEmpty(message = "Địa chỉ không được để trống")
+  @NotBlank(message = "Địa chỉ không được để trống")
+  @NotNull(message = "Địa chỉ không được để trống")
+  @Length(max = 1000, message = "Địa chỉ không dược vượt quá 1000 ký tự")
   private String address;
 
-  @Pattern(regexp = TypeValidation.PHONE, message = "invalid phone number")
+  @Pattern(regexp = TypeValidation.PHONE, message = "Sai định dạng số điện thoại")
   private String phoneNumber;
 
-  @NotEmpty
-  @NotBlank
-  @NotNull(message = "branch description is blank or empty ")
-  @Length(max = 8000, message = "branch description over length(8000)")
+  @NotEmpty(message = "Thông tin không được để trống")
+  @NotBlank(message = "Thông tin không được để trống")
+  @NotNull(message = "Thông tin không được để trống")
+  @Length(max = 8000, message = "Thông tin không được vượt quá 8000 ký tự")
   private String description;
 
-  @NotNull(message = "branch manager is empty ")
+  @NotNull(message = "Quản lý không được để trống")
   private String branchManagerId;
 
   private int status;
   private Date createdDate;
   private Date cancelledDate;
 
-  @NotEmpty(message = "ward is empty")
-  @NotBlank(message = "ward is blank")
-  @NotNull(message = "ward is null")
-  @Length(max = 100, message = "ward over length(100)")
+  @NotEmpty(message = "Phường/Xã không được để trống")
+  @NotBlank(message = "Phường/Xã không được để trống")
+  @NotNull(message = "Phường/Xã không được để trống")
   private String ward;
 
-  @NotEmpty(message = "district is empty")
-  @NotBlank(message = "district is blank")
-  @NotNull(message = "district is null")
-  @Length(max = 100, message = "district over length(100)")
+  @NotEmpty(message = "Quận/Huyện không được để trống")
+  @NotBlank(message = "Quận/Huyện không được để trống")
+  @NotNull(message = "Quận/Huyện không được để trống")
   private String district;
 
-  @NotEmpty(message = "province is empty")
-  @NotBlank(message = "province is blank")
-  @NotNull(message = "province is null")
-  @Length(max = 100, message = "province over length(100)")
+  @NotEmpty(message = "Tỉnh/Thành phố không được để trống")
+  @NotBlank(message = "Tỉnh/Thành phố không được để trống")
+  @NotNull(message = "Tỉnh/Thành phố không được để trống")
   private String province;
 
-  @NotEmpty(message = "street is empty")
-  @NotBlank(message = "street is blank")
-  @NotNull(message = "street is null")
-  @Length(max = 100, message = "street over length(100)")
+  @NotEmpty(message = "Đường không được để trống")
+  @NotBlank(message = "Đường không được để trống")
+  @NotNull(message = "Đường không được để trống")
   private String street;
 
   private ImageInfoReq image;

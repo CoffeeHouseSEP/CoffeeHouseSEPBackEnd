@@ -28,7 +28,7 @@ public class AppParamUtils {
       }
       throw new ResourceNotFoundException("app param not found");
     } else {
-      throw new ResourceNotFoundException("wrong size input (only S,M,L)");
+      throw new ResourceNotFoundException("Size của sản phẩm không đúng (S, M, L)");
     }
   }
 }

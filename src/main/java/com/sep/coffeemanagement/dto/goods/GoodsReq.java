@@ -1,10 +1,7 @@
 package com.sep.coffeemanagement.dto.goods;
 
 import com.sep.coffeemanagement.dto.image_info.ImageInfoReq;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,12 +13,16 @@ import org.hibernate.validator.constraints.Length;
 public class GoodsReq {
   private String goodsId;
 
-  @NotNull(message = "goods name is empty or blank")
-  @Length(max = 200, message = "goods name over length(200)")
+  @NotNull(message = "Tên không được để trống")
+  @NotEmpty(message = "Tên không được để trống")
+  @NotBlank(message = "Tên không được để trống")
+  @Length(max = 200, message = "Tên không được vượt quá 200 ký tự")
   private String name;
 
-  @NotNull(message = "goods code is empty or blank")
-  @Length(max = 200, message = "goods code over length(200)")
+  @NotNull(message = "Mã không được để trống")
+  @NotEmpty(message = "Mã không được để trống")
+  @NotBlank(message = "Mã không được để trống")
+  @Length(max = 200, message = "Mã không được vượt quá 200 ký tự")
   private String code;
 
   //  @NotNull(message = "goods apply price is empty or blank")
@@ -32,13 +33,15 @@ public class GoodsReq {
   //  @Positive(message = "goods inner price is negative or zero")
   private double innerPrice;
 
-  @NotNull(message = "description is empty or blank")
-  @Length(max = 4000, message = "description over length(4000)")
+  @NotNull(message = "Thông tin không được để trống")
+  @NotEmpty(message = "Thông tin không được để trống")
+  @NotBlank(message = "Thông tin không được để trống")
+  @Length(max = 4000, message = "Thông tin không được vượt quá 4000 ký tự")
   private String description;
 
   private int status;
 
-  @NotNull(message = "category is empty or blank")
+  @NotNull(message = "Danh mục không được để trống")
   private String categoryId;
 
   @Min(value = 0, message = "isSize must be 0 or 1")
@@ -53,6 +56,10 @@ public class GoodsReq {
   @Max(value = 1, message = "isTransfer must be 0 or 1")
   private int isTransfer;
 
+  @NotNull(message = "Đơn vị tính không được để trống")
+  @NotEmpty(message = "Đơn vị tính không được để trống")
+  @NotBlank(message = "Đơn vị tính không được để trống")
   private String goodsUnit;
+
   private ImageInfoReq image;
 }

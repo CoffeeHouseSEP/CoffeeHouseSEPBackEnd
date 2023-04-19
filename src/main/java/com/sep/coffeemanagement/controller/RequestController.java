@@ -34,7 +34,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "create request success",
+        "Tạo mới yêu cầu nhập thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -55,7 +55,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "update request success",
+        "Cập nhật yêu cầu nhập thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -87,7 +87,7 @@ public class RequestController extends AbstractController<RequestService> {
     }
     return response(
       service.getListRequest(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -106,7 +106,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "cancel request success",
+        "Hủy yêu cầu nhập thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -127,7 +127,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "send request success",
+        "Gửi yêu cầu nhập thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -150,7 +150,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "approve request success",
+        "Duyệt yêu cầu nhập thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -171,7 +171,7 @@ public class RequestController extends AbstractController<RequestService> {
       new CommonResponse<String>(
         true,
         null,
-        "complete request success",
+        "Xác nhận hoàn thành thành công",
         HttpStatus.OK.value()
       ),
       null,

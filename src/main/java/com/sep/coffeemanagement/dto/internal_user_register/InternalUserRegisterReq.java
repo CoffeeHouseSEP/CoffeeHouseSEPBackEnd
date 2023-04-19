@@ -13,15 +13,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUserRegisterReq {
-  @Pattern(regexp = TypeValidation.USERNAME, message = "invalid username")
+  @Pattern(
+    regexp = TypeValidation.USERNAME,
+    message = "Tên đăng nhập không đúng định dạng"
+  )
   private String registerName;
 
-  @NotNull(message = "register password is null")
+  @NotNull(message = "Mật khẩu không được để trống")
   private String registerPassword;
 
-  @Pattern(regexp = TypeValidation.EMAIL, message = "email is not valid")
+  @Pattern(regexp = TypeValidation.EMAIL, message = "Email không đúng định dạng")
   private String email;
 
-  @Pattern(regexp = TypeValidation.FULL_NAME, message = "invalid fullname")
+  @Pattern(
+    regexp = TypeValidation.FULL_NAME,
+    message = "Tên người dùng không đúng định dạng"
+  )
   private String fullName;
 }

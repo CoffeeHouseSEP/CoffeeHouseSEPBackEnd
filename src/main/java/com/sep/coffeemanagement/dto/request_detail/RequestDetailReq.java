@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class RequestDetailReq {
   private String goodsId;
 
-  @Positive(message = "quantity is negative or zero")
+  @Positive(message = "Số lượng đặt hàng phải lớn hơn 0")
   private double quantity;
 
   private double applyPrice;

@@ -22,6 +22,6 @@ public class RequestDetailController extends AbstractController<RequestDetailSer
     @RequestParam(defaultValue = "0") String requestId,
     HttpServletRequest request
   ) {
-    return response(service.getListRequestDetailByRequestId(requestId), "success");
+    return response(service.getListRequestDetailByRequestId(requestId), "Thành công");
   }
 }
