@@ -27,12 +27,7 @@ public class NewsController extends AbstractController<NewsService> {
     newsRequest.setCreatedBy(userId);
     service.createNews(newsRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "create news success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -49,7 +44,7 @@ public class NewsController extends AbstractController<NewsService> {
       new CommonResponse<String>(
         true,
         null,
-        "update news success",
+        "Cập nhật thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -69,7 +64,7 @@ public class NewsController extends AbstractController<NewsService> {
     allParams.put("status", "1");
     return response(
       service.getListNews(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -89,7 +84,7 @@ public class NewsController extends AbstractController<NewsService> {
     }
     return response(
       service.getListNews(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -101,12 +96,7 @@ public class NewsController extends AbstractController<NewsService> {
   ) {
     service.removeNews(newsId);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "remove news success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Xóa thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );

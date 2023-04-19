@@ -14,16 +14,16 @@ import org.hibernate.validator.constraints.Length;
 public class CategoryReq {
   private String categoryId;
 
-  @NotNull(message = "category name is null")
-  @NotEmpty(message = "category name is empty")
-  @NotBlank(message = "category name is blank")
-  @Length(max = 100, message = "category name over length(100)")
+  @NotNull(message = "Tên không được để trống")
+  @NotEmpty(message = "Tên không được để trống")
+  @NotBlank(message = "Tên không được để trống")
+  @Length(max = 100, message = "Tên không được vượt quá 100 ký tự")
   private String name;
 
-  @NotNull(message = "category description is null")
-  @NotBlank(message = "category description is blank")
-  @NotEmpty(message = "category description is empty")
-  @Length(max = 4000, message = "category description over length(4000)")
+  @NotNull(message = "Thông tin không được để trống")
+  @NotBlank(message = "Thông tin không được để trống")
+  @NotEmpty(message = "Thông tin không được để trống")
+  @Length(max = 4000, message = "Thông tin không được vượt quá 4000 ký tự")
   private String description;
 
   private int status;

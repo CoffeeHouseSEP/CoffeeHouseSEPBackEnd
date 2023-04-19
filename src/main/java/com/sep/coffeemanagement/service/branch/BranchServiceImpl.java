@@ -35,7 +35,7 @@ public class BranchServiceImpl
     BranchRes branch = repository
       .getBranchByManagerId(managerId)
       .orElseThrow(
-        () -> new ResourceNotFoundException("no branch found by this manager")
+        () -> new ResourceNotFoundException("Không tìm thấy chi nhánh của quản lý này")
       );
     return Optional.of(
       new BranchRes(
@@ -145,7 +145,7 @@ public class BranchServiceImpl
   public void updateBranch(BranchReq req) {
     Branch branch = repository
       .getOneByAttribute("branchId", req.getBranchId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chi nhánh"));
     checkValidBranchRequest(req);
     ImageInfo imageInfo = imageInfoRepository
       .getOneByAttribute("objectId", req.getBranchId())
@@ -174,17 +174,17 @@ public class BranchServiceImpl
     Map<String, String> errors = generateError(BranchReq.class);
     InternalUser branchManager = internalUserRepository
       .getOneByAttribute("internalUserId", req.getBranchManagerId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch manager not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy quản lý"));
     if (branchManager.getStatus() != 1) {
-      errors.put("branchManagerId", "deactivate user");
-      throw new InvalidRequestException(errors, "deactivate user");
+      errors.put("branchManagerId", "Người dùng không hoạt động");
+      throw new InvalidRequestException(errors, "Người dùng không hoạt động");
     }
     //check branch manager co branch chua
     Optional<BranchRes> br = repository.getBranchByManagerId(req.getBranchManagerId());
     if (br.isPresent()) {
       if (!br.get().getBranchId().equals(req.getBranchId())) {
-        errors.put("branchManagerId", "user has branch already");
-        throw new InvalidRequestException(errors, "user has branch already");
+        errors.put("branchManagerId", "Người dùng đã quản lý chi nhánh khác");
+        throw new InvalidRequestException(errors, "Người dùng đã quản lý chi nhánh khác");
       }
     }
   }

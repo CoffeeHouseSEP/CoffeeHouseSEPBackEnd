@@ -25,12 +25,7 @@ public class CategoryController extends AbstractController<CategoryService> {
   ) {
     service.createCategory(categoryRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "create category success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -47,7 +42,7 @@ public class CategoryController extends AbstractController<CategoryService> {
       new CommonResponse<String>(
         true,
         null,
-        "update category success",
+        "Cập nhật thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -67,7 +62,7 @@ public class CategoryController extends AbstractController<CategoryService> {
     allParams.put("status", "1");
     return response(
       service.getListCategory(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -87,7 +82,7 @@ public class CategoryController extends AbstractController<CategoryService> {
     }
     return response(
       service.getListCategory(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 }

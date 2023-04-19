@@ -17,6 +17,6 @@ public class AppParamController extends AbstractController<AppParamService> {
     @RequestParam(defaultValue = "") String parType,
     HttpServletRequest request
   ) {
-    return response(service.getListAppParamByParType(parType), "success");
+    return response(service.getListAppParamByParType(parType), "Thành công");
   }
 }

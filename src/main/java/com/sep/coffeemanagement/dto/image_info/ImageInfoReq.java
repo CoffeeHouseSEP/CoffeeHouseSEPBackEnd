@@ -1,5 +1,7 @@
 package com.sep.coffeemanagement.dto.image_info;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,10 +16,14 @@ public class ImageInfoReq {
 
   private String objectId;
 
-  @NotNull(message = "content is empty or blank")
-  @Length(message = "content over flow")
+  @NotNull(message = "Không đọc được ảnh")
+  @NotBlank(message = "Không đọc được ảnh")
+  @NotEmpty(message = "Không đọc được ảnh")
+  @Length(message = "Ảnh vượt quá dung lượng cho phép")
   private String base64;
 
-  @NotNull(message = "prefix is empty or blank")
+  @NotBlank(message = "File extension không xác định")
+  @NotEmpty(message = "File extension không xác định")
+  @NotNull(message = "File extension không xác định")
   private String prefix;
 }

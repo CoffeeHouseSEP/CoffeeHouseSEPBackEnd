@@ -93,7 +93,7 @@ public class NewsServiceImpl
   public void updateNews(NewsReq req) {
     News news = repository
       .getOneByAttribute("newsId", req.getNewsId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tin tức"));
     ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
     imageInfoRepository.insertAndUpdate(imageInfo, true);
     validate(req);
@@ -107,7 +107,7 @@ public class NewsServiceImpl
   public void removeNews(String id) {
     News news = repository
       .getOneByAttribute("newsId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tin tức"));
     repository.removeNews(id);
   }
 }

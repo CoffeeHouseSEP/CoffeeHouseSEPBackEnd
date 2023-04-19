@@ -48,7 +48,7 @@ public class AdminDashboardController extends AbstractController<AdminDashboardS
     allParams.put("status", Constant.ORDER_STATUS_SUMMARY_REVENUE);
     return response(
       service.getListBranchRevenue(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 }

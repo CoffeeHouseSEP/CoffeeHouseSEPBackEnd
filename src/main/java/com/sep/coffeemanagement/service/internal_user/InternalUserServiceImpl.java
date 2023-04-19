@@ -45,7 +45,7 @@ public class InternalUserServiceImpl
   public Optional<InternalUserRes> getInternalUser(String field, String value) {
     InternalUser user = repository
       .getOneByAttribute(field.trim(), value.trim())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     return Optional.of(
       new InternalUserRes(
         user.getInternalUserId(),
@@ -101,12 +101,12 @@ public class InternalUserServiceImpl
     validate(user);
     Map<String, String> er = generateError(InternalUserReq.class);
     if (checkExistUser(user.getLoginName().trim())) {
-      er.put("loginName", "existed!");
-      throw new InvalidRequestException(er, "this userName is existed!!");
+      er.put("loginName", "Tên đăng nhập đã tồn tại!");
+      throw new InvalidRequestException(er, "Tên đăng nhập đã tồn tại!");
     }
     if (checkExistEmail(user.getEmail().trim())) {
-      er.put("email", "existed!");
-      throw new InvalidRequestException(er, "this email is existed!!");
+      er.put("email", "Email đã tồn tại!");
+      throw new InvalidRequestException(er, "Email đã tồn tại!!");
     }
     InternalUser userSave = objectMapper.convertValue(user, InternalUser.class);
     String newId = UUID.randomUUID().toString();
@@ -123,14 +123,14 @@ public class InternalUserServiceImpl
     Map<String, String> er = generateError(InternalUserReq.class);
     if (
       checkExistUserWithExceptId(user.getLoginName(), id)
-    ) throw new ResourceNotFoundException("username is duplicate");
+    ) throw new ResourceNotFoundException("Trùng tên người dùng");
     if (checkExistEmailWithExceptId(user.getEmail().trim(), id)) {
-      er.put("email", "existed!");
-      throw new InvalidRequestException(er, "this email is existed!!");
+      er.put("email", "Email đã tồn tại!");
+      throw new InvalidRequestException(er, "Email đã tồn tại!");
     }
     InternalUser userSave = repository
       .getOneByAttribute("loginName", user.getLoginName())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
@@ -144,15 +144,15 @@ public class InternalUserServiceImpl
     Map<String, String> er = generateError(InternalUserReq.class);
     InternalUser userSave = repository
       .getOneByAttribute("internalUserId", id.trim())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     validate(userReq);
     if (checkExistUserWithExceptId(userReq.getLoginName().trim(), id)) {
-      er.put("loginName", "existed!");
-      throw new InvalidRequestException(er, "this username is existed!!");
+      er.put("loginName", "Tên đăng nhập đã tồn tại!");
+      throw new InvalidRequestException(er, "Tên đăng nhập đã tồn tại!");
     }
     if (checkExistEmailWithExceptId(userReq.getEmail().trim(), id)) {
-      er.put("email", "existed!");
-      throw new InvalidRequestException(er, "this email is existed!!");
+      er.put("email", "Email đã tồn tại!");
+      throw new InvalidRequestException(er, "Email đã tồn tại!");
     }
     userSave.setLoginName(userReq.getLoginName());
     userSave.setAddress(userReq.getAddress());
@@ -171,16 +171,16 @@ public class InternalUserServiceImpl
     );
     Map<String, String> errors = generateError(InternalUserRegisterReq.class);
     if (!rawPass.matches(TypeValidation.PASSWORD)) {
-      errors.put("registerPassword", "password is not well formed!");
-      throw new InvalidRequestException(errors, "register password is in wrong format!");
+      errors.put("registerPassword", "Mật khẩu không đúng định dạng");
+      throw new InvalidRequestException(errors, "Mật khẩu không đúng định dạng");
     }
     if (checkExistUser(user.getRegisterName())) {
-      errors.put("registerName", "registerName is existed");
-      throw new InvalidRequestException(errors, "register name is existed!");
+      errors.put("registerName", "Tên đăng nhập đã tồn tại!");
+      throw new InvalidRequestException(errors, "Tên đăng nhập đã tồn tại!");
     }
     if (checkExistEmail(user.getEmail())) {
-      errors.put("email", "register email is existed");
-      throw new InvalidRequestException(errors, "register email is existed!");
+      errors.put("email", "Email đã tồn tại!");
+      throw new InvalidRequestException(errors, "Email đã tồn tại!");
     }
     InternalUser userSave = new InternalUser()
       .builder()
@@ -221,20 +221,20 @@ public class InternalUserServiceImpl
     //update password to default
     Map<String, String> er = new HashMap<>();
     if (!checkExistUser(username)) {
-      er.put("username", "not existed!!");
-      throw new InvalidRequestException(er, "user name is not existed!");
+      er.put("username", "Tên đăng nhập không tồn tại");
+      throw new InvalidRequestException(er, "Tên đăng nhập không tồn tại");
     }
     String autoGenPass = mailSenderUtil.autoGeneratePassword();
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
-      .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     if (!email.matches(TypeValidation.EMAIL)) {
-      er.put("email", "not well-formatted!");
-      throw new InvalidRequestException(er, "email is not well-formed!");
+      er.put("email", "Email không đúng định dạng");
+      throw new InvalidRequestException(er, "Email không đúng định dạng");
     }
     if (!email.equals(internalUser.getEmail())) {
-      er.put("email", "not well-formatted!");
-      throw new InvalidRequestException(er, "email is not correct!");
+      er.put("email", "Email không chính xác");
+      throw new InvalidRequestException(er, "Email không chính xác");
     } //if the input email is not belong to the username then reject
     String hashedPass = bCryptPasswordEncoder().encode(autoGenPass);
     System.out.println(hashedPass);
@@ -261,16 +261,16 @@ public class InternalUserServiceImpl
 
   @Override
   public void changePassword(String id, String newPass) {
-    newPass =  newPass.trim();
+    newPass = newPass.trim();
     if (StringUtils.isEmpty(id)) {
       throw new InvalidRequestException(
         new HashMap<String, String>(),
-        "user id from request is empty!"
+        "Không tìm thấy người dùng"
       );
     }
     if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
       new HashMap<>(),
-      "password does not allowed to be null or empty"
+      "Mật khẩu không được để trống"
     );
     String decodedPassword = new String(
       Base64.decodeBase64(newPass),
@@ -278,8 +278,8 @@ public class InternalUserServiceImpl
     );
     if (!decodedPassword.matches(TypeValidation.PASSWORD)) {
       Map<String, String> er = generateError(String.class);
-      er.put("new pass", "not well formed!");
-      throw new InvalidRequestException(er, "password is not in valid form!");
+      er.put("new pass", "Mật khẩu mới không đúng định dạng");
+      throw new InvalidRequestException(er, "Mật khẩu mới không đúng định dạng");
     }
     InternalUser userUpdate = repository
       .getOneByAttribute("internalUserId", id)
@@ -295,7 +295,7 @@ public class InternalUserServiceImpl
   public InternalUserProfileRes getUserProfileById(String id) {
     InternalUser internalUser = repository
       .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     return objectMapper.convertValue(internalUser, InternalUserProfileRes.class);
   }
 
@@ -307,14 +307,14 @@ public class InternalUserServiceImpl
       null
     );
     Map<String, String> errors = generateError(String.class);
-    if (!checkExist) throw new ResourceNotFoundException("this user id not found!");
+    if (!checkExist) throw new ResourceNotFoundException("Không tìm thấy người dùng");
     if (status < 0) {
       errors.put("status", "status is not valid!");
       throw new InvalidRequestException(errors, "status is not valid!");
     }
     InternalUser internalUser = repository
       .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("user is not existed!"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     internalUser.setStatus(status);
     repository.insertAndUpdate(internalUser, true);
   }

@@ -14,11 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUserLoginReq {
-  @Pattern(regexp = TypeValidation.USERNAME, message = "invalid username")
+  @Pattern(
+    regexp = TypeValidation.USERNAME,
+    message = "Tên đăng nhập không đúng định dạng"
+  )
   private String loginName;
 
-  @NotNull
-  @NotBlank
-  @NotEmpty
+  @NotNull(message = "Mật khẩu không được để trống")
+  @NotBlank(message = "Mật khẩu không được để trống")
+  @NotEmpty(message = "Mật khẩu không được để trống")
   private String loginPassword;
 }

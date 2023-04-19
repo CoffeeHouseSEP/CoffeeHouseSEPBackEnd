@@ -82,7 +82,7 @@ public class CouponServiceImpl
   public void updateCoupon(CouponReq req) {
     Coupon coupon = repository
       .getOneByAttribute("couponId", req.getCouponId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy mã giảm giá"));
     checkValidCouponRequest(req, true);
     repository.insertAndUpdate(objectMapper.convertValue(req, Coupon.class), true);
   }
@@ -97,16 +97,16 @@ public class CouponServiceImpl
         isUpdate ? req.getCouponId() : ""
       )
     ) {
-      errors.put("code", "coupon code duplicate");
-      throw new InvalidRequestException(errors, "coupon code duplicate");
+      errors.put("code", "Trùng mã giảm giá");
+      throw new InvalidRequestException(errors, "Trùng mã giảm giá");
     }
     if (req.getAppliedDate().compareTo(new Date()) <= 0) {
-      errors.put("appliedDate", "applied date must after present");
-      throw new InvalidRequestException(errors, "applied date must after present");
+      errors.put("appliedDate", "Ngày áp dụng phải sau ngày hiện tại");
+      throw new InvalidRequestException(errors, "Ngày áp dụng phải sau ngày hiện tại");
     }
     if (req.getExpiredDate().compareTo(req.getAppliedDate()) <= 0) {
-      errors.put("expiredDate", "expired date must after applied date");
-      throw new InvalidRequestException(errors, "expired date must after applied date");
+      errors.put("expiredDate", "Ngày hết hạn phải sau ngày áp dụng");
+      throw new InvalidRequestException(errors, "Ngày hết hạn phải sau ngày áp dụng");
     }
   }
 
@@ -115,7 +115,7 @@ public class CouponServiceImpl
     List<OrderDetailReq> listOrderDetailReq
   ) {
     if (listOrderDetailReq == null || listOrderDetailReq.isEmpty()) {
-      throw new ResourceNotFoundException("cart info empty");
+      throw new ResourceNotFoundException("Thông tin giỏ hàng trống");
     }
     List<AppParamRes> listGoodsSize = appParamRepository.getListAppParamByParType(
       "UPSIZE_GOODS"

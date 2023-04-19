@@ -47,7 +47,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     }
     return response(
       service.getListOrders(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -64,7 +64,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       new CommonResponse<String>(
         true,
         null,
-        "create order success",
+        "Đặt hàng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -87,7 +87,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       new CommonResponse<String>(
         true,
         null,
-        "cancel order success",
+        "Hủy đơn hàng thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -108,7 +108,7 @@ public class OrdersController extends AbstractController<OrdersService> {
       new CommonResponse<String>(
         true,
         null,
-        "approve order success",
+        "Duyệt đơn hàng thành công",
         HttpStatus.OK.value()
       ),
       null,

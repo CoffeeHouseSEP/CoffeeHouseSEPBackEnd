@@ -18,7 +18,7 @@ public class AuthenticationController extends AbstractController<Authentication>
   public ResponseEntity<CommonResponse<InternalUserLoginRes>> login(
     @RequestBody InternalUserLoginReq internalUserLoginReq
   ) {
-    return response(service.login(internalUserLoginReq), "success");
+    return response(service.login(internalUserLoginReq), "Đăng nhập thành công");
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -29,7 +29,12 @@ public class AuthenticationController extends AbstractController<Authentication>
     String id = checkAuthentication(httpServletRequest);
     service.logout(id);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(true, null, "logout success", HttpStatus.OK.value()),
+      new CommonResponse<String>(
+        true,
+        null,
+        "Đăng xuất thành công",
+        HttpStatus.OK.value()
+      ),
       null,
       HttpStatus.OK.value()
     );

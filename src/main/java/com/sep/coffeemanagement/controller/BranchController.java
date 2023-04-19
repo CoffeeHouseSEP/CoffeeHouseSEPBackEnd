@@ -26,12 +26,7 @@ public class BranchController extends AbstractController<BranchService> {
   ) {
     service.createBranch(branchRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "create branch success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -48,7 +43,7 @@ public class BranchController extends AbstractController<BranchService> {
       new CommonResponse<String>(
         true,
         null,
-        "update branch success",
+        "Cập nhật thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -72,7 +67,7 @@ public class BranchController extends AbstractController<BranchService> {
     }
     return response(
       service.getListBranch(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -81,6 +76,6 @@ public class BranchController extends AbstractController<BranchService> {
   public ResponseEntity<CommonResponse<BranchRes>> getBranchByManagerId(
     @RequestParam String branchManagerId
   ) {
-    return response(service.getBranchByManagerId(branchManagerId), "success");
+    return response(service.getBranchByManagerId(branchManagerId), "Thành công");
   }
 }

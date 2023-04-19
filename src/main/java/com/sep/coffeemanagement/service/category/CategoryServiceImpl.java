@@ -21,7 +21,7 @@ public class CategoryServiceImpl
   public Optional<CategoryRes> getCategory(String field, String value) {
     Category category = repository
       .getOneByAttribute(field, value)
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục"));
     return Optional.of(
       new CategoryRes(
         category.getCategoryId(),
@@ -78,7 +78,7 @@ public class CategoryServiceImpl
   public void updateCategory(CategoryReq req) {
     Category category = repository
       .getOneByAttribute("categoryId", req.getCategoryId())
-      .orElseThrow(() -> new ResourceNotFoundException("not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục"));
     checkValidCategoryRequest(req, true);
     repository.insertAndUpdate(objectMapper.convertValue(req, Category.class), true);
   }
@@ -93,8 +93,8 @@ public class CategoryServiceImpl
         isUpdate ? req.getCategoryId() : ""
       )
     ) {
-      errors.put("name", "category name duplicate");
-      throw new InvalidRequestException(errors, "category name duplicate");
+      errors.put("name", "Trùng tên danh mục");
+      throw new InvalidRequestException(errors, "Trùng tên danh mục");
     }
   }
 }

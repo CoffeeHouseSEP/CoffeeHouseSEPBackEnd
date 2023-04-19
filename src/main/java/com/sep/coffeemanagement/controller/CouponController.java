@@ -30,12 +30,7 @@ public class CouponController extends AbstractController<CouponService> {
   ) {
     service.createCoupon(couponRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "create coupon success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -52,7 +47,7 @@ public class CouponController extends AbstractController<CouponService> {
       new CommonResponse<String>(
         true,
         null,
-        "update coupon success",
+        "Cập nhật thành công",
         HttpStatus.OK.value()
       ),
       null,
@@ -75,7 +70,7 @@ public class CouponController extends AbstractController<CouponService> {
     }
     return response(
       service.getListCoupon(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -84,6 +79,6 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestBody List<OrderDetailReq> listOrderDetailReq,
     HttpServletRequest request
   ) {
-    return response(service.getListCouponByCartInfo(listOrderDetailReq), "success");
+    return response(service.getListCouponByCartInfo(listOrderDetailReq), "Thành công");
   }
 }

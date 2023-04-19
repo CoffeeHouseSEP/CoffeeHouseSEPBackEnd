@@ -16,28 +16,28 @@ import org.hibernate.validator.constraints.Length;
 public class OrdersCreateReq {
   private String customerId;
 
-  @NotNull(message = "branch not found")
+  @NotNull(message = "Chi nhánh không được để trống")
   private String branchId;
 
-  @NotNull(message = "address is null")
-  @NotBlank(message = "address is blank")
-  @NotEmpty(message = "address is empty")
-  @Length(max = 2000, message = "address over length(2000)")
+  @NotEmpty(message = "Địa chỉ không được để trống")
+  @NotBlank(message = "Địa chỉ không được để trống")
+  @NotNull(message = "Địa chỉ không được để trống")
+  @Length(max = 1000, message = "Địa chỉ không dược vượt quá 1000 ký tự")
   private String address;
 
-  @NotNull(message = "province is null")
-  @NotBlank(message = "province is blank")
-  @NotEmpty(message = "province is empty")
+  @NotEmpty(message = "Tỉnh/Thành phố không được để trống")
+  @NotBlank(message = "Tỉnh/Thành phố không được để trống")
+  @NotNull(message = "Tỉnh/Thành phố không được để trống")
   private String province;
 
-  @NotNull(message = "ward is null")
-  @NotBlank(message = "ward is blank")
-  @NotEmpty(message = "ward is empty")
+  @NotEmpty(message = "Phường/Xã không được để trống")
+  @NotBlank(message = "Phường/Xã không được để trống")
+  @NotNull(message = "Phường/Xã không được để trống")
   private String ward;
 
-  @NotNull(message = "district is null")
-  @NotBlank(message = "district is blank")
-  @NotEmpty(message = "district is empty")
+  @NotEmpty(message = "Quận/Huyện không được để trống")
+  @NotBlank(message = "Quận/Huyện không được để trống")
+  @NotNull(message = "Quận/Huyện không được để trống")
   private String district;
 
   private String couponId;

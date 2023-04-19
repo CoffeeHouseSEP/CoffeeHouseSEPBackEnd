@@ -36,7 +36,7 @@ public class GoodsController extends AbstractController<GoodsService> {
     allParams.put("isSold", "1");
     return response(
       service.getListGoods(allParams, keySort, page, pageSize, sortField, false),
-      "success"
+      "Thành công"
     );
   }
 
@@ -55,19 +55,19 @@ public class GoodsController extends AbstractController<GoodsService> {
       allParams.put("status", "1");
       return response(
         service.getListGoods(allParams, keySort, page, pageSize, sortField, true),
-        "success"
+        "Thành công"
       );
     } else if (Constant.ADMIN_ROLE.equals(role)) {
       return response(
         service.getListGoods(allParams, keySort, page, pageSize, sortField, true),
-        "success"
+        "Thành công"
       );
     } else {
       allParams.put("status", "1");
       allParams.put("isSold", "1");
       return response(
         service.getListGoods(allParams, keySort, page, pageSize, sortField, false),
-        "success"
+        "Thành công"
       );
     }
   }
@@ -90,7 +90,7 @@ public class GoodsController extends AbstractController<GoodsService> {
     );
     return response(
       service.getListGoodsBranchManager(allParams, keySort, page, pageSize, sortField),
-      "success"
+      "Thành công"
     );
   }
 
@@ -102,12 +102,7 @@ public class GoodsController extends AbstractController<GoodsService> {
   ) {
     service.createGoods(goodsRequest);
     return new ResponseEntity<CommonResponse<String>>(
-      new CommonResponse<String>(
-        true,
-        null,
-        "create goods success",
-        HttpStatus.OK.value()
-      ),
+      new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
       null,
       HttpStatus.OK.value()
     );
@@ -124,7 +119,7 @@ public class GoodsController extends AbstractController<GoodsService> {
       new CommonResponse<String>(
         true,
         null,
-        "update goods success",
+        "Cập nhật thành công",
         HttpStatus.OK.value()
       ),
       null,

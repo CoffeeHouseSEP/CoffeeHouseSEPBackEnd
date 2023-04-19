@@ -37,7 +37,7 @@ public class BranchGoodsDisableServiceImpl
   ) {
     Branch branch = branchRepository
       .getOneByAttribute("branchId", branchId)
-      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chi nhánh"));
     HashMap<String, String> allParams = new HashMap<>();
     allParams.put("branchId", branchId);
     List<BranchGoodsDisable> list = repository
@@ -84,10 +84,10 @@ public class BranchGoodsDisableServiceImpl
     validate(req);
     Goods goods = goodsRepository
       .getOneByAttribute("goodsId", req.getGoodsId())
-      .orElseThrow(() -> new ResourceNotFoundException("goods not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm"));
     Branch branch = branchRepository
       .getOneByAttribute("branchId", req.getBranchId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chi nhánh"));
     HashMap<String, String> allParams = new HashMap<>();
     allParams.put("branchId", req.getBranchId());
     allParams.put("goodsId", req.getGoodsId());
@@ -95,12 +95,15 @@ public class BranchGoodsDisableServiceImpl
       .getListOrEntity(allParams, "asc", 0, 0, "")
       .get();
     if (!list.isEmpty() && isCreate) {
-      errors.put("goodsId", "goods is disabled in branch already");
-      throw new InvalidRequestException(errors, "goods is disabled in branch already");
+      errors.put("goodsId", "Sản phẩm này đã bị ẩn khỏi chi nhánh");
+      throw new InvalidRequestException(errors, "Sản phẩm này đã bị ẩn khỏi chi nhánh");
     }
     if (list.isEmpty() && !isCreate) {
-      errors.put("goodsId", "goods is not disabled in branch");
-      throw new InvalidRequestException(errors, "goods is not disabled in branch");
+      errors.put("goodsId", "Sản phẩm này đã được sử dụng tại chi nhánh");
+      throw new InvalidRequestException(
+        errors,
+        "Sản phẩm này đã được sử dụng tại chi nhánh"
+      );
     }
     return list;
   }
@@ -108,7 +111,7 @@ public class BranchGoodsDisableServiceImpl
   private BranchGoodsDisableReq setUpBranch(BranchGoodsDisableReq req) {
     BranchRes branch = branchRepository
       .getBranchByManagerId(req.getUserId())
-      .orElseThrow(() -> new ResourceNotFoundException("branch not found"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chi nhánh"));
     req.setBranchId(branch.getBranchId());
     return req;
   }
