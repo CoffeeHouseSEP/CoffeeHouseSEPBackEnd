@@ -216,6 +216,7 @@ public class OrdersServiceImpl
     ordersSave.setProvince(req.getProvince());
     ordersSave.setWard(req.getWard());
     ordersSave.setDistrict(req.getDistrict());
+    ordersSave.setDescription(req.getDescription());
     repository.insertAndUpdate(ordersSave, false);
     //Step 4: END
   }
