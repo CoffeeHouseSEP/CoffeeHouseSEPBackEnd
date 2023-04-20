@@ -1,22 +1,65 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            font-size: 48px;
+            background-color: #fef9f2;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .panel-container {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            font-size: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+            max-width: 400px;
+        }
+
+        .panel-container strong {
+            line-height: 40px;
+            font-size: 25px;
+            color: #53382c
+        }
+
+        .panel-container p {
+            font-size: 20px;
+            color: #53382c
+
+        }
+        .panel-container .img {
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
-<body>
-<p th:text="${'Xin chào, ' + name}"></p>
-<p> Chào mừng bạn đến với hệ thống Coffee Chain: </p>
-<p th:text="${'- Tên truy cập: ' + username}"></p>
-<p th:text="${'- Mật khẩu truy cập: ' + password}"></p>
 
-<p>Chúc bạn một ngày mới tốt lành!</p>
-<p>Đây là email tự động vui lòng không trả lời.</p>
+<body>
+
+    <div id="panel" class="panel-container">
+        <img class="img" src='https://images.unsplash.com/photo-1586252999747-9c4393922b69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80'/>
+        <p th:text="${'Xin chào, ' + name}"></p>
+        <strong> Chào mừng bạn đến với hệ thống Coffee Chain: </strong>
+        <p th:text="${'- Tên truy cập: ' + username}"></p>
+        <p th:text="${'- Mật khẩu truy cập: ' + password}"></p>
+
+        <p>Chúc bạn một ngày mới tốt lành!</p>
+        <p>Đây là email tự động vui lòng không trả lời.</p>
+    </div>
 </body>
+
 </html>

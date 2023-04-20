@@ -199,7 +199,7 @@ public class InternalUserServiceImpl
       Map<String, Object> props = new HashMap<>();
       props.put("name", user.getFullName());
       props.put("username", user.getRegisterName());
-      props.put("password", user.getRegisterPassword());
+      props.put("password", rawPass);
       DataMailDto dataMailDto = new DataMailDto()
         .builder()
         .to(user.getEmail())
