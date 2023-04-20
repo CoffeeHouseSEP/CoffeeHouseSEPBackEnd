@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUserLoginReq {
+  @NotNull(message = "Tên đăng nhập không đúng định dạng")
   @Pattern(
     regexp = TypeValidation.USERNAME,
     message = "Tên đăng nhập không đúng định dạng"
