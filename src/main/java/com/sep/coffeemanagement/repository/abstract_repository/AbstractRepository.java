@@ -23,11 +23,14 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public abstract class AbstractRepository {
+
   @Autowired
   @Qualifier("MainJdbcTemplate")
   protected JdbcTemplate jdbcTemplate;
 
-  protected AppLogger APP_LOGGER = LoggerFactory.getLogger(LoggerType.APPLICATION);
+  protected AppLogger APP_LOGGER = LoggerFactory.getLogger(
+    LoggerType.APPLICATION
+  );
 
   protected boolean isFirstCondition = true;
 
@@ -39,7 +42,10 @@ public abstract class AbstractRepository {
 
   protected <T> Optional<List<T>> replaceQuery(String sql, Class<T> clazz) {
     try {
-      List<T> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(clazz));
+      List<T> list = jdbcTemplate.query(
+        sql,
+        new BeanPropertyRowMapper<>(clazz)
+      );
       return Optional.of(list);
     } catch (BadSqlGrammarException | NoSuchElementException e) {
       APP_LOGGER.error("ERROR SQL QUERY: " + sql);
@@ -82,7 +88,8 @@ public abstract class AbstractRepository {
             try {
               if (fields[i].get(entity) == null) {
                 sql.append(
-                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) + "=null"
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                  "=null"
                 );
               } else {
                 sql.append(
@@ -95,13 +102,19 @@ public abstract class AbstractRepository {
               }
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
-                "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
+                "Not found " +
+                fields[i].getName() +
+                " in " +
+                entity.getClass().getName()
               );
               throw new BadSqlException("something went wrong");
             }
           }
           //anhpd modify
-          if (fields[i].getType() == int.class || fields[i].getType() == double.class) {
+          if (
+            fields[i].getType() == int.class ||
+            fields[i].getType() == double.class
+          ) {
             try {
               sql.append(
                 StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
@@ -110,7 +123,10 @@ public abstract class AbstractRepository {
               );
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
-                "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
+                "Not found " +
+                fields[i].getName() +
+                " in " +
+                entity.getClass().getName()
               );
               throw new BadSqlException("something went wrong");
             }
@@ -120,7 +136,8 @@ public abstract class AbstractRepository {
               Date date = (Date) fields[i].get(entity);
               if (date == null) {
                 sql.append(
-                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) + "=null"
+                  StringUtils.camelCaseToSnakeCase(fields[i].getName()) +
+                  "=null"
                 );
               } else {
                 sql.append(
@@ -133,7 +150,10 @@ public abstract class AbstractRepository {
               }
             } catch (IllegalArgumentException | IllegalAccessException e1) {
               APP_LOGGER.error(
-                "Not found " + fields[i].getName() + " in " + entity.getClass().getName()
+                "Not found " +
+                fields[i].getName() +
+                " in " +
+                entity.getClass().getName()
               );
               throw new BadSqlException("something went wrong");
             }
@@ -143,7 +163,11 @@ public abstract class AbstractRepository {
           }
         }
         sql.append(
-          generateConditionInQuery(fieldId, fieldId.get(entity).toString(), idField)
+          generateConditionInQuery(
+            fieldId,
+            fieldId.get(entity).toString(),
+            idField
+          )
         );
       } catch (
         EmptyResultDataAccessException
@@ -178,7 +202,9 @@ public abstract class AbstractRepository {
           }
           if (isInsert) {
             fields[i].setAccessible(true);
-            fieldInsert.append(StringUtils.camelCaseToSnakeCase(fields[i].getName()));
+            fieldInsert.append(
+              StringUtils.camelCaseToSnakeCase(fields[i].getName())
+            );
             if (fields[i].getType() == String.class) {
               try {
                 if (fields[i].get(entity) == null) {
@@ -197,7 +223,10 @@ public abstract class AbstractRepository {
               }
             }
             //anhpd modify
-            if (fields[i].getType() == int.class || fields[i].getType() == double.class) {
+            if (
+              fields[i].getType() == int.class ||
+              fields[i].getType() == double.class
+            ) {
               try {
                 valueInsert.append(fields[i].get(entity));
               } catch (IllegalArgumentException | IllegalAccessException e1) {
@@ -216,7 +245,9 @@ public abstract class AbstractRepository {
                 if (date == null) {
                   valueInsert.append("null");
                 } else {
-                  valueInsert.append("'" + new java.sql.Date(date.getTime()) + "'");
+                  valueInsert.append(
+                    "'" + new java.sql.Date(date.getTime()) + "'"
+                  );
                 }
               } catch (IllegalArgumentException | IllegalAccessException e1) {
                 APP_LOGGER.error(
@@ -236,7 +267,9 @@ public abstract class AbstractRepository {
         }
         fieldInsert.append(")");
         valueInsert.append(")");
-        sql.append(fieldInsert.toString() + " VALUES " + valueInsert.toString());
+        sql.append(
+          fieldInsert.toString() + " VALUES " + valueInsert.toString()
+        );
       } catch (
         EmptyResultDataAccessException
         | IllegalArgumentException
@@ -267,7 +300,11 @@ public abstract class AbstractRepository {
     return " OR ";
   }
 
-  protected String generateConditionInQuery(Field field, String value, String fieldId) {
+  protected String generateConditionInQuery(
+    Field field,
+    String value,
+    String fieldId
+  ) {
     StringBuilder result = new StringBuilder();
     if (field.getName().compareTo(fieldId) == 0) {
       result.append(insertFirstCondition(""));
@@ -292,7 +329,9 @@ public abstract class AbstractRepository {
           .append(" = ")
           .append(valueParse);
       } catch (NumberFormatException e) {
-        APP_LOGGER.error("error parse number: " + field.getName() + " = " + value);
+        APP_LOGGER.error(
+          "error parse number: " + field.getName() + " = " + value
+        );
       }
     } else if (field.getType() == Date.class) {
       if (value.matches(TypeValidation.DATE)) {
@@ -317,7 +356,10 @@ public abstract class AbstractRepository {
         ) {
           result.append(insertFirstCondition("date"));
           result.append(
-            StringUtils.camelCaseToSnakeCase(field.getName()) + " >= '" + values[i] + "'"
+            StringUtils.camelCaseToSnakeCase(field.getName()) +
+            " >= '" +
+            values[i] +
+            "'"
           );
           result.append(" AND ");
           result.append(
@@ -341,6 +383,10 @@ public abstract class AbstractRepository {
     String sortField,
     String fieldId
   ) {
+    counting = 0;
+    hasAnd = 0;
+    maxLength = 0;
+    isFirstCondition = true;
     Field[] fields = clazz.getDeclaredFields();
     StringBuilder result = new StringBuilder();
     for (Map.Entry<String, String> items : allParams.entrySet()) {
@@ -358,7 +404,9 @@ public abstract class AbstractRepository {
               result.append(generateDateCondition(field, values));
             } else {
               for (int i = 0; i < values.length; i++) {
-                result.append(generateConditionInQuery(field, values[i], fieldId));
+                result.append(
+                  generateConditionInQuery(field, values[i], fieldId)
+                );
               }
             }
           }
@@ -366,10 +414,6 @@ public abstract class AbstractRepository {
       }
       counting++;
     }
-    counting = 0;
-    hasAnd = 0;
-    maxLength = 0;
-    isFirstCondition = true;
     if (
       !org.springframework.util.StringUtils.hasText(keySort) |
       !org.springframework.util.StringUtils.hasText(sortField)
@@ -393,13 +437,20 @@ public abstract class AbstractRepository {
     return result.toString();
   }
 
-  protected int getTotal(Map<String, String> allParams, Class<?> clazz, String fieldId) {
+  protected int getTotal(
+    Map<String, String> allParams,
+    Class<?> clazz,
+    String fieldId
+  ) {
     StringBuilder sql = new StringBuilder();
     System.out.println(clazz.getSimpleName());
     sql.append(
-      "SELECT COUNT(*) FROM " + StringUtils.camelCaseToSnakeCase(clazz.getSimpleName())
+      "SELECT COUNT(*) FROM " +
+      StringUtils.camelCaseToSnakeCase(clazz.getSimpleName())
     );
-    sql.append(convertParamsFilterSelectQuery(allParams, clazz, 0, 0, "", "", fieldId));
+    sql.append(
+      convertParamsFilterSelectQuery(allParams, clazz, 0, 0, "", "", fieldId)
+    );
     try {
       int result = jdbcTemplate.queryForObject(sql.toString(), Integer.class);
       return result;
@@ -414,7 +465,10 @@ public abstract class AbstractRepository {
 
   protected List<String> listAttributeName(Class<?> clazz) {
     Field[] fields = clazz.getDeclaredFields();
-    return Arrays.stream(fields).map(Field::getName).collect(Collectors.toList());
+    return Arrays
+      .stream(fields)
+      .map(Field::getName)
+      .collect(Collectors.toList());
   }
 
   protected String attributeNamesForSelect(Class<?> clazz) {
