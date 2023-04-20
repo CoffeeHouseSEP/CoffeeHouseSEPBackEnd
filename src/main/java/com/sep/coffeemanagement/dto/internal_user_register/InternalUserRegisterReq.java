@@ -25,9 +25,8 @@ public class InternalUserRegisterReq {
   @Pattern(regexp = TypeValidation.EMAIL, message = "Email không đúng định dạng")
   private String email;
 
-  @Pattern(
-    regexp = TypeValidation.FULL_NAME,
-    message = "Tên người dùng không đúng định dạng"
-  )
+  @NotEmpty(message = "Tên người dùng không được để trống")
+  @NotNull(message = "Tên người dùng không được để trống")
+  @NotBlank(message = "Tên người dùng không được để trống")
   private String fullName;
 }

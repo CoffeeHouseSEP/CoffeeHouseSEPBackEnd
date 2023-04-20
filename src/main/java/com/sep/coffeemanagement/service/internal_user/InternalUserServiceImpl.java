@@ -199,7 +199,7 @@ public class InternalUserServiceImpl
       Map<String, Object> props = new HashMap<>();
       props.put("name", user.getFullName());
       props.put("username", user.getRegisterName());
-      props.put("password", user.getRegisterPassword());
+      props.put("password", rawPass);
       DataMailDto dataMailDto = new DataMailDto()
         .builder()
         .to(user.getEmail())
@@ -262,16 +262,21 @@ public class InternalUserServiceImpl
   @Override
   public void changePassword(String id, String newPass) {
     newPass = newPass.trim();
+    Map<String,String>  e =  new HashMap<>();
     if (StringUtils.isEmpty(id)) {
+      e.put("id","Không tìm thấy!");
       throw new InvalidRequestException(
-        new HashMap<String, String>(),
+        e,
         "Không tìm thấy người dùng"
       );
     }
-    if (newPass == null | newPass.length() == 0) throw new InvalidRequestException(
-      new HashMap<>(),
-      "Mật khẩu không được để trống"
-    );
+    if (newPass == null | newPass.length() == 0) {
+      e.put("newPass","Không được để trống!");
+      throw new InvalidRequestException(
+              e,
+              "Mật khẩu không được để trống"
+      );
+    }
     String decodedPassword = new String(
       Base64.decodeBase64(newPass),
       StandardCharsets.UTF_8
