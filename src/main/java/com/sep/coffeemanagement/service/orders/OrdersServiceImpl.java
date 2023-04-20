@@ -111,7 +111,8 @@ public class OrdersServiceImpl
                   DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
                   DateTime.YYYY_MM_DD
                 ),
-                orders.getReason()
+                orders.getReason(),
+                orders.getDescription()
               )
           )
           .collect(Collectors.toList()),

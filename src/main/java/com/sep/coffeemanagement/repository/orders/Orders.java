@@ -24,4 +24,5 @@ public class Orders {
   private String province;
   private String ward;
   private String district;
+  private String description;
 }
