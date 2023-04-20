@@ -30,6 +30,7 @@ public class BranchReq {
   @Length(max = 1000, message = "Địa chỉ không dược vượt quá 1000 ký tự")
   private String address;
 
+  @NotNull(message = "Sai định dạng số điện thoại")
   @Pattern(regexp = TypeValidation.PHONE, message = "Sai định dạng số điện thoại")
   private String phoneNumber;
 
