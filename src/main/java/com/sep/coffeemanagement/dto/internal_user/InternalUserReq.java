@@ -13,15 +13,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InternalUserReq {
+  @NotNull(message = "Tên đăng nhập không đúng định dạng")
   @Pattern(
     regexp = TypeValidation.USERNAME,
     message = "Tên đăng nhập không đúng định dạng"
   )
   private String loginName;
 
+  @NotNull(message = "Số điện thoại không đúng định dạng")
   @Pattern(regexp = TypeValidation.PHONE, message = "Số điện thoại không đúng định dạng")
   private String phoneNumber;
 
+  @NotNull(message = "Email không đúng định dạng")
   @Pattern(regexp = TypeValidation.EMAIL, message = "Email không đúng định dạng")
   private String email;
 
