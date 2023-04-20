@@ -5,6 +5,7 @@ import com.sep.coffeemanagement.constant.TypeValidation;
 import com.sep.coffeemanagement.dto.internal_user_login.InternalUserLoginReq;
 import com.sep.coffeemanagement.dto.internal_user_login.InternalUserLoginRes;
 import com.sep.coffeemanagement.exception.InvalidRequestException;
+import com.sep.coffeemanagement.exception.ResourceNotFoundException;
 import com.sep.coffeemanagement.jwt.JwtValidation;
 import com.sep.coffeemanagement.repository.internal_user.InternalUser;
 import com.sep.coffeemanagement.repository.internal_user.UserRepository;
@@ -27,6 +28,7 @@ public class AuthenticationImpl
 
   @Override
   public Optional<InternalUserLoginRes> login(InternalUserLoginReq internalUserLoginReq) {
+    validate(internalUserLoginReq);
     Map<String, String> error = new HashMap<>();
     if (!checkExistUser(internalUserLoginReq.getLoginName().trim())) {
       error.put("loginName", "Không tìm thấy tên đăng nhập");
@@ -43,6 +45,10 @@ public class AuthenticationImpl
       Base64.decodeBase64(internalUserLoginReq.getLoginPassword()),
       StandardCharsets.UTF_8
     );
+    if (!decodedPassword.matches(TypeValidation.PASSWORD)) {
+      error.put("loginPassword", "Mật khẩu không đúng định dạng");
+      throw new InvalidRequestException(error, "Mật khẩu không đúng định dạng");
+    }
     System.out.println(decodedPassword);
     if (!bCryptPasswordEncoder().matches(decodedPassword, user.getEncrPassword())) {
       error.put("loginPassword", "Mật khẩu không chính xác");
@@ -58,7 +64,7 @@ public class AuthenticationImpl
   public void logout(String id) {
     InternalUser internalUser = repository
       .getOneByAttribute("internalUserId", id)
-      .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
     internalUser.setToken("");
     repository.insertAndUpdate(internalUser, true);
   }

@@ -262,20 +262,14 @@ public class InternalUserServiceImpl
   @Override
   public void changePassword(String id, String newPass) {
     newPass = newPass.trim();
-    Map<String,String>  e =  new HashMap<>();
+    Map<String, String> e = new HashMap<>();
     if (StringUtils.isEmpty(id)) {
-      e.put("id","Không tìm thấy!");
-      throw new InvalidRequestException(
-        e,
-        "Không tìm thấy người dùng"
-      );
+      e.put("id", "Không tìm thấy!");
+      throw new InvalidRequestException(e, "Không tìm thấy người dùng");
     }
     if (newPass == null | newPass.length() == 0) {
-      e.put("newPass","Không được để trống!");
-      throw new InvalidRequestException(
-              e,
-              "Mật khẩu không được để trống"
-      );
+      e.put("newPass", "Không được để trống!");
+      throw new InvalidRequestException(e, "Mật khẩu không được để trống");
     }
     String decodedPassword = new String(
       Base64.decodeBase64(newPass),
