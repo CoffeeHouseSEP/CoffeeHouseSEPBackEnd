@@ -204,7 +204,7 @@ public class InternalUserServiceTest {
         authentication.login(internalUserLoginReq);
       }
     );
-    String expected = "Người dùng đã bị vô hiệu hóa";
+    String expected = "Mật khẩu không chính xác";
     Assert.assertEquals(expected, exception.getMessage());
   }
 
