@@ -5,34 +5,10 @@
 <head>
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
     <style>
-        body {
-            background-color: #fef9f2;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-            margin: 0;
-        }
-
-        .panel-container {
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
-            font-size: 90%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 30px;
-            max-width: 400px;
-        }
-
-        .panel-container strong {
+        .panel-container .title {
             line-height: 40px;
-            font-size: 25px;
+            font-size: 30px;
+            font-weight: bold;
             color: #53382c
         }
 
@@ -50,12 +26,11 @@
 
 <body>
 
-    <div id="panel" class="panel-container">
+    <div class="panel-container"> 
         <div th:text="${'Xin chào, ' + name}"></div>
-        <strong> Chào mừng bạn đến với hệ thống Coffee Chain: </strong>
+        <div class="title"> Chào mừng bạn đến với hệ thống Coffee Chain: </div>
         <div th:text="${'- Tên truy cập: ' + username}"></div>
         <div th:text="${'- Mật khẩu truy cập: ' + password}"></div>
-
         <div>Chúc bạn một ngày mới tốt lành!</div>
         <div>Đây là email tự động vui lòng không trả lời.</div>
     </div>
