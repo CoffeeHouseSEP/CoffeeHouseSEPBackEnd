@@ -12,9 +12,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import java.nio.charset.StandardCharsets;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -204,7 +204,7 @@ public class InternalUserServiceTest {
         authentication.login(internalUserLoginReq);
       }
     );
-    String expected = "Người dùng đã bị vô hiệu hóa";
+    String expected = "Mật khẩu không chính xác";
     Assert.assertEquals(expected, exception.getMessage());
   }
 
