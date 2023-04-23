@@ -59,7 +59,6 @@ public class BranchServiceImpl
         branch.getWard(),
         branch.getDistrict(),
         branch.getProvince(),
-        branch.getStreet(),
         branch.getBranchManagerName()
       )
     );
@@ -107,7 +106,6 @@ public class BranchServiceImpl
                 branch.getWard(),
                 branch.getDistrict(),
                 branch.getProvince(),
-                branch.getStreet(),
                 branch.getBranchManagerName()
               )
           )
@@ -132,7 +130,6 @@ public class BranchServiceImpl
     branch.setCreatedDate(DateFormat.getCurrentTime());
     branch.setCancelledDate(null);
     branch.setAddress(req.getAddress());
-    branch.setStreet(req.getStreet());
     branch.setWard(req.getWard());
     branch.setDistrict(req.getDistrict());
     branch.setProvince(req.getProvince());
@@ -162,10 +159,11 @@ public class BranchServiceImpl
       imageInfoRepository.insertAndUpdate(imageInfo, true);
     }
     Branch branchUpdate = objectMapper.convertValue(req, Branch.class);
+    branchUpdate.setCreatedDate(branch.getCreatedDate());
+    branchUpdate.setCancelledDate(branch.getCancelledDate());
     if (0 == req.getStatus()) {
       branchUpdate.setCancelledDate(DateFormat.getCurrentTime());
     }
-    validate(branchUpdate);
     repository.insertAndUpdate(branchUpdate, true);
   }
 

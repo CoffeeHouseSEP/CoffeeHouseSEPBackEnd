@@ -44,8 +44,6 @@ public class BranchReq {
   private String branchManagerId;
 
   private int status;
-  private Date createdDate;
-  private Date cancelledDate;
 
   @NotEmpty(message = "Phường/Xã không được để trống")
   @NotBlank(message = "Phường/Xã không được để trống")
@@ -61,11 +59,6 @@ public class BranchReq {
   @NotBlank(message = "Tỉnh/Thành phố không được để trống")
   @NotNull(message = "Tỉnh/Thành phố không được để trống")
   private String province;
-
-  @NotEmpty(message = "Đường không được để trống")
-  @NotBlank(message = "Đường không được để trống")
-  @NotNull(message = "Đường không được để trống")
-  private String street;
 
   private ImageInfoReq image;
 }
