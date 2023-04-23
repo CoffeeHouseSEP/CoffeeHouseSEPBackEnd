@@ -41,5 +41,9 @@ public class OrdersCreateReq {
   private String district;
 
   private String couponId;
+
+  @Length(max = 1000, message = "Lưu ý không dược vượt quá 1000 ký tự")
+  private String description;
+
   private List<OrderDetailReq> listOrderDetail;
 }

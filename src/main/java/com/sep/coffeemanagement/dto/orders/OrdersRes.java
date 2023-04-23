@@ -26,4 +26,5 @@ public class OrdersRes {
   private String approvedDate;
   private String cancelledDate;
   private String reason;
+  private String description;
 }

@@ -111,7 +111,8 @@ public class OrdersServiceImpl
                   DateTime.YYYY_MM_DD_HH_MM_SS_HYPHEN,
                   DateTime.YYYY_MM_DD
                 ),
-                orders.getReason()
+                orders.getReason(),
+                orders.getDescription()
               )
           )
           .collect(Collectors.toList()),
@@ -215,6 +216,7 @@ public class OrdersServiceImpl
     ordersSave.setProvince(req.getProvince());
     ordersSave.setWard(req.getWard());
     ordersSave.setDistrict(req.getDistrict());
+    ordersSave.setDescription(req.getDescription());
     repository.insertAndUpdate(ordersSave, false);
     //Step 4: END
   }
