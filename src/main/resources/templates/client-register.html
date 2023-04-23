@@ -36,7 +36,7 @@
             color: #53382c
         }
 
-        .panel-container p {
+        .panel-container div {
             font-size: 20px;
             color: #53382c
 
@@ -51,14 +51,13 @@
 <body>
 
     <div id="panel" class="panel-container">
-        <img class="img" src='https://images.unsplash.com/photo-1586252999747-9c4393922b69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80'/>
-        <p th:text="${'Xin chào, ' + name}"></p>
+        <div th:text="${'Xin chào, ' + name}"></div>
         <strong> Chào mừng bạn đến với hệ thống Coffee Chain: </strong>
-        <p th:text="${'- Tên truy cập: ' + username}"></p>
-        <p th:text="${'- Mật khẩu truy cập: ' + password}"></p>
+        <div th:text="${'- Tên truy cập: ' + username}"></div>
+        <div th:text="${'- Mật khẩu truy cập: ' + password}"></div>
 
-        <p>Chúc bạn một ngày mới tốt lành!</p>
-        <p>Đây là email tự động vui lòng không trả lời.</p>
+        <div>Chúc bạn một ngày mới tốt lành!</div>
+        <div>Đây là email tự động vui lòng không trả lời.</div>
     </div>
 </body>
 
