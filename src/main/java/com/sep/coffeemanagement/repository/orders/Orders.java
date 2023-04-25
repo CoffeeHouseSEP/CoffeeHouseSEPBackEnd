@@ -25,4 +25,5 @@ public class Orders {
   private String ward;
   private String district;
   private String description;
+  private String phoneNumber;
 }

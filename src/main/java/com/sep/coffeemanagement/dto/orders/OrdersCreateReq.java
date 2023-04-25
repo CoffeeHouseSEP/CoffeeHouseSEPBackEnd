@@ -1,10 +1,12 @@
 package com.sep.coffeemanagement.dto.orders;
 
+import com.sep.coffeemanagement.constant.TypeValidation;
 import com.sep.coffeemanagement.dto.order_detail.OrderDetailReq;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +46,10 @@ public class OrdersCreateReq {
 
   @Length(max = 1000, message = "Lưu ý không dược vượt quá 1000 ký tự")
   private String description;
+
+  @NotNull(message = "Sai định dạng số điện thoại")
+  @Pattern(regexp = TypeValidation.PHONE, message = "Sai định dạng số điện thoại")
+  private String phoneNumber;
 
   private List<OrderDetailReq> listOrderDetail;
 }
