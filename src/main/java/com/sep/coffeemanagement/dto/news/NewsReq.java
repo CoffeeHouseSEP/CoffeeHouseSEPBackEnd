@@ -29,7 +29,6 @@ public class NewsReq {
   private String content;
 
   private String createdBy;
-  private Date createdDate;
   private int status;
   private ImageInfoReq image;
 }

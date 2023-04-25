@@ -229,7 +229,7 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      errors.put("goodsName", "Trùng tên sản phẩm");
+      errors.put("name", "Trùng tên sản phẩm");
       throw new InvalidRequestException(errors, "Trùng tên sản phẩm");
     }
     if (
@@ -239,7 +239,7 @@ public class GoodsServiceImpl
         isUpdate ? req.getGoodsId() : ""
       )
     ) {
-      errors.put("goodsCode", "Trùng mã sản phẩm");
+      errors.put("code", "Trùng mã sản phẩm");
       throw new InvalidRequestException(errors, "Trùng mã sản phẩm");
     }
     Category category = categoryRepository
