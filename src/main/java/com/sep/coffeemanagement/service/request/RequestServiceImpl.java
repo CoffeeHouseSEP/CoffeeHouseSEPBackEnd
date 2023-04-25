@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -100,6 +101,7 @@ public class RequestServiceImpl
   }
 
   @Override
+  @Transactional
   public void createRequest(RequestReq req) {
     double requestTotalPrice = 0;
     checkValidRequestRequest(req);
@@ -130,6 +132,7 @@ public class RequestServiceImpl
   }
 
   @Override
+  @Transactional
   public void updateRequest(RequestReq req) {
     Map<String, String> errors = generateError(RequestReq.class);
     double requestTotalPrice = 0;
