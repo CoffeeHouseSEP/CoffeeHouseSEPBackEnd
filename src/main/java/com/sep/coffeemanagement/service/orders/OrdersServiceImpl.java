@@ -239,6 +239,15 @@ public class OrdersServiceImpl
       orders.setApprovedDate(DateFormat.getCurrentTime());
     } else if (Constant.ORDER_STATUS.CANCELLED == status) {
       if (StringUtils.hasText(req.getReason())) {
+        if (
+          !Constant.ORDER_STATUS.PENDING_APPROVED.toString().equals(orders.getStatus())
+        ) {
+          errors.put("status", "Đơn hàng không ở trong trạng thái CHỜ DUYỆT");
+          throw new InvalidRequestException(
+            errors,
+            "Đơn hàng không ở trong trạng thái CHỜ DUYỆT"
+          );
+        }
         orders.setStatus(Constant.REQUEST_STATUS.CANCELLED.toString());
         orders.setCancelledDate(DateFormat.getCurrentTime());
         orders.setReason(req.getReason());
@@ -246,6 +255,15 @@ public class OrdersServiceImpl
         errors.put("reason", "Lý do hủy không được để trống");
         throw new InvalidRequestException(errors, "Lý do hủy không được để trống");
       }
+    } else if (Constant.ORDER_STATUS.COMPLETED == status) {
+      if (!Constant.ORDER_STATUS.APPROVED.toString().equals(orders.getStatus())) {
+        errors.put("status", "Đơn hàng không ở trong trạng thái ĐÃ DUYỆT");
+        throw new InvalidRequestException(
+          errors,
+          "Đơn hàng không ở trong trạng thái ĐÃ DUYỆT"
+        );
+      }
+      orders.setStatus(Constant.ORDER_STATUS.COMPLETED.toString());
     }
     repository.insertAndUpdate(orders, true);
   }

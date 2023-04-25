@@ -1,10 +1,12 @@
 package com.sep.coffeemanagement.repository.request;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.request.RequestRes;
 import com.sep.coffeemanagement.repository.abstract_repository.BaseRepository;
 import com.sep.coffeemanagement.repository.news.News;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -45,5 +47,22 @@ public class RequestRepository extends BaseRepository<Request> {
         )
       );
     return replaceQuery(sb.toString(), RequestRes.class).get();
+  }
+
+  public Optional<List<Request>> getListIncompleteRequestInBranch(String branchId) {
+    StringBuilder sb = new StringBuilder(" select ");
+    sb.append(" * from request where ");
+    sb.append(" branch_id = '");
+    sb.append(branchId);
+    sb.append("'");
+    sb.append(" and ");
+    sb.append(" status not in (");
+    sb.append("'");
+    sb.append(Constant.REQUEST_STATUS.COMPLETED.toString());
+    sb.append("',");
+    sb.append("'");
+    sb.append(Constant.REQUEST_STATUS.CANCELLED.toString());
+    sb.append("')");
+    return replaceQuery(sb.toString(), Request.class);
   }
 }
