@@ -191,6 +191,7 @@ public class InternalUserServiceImpl
       .email(user.getEmail())
       .role(Constant.USER_ROLE)
       .fullName(user.getFullName())
+      .phoneNumber(user.getPhone())
       .status(1)
       .build();
     repository.insertAndUpdate(userSave, false);
