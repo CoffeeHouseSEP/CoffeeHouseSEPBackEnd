@@ -104,7 +104,7 @@ public class RequestServiceImpl
   @Transactional
   public void createRequest(RequestReq req) {
     double requestTotalPrice = 0;
-    checkValidRequestRequest(req);
+    checkValidRequestRequest(req, false);
     String newId = UUID.randomUUID().toString();
     for (RequestDetailReq requestDetailReq : req.getListRequestDetail()) {
       validate(requestDetailReq);
@@ -136,7 +136,7 @@ public class RequestServiceImpl
   public void updateRequest(RequestReq req) {
     Map<String, String> errors = generateError(RequestReq.class);
     double requestTotalPrice = 0;
-    checkValidRequestRequest(req);
+    checkValidRequestRequest(req, true);
     Request request = repository
       .getOneByAttribute("requestId", req.getRequestId())
       .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy yêu cầu nhập"));
@@ -231,7 +231,7 @@ public class RequestServiceImpl
     repository.insertAndUpdate(request, true);
   }
 
-  public void checkValidRequestRequest(RequestReq req) {
+  public void checkValidRequestRequest(RequestReq req, boolean isUpdate) {
     Map<String, String> errors = generateError(RequestReq.class);
     validate(req);
     BranchRes branch = branchRepository
@@ -245,7 +245,8 @@ public class RequestServiceImpl
       throw new InvalidRequestException(errors, "Chi tiết hàng hóa không được để trống");
     }
     Optional<List<Request>> listIncompleteRequest = repository.getListIncompleteRequestInBranch(
-      branch.getBranchId()
+      branch.getBranchId(),
+      isUpdate ? req.getRequestId() : ""
     );
     if (!listIncompleteRequest.get().isEmpty()) {
       errors.put("branchId", "Chi nhánh có yêu cầu nhập chưa hoàn tất quy trình");
