@@ -19,7 +19,7 @@ public class NewsReq {
   @NotNull(message = "Tiêu đề không được để trống")
   @NotEmpty(message = "Tiêu đề không được để trống")
   @NotBlank(message = "Tiêu đề không được để trống")
-  @Length(max = 2000, message = "Tiêu đề không được vượt qu 2000 ký tự")
+  @Length(max = 2000, message = "Tiêu đề không được vượt quá 2000 ký tự")
   private String title;
 
   @NotNull(message = "Nội dung không được để trống")

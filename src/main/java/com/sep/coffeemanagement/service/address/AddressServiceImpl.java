@@ -26,14 +26,21 @@ public class AddressServiceImpl
   private Reader reader;
   private Object j;
 
+
   public AddressServiceImpl() throws IOException, ParseException {
     is = this.getClass().getResourceAsStream("/Vietnam.json");
     reader = new InputStreamReader(is, "UTF-8");
     j = jsonParser.parse(reader);
   }
 
+  public AddressServiceImpl() throws UnsupportedEncodingException {
+    is = this.getClass().getResourceAsStream("/Vietnam.json");
+    reader = new InputStreamReader(is, "UTF-8");
+  }
+
   @Override
   public Optional<ProvinceResponse> getListAdrdress() {
+
     JSONObject jsonObject = (JSONObject) j;
     ProvinceResponse provices = objectMapper.convertValue(
       jsonObject,
