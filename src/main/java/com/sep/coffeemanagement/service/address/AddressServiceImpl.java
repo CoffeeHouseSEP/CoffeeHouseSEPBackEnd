@@ -34,6 +34,7 @@ public class AddressServiceImpl
 
   @Override
   public Optional<ProvinceResponse> getListAdrdress() {
+    System.out.println(j);
     JSONObject jsonObject = (JSONObject) j;
     ProvinceResponse provices = objectMapper.convertValue(
       jsonObject,
