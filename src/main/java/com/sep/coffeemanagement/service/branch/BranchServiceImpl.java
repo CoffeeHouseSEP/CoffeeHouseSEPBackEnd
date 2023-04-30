@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BranchServiceImpl
@@ -118,12 +119,13 @@ public class BranchServiceImpl
   }
 
   @Override
+  @Transactional
   public void createBranch(BranchReq req) throws InvalidRequestException {
     checkValidBranchRequest(req);
     Branch branch = objectMapper.convertValue(req, Branch.class);
     String newId = UUID.randomUUID().toString();
     ImageInfoReq imageReq = req.getImage();
-    imageReq.setObjectId(branch.getBranchManagerId());
+    imageReq.setObjectId(newId);
     ImageInfo imageInfo = objectMapper.convertValue(imageReq, ImageInfo.class);
     validate(imageReq);
     branch.setBranchId(newId);
@@ -139,6 +141,7 @@ public class BranchServiceImpl
   }
 
   @Override
+  @Transactional
   public void updateBranch(BranchReq req) {
     Branch branch = repository
       .getOneByAttribute("branchId", req.getBranchId())

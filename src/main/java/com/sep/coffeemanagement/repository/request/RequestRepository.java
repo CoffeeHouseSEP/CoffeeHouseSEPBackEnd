@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 @Repository
 public class RequestRepository extends BaseRepository<Request> {
@@ -49,7 +50,10 @@ public class RequestRepository extends BaseRepository<Request> {
     return replaceQuery(sb.toString(), RequestRes.class).get();
   }
 
-  public Optional<List<Request>> getListIncompleteRequestInBranch(String branchId) {
+  public Optional<List<Request>> getListIncompleteRequestInBranch(
+    String branchId,
+    String exceptId
+  ) {
     StringBuilder sb = new StringBuilder(" select ");
     sb.append(" * from request where ");
     sb.append(" branch_id = '");
@@ -63,6 +67,13 @@ public class RequestRepository extends BaseRepository<Request> {
     sb.append("'");
     sb.append(Constant.REQUEST_STATUS.CANCELLED.toString());
     sb.append("')");
+    if (StringUtils.hasText(exceptId)) {
+      sb.append(" and ");
+      sb.append(" request_id ");
+      sb.append(" NOT LIKE '");
+      sb.append(exceptId);
+      sb.append("'");
+    }
     return replaceQuery(sb.toString(), Request.class);
   }
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NewsServiceImpl
@@ -71,6 +72,7 @@ public class NewsServiceImpl
   }
 
   @Override
+  @Transactional
   public void createNews(NewsReq req) {
     validate(req);
     News news = objectMapper.convertValue(req, News.class);
@@ -90,12 +92,25 @@ public class NewsServiceImpl
   }
 
   @Override
+  @Transactional
   public void updateNews(NewsReq req) {
     News news = repository
       .getOneByAttribute("newsId", req.getNewsId())
       .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tin tức"));
-    ImageInfo imageInfo = objectMapper.convertValue(req.getImage(), ImageInfo.class);
-    imageInfoRepository.insertAndUpdate(imageInfo, true);
+    ImageInfo imageInfo = imageInfoRepository
+      .getOneByAttribute("objectId", req.getNewsId())
+      .orElse(null);
+    if (imageInfo == null) {
+      imageInfo = new ImageInfo();
+      imageInfo.setObjectId(req.getNewsId());
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, false);
+    } else {
+      imageInfo.setBase64(req.getImage().getBase64());
+      imageInfo.setPrefix(req.getImage().getPrefix());
+      imageInfoRepository.insertAndUpdate(imageInfo, true);
+    }
     validate(req);
     news.setTitle(req.getTitle());
     news.setContent(req.getContent());
