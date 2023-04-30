@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GoodsServiceImpl
@@ -143,6 +144,7 @@ public class GoodsServiceImpl
   }
 
   @Override
+  @Transactional
   public void createGoods(GoodsReq req) {
     checkValidGoodsRequest(req, false);
     Goods goods = objectMapper.convertValue(req, Goods.class);
@@ -169,6 +171,7 @@ public class GoodsServiceImpl
   }
 
   @Override
+  @Transactional
   public void updateGoods(GoodsReq req) {
     Goods goods = repository
       .getOneByAttribute("goodsId", req.getGoodsId())

@@ -112,7 +112,8 @@ public class OrdersServiceImpl
                   DateTime.YYYY_MM_DD
                 ),
                 orders.getReason(),
-                orders.getDescription()
+                orders.getDescription(),
+                orders.getPhoneNumber()
               )
           )
           .collect(Collectors.toList()),
@@ -217,6 +218,7 @@ public class OrdersServiceImpl
     ordersSave.setWard(req.getWard());
     ordersSave.setDistrict(req.getDistrict());
     ordersSave.setDescription(req.getDescription());
+    ordersSave.setPhoneNumber(req.getPhoneNumber());
     repository.insertAndUpdate(ordersSave, false);
     //Step 4: END
   }
