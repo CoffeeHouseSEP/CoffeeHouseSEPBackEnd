@@ -203,6 +203,19 @@ public class RequestServiceImpl
       request.setStatus(Constant.REQUEST_STATUS.COMPLETED.toString());
       request.setCompletedDate(DateFormat.getCurrentTime());
     } else if (Constant.REQUEST_STATUS.CANCELLED == status) {
+      if (
+        !Constant.REQUEST_STATUS.CREATED.toString().equals(request.getStatus()) &&
+        !Constant.REQUEST_STATUS.PENDING.toString().equals(request.getStatus())
+      ) {
+        errors.put(
+          "status",
+          "Yêu cầu nhập không ở trong trạng thái MỚI TẠO hoặc ĐANG XỬ LÝ"
+        );
+        throw new InvalidRequestException(
+          errors,
+          "Yêu cầu nhập không ở trong trạng thái MỚI TẠO hoặc ĐANG XỬ LÝ"
+        );
+      }
       if (StringUtils.hasText(req.getReason())) {
         request.setStatus(Constant.REQUEST_STATUS.CANCELLED.toString());
         request.setCancelledDate(DateFormat.getCurrentTime());
@@ -227,6 +240,16 @@ public class RequestServiceImpl
     if (req.getListRequestDetail() == null || req.getListRequestDetail().isEmpty()) {
       errors.put("listRequestDetail", "Chi tiết hàng hóa không được để trống");
       throw new InvalidRequestException(errors, "Chi tiết hàng hóa không được để trống");
+    }
+    Optional<List<Request>> listIncompleteRequest = repository.getListIncompleteRequestInBranch(
+      branch.getBranchId()
+    );
+    if (!listIncompleteRequest.get().isEmpty()) {
+      errors.put("branchId", "Chi nhánh có yêu cầu nhập chưa hoàn tất quy trình");
+      throw new InvalidRequestException(
+        errors,
+        "Chi nhánh có yêu cầu nhập chưa hoàn tất quy trình"
+      );
     }
   }
 }

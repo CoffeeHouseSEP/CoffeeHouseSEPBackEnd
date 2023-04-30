@@ -43,7 +43,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     } else if (Constant.USER_ROLE.equals(role)) {
       allParams.put("customerId", userId);
     } else if (Constant.ADMIN_ROLE.equals(role)) {
-      allParams.put("status", Constant.ORDER_STATUS.APPROVED.toString());
+      allParams.put("status", Constant.ORDER_STATUS.COMPLETED.toString());
     }
     return response(
       service.getListOrders(allParams, keySort, page, pageSize, sortField),
@@ -109,6 +109,27 @@ public class OrdersController extends AbstractController<OrdersService> {
         true,
         null,
         "Duyệt đơn hàng thành công",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PutMapping(value = "complete-orders")
+  public ResponseEntity<CommonResponse<String>> completeOrders(
+    @RequestParam String ordersId,
+    HttpServletRequest request
+  ) {
+    OrdersReq ordersRequest = new OrdersReq();
+    ordersRequest.setOrdersId(ordersId);
+    service.changeStatusOrders(ordersRequest, Constant.ORDER_STATUS.COMPLETED);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "Hoàn thành đơn hàng thành công",
         HttpStatus.OK.value()
       ),
       null,

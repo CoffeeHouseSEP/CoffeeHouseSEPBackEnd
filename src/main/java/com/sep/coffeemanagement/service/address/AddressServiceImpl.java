@@ -24,59 +24,44 @@ public class AddressServiceImpl
   private final JSONParser jsonParser = new JSONParser();
   private InputStream is;
   private Reader reader;
+  private Object j;
 
-  @Value("classpath:Vietnam.json")
-  private Resource resource;
-
-  public AddressServiceImpl() throws UnsupportedEncodingException {
+  public AddressServiceImpl() throws IOException, ParseException {
     is = this.getClass().getResourceAsStream("/Vietnam.json");
     reader = new InputStreamReader(is, "UTF-8");
+    j = jsonParser.parse(reader);
   }
 
   @Override
   public Optional<ProvinceResponse> getListAdrdress() {
-    try {
-      Object obj = jsonParser.parse(reader);
-      JSONObject jsonObject = (JSONObject) obj;
-      ProvinceResponse provices = objectMapper.convertValue(
-        jsonObject,
-        ProvinceResponse.class
-      );
-      provices.getProvinces().stream().forEach(e -> e.setDistrict(null));
-      if (provices == null) throw new ResourceNotFoundException("data is null");
-      return Optional.of(provices);
-    } catch (ParseException e) {
-      throw new ResourceNotFoundException("parse error");
-    } catch (IOException e) {
-      throw new ResourceNotFoundException("I/O error");
-    }
+    JSONObject jsonObject = (JSONObject) j;
+    ProvinceResponse provices = objectMapper.convertValue(
+      jsonObject,
+      ProvinceResponse.class
+    );
+    provices.getProvinces().stream().forEach(e -> e.setDistrict(null));
+    if (provices == null) throw new ResourceNotFoundException("data is null");
+    return Optional.of(provices);
   }
 
   @Override
   public Optional<DistrictResponse> getListDistrctByProvince(String provinceCode) {
-    try {
-      Object obj = jsonParser.parse(reader);
-      JSONObject jsonObject = (JSONObject) obj;
-      ProvinceResponse provices = objectMapper.convertValue(
-        jsonObject,
-        ProvinceResponse.class
-      );
-      if (provices == null) throw new ResourceNotFoundException("data is null");
-      Province provinceOptional = provices
-        .getProvinces()
-        .stream()
-        .filter(e -> provinceCode.equals(e.getCode()))
-        .collect(Collectors.toList())
-        .stream()
-        .findFirst()
-        .orElseThrow(() -> new ResourceNotFoundException("province is not found"));
-      DistrictResponse districtResponse = new DistrictResponse();
-      districtResponse.setDistricts(provinceOptional.getDistrict());
-      return Optional.of(districtResponse);
-    } catch (ParseException e) {
-      throw new ResourceNotFoundException("parse error");
-    } catch (IOException e) {
-      throw new ResourceNotFoundException("I/O error");
-    }
+    JSONObject jsonObject = (JSONObject) j;
+    ProvinceResponse provices = objectMapper.convertValue(
+      jsonObject,
+      ProvinceResponse.class
+    );
+    if (provices == null) throw new ResourceNotFoundException("data is null");
+    Province provinceOptional = provices
+      .getProvinces()
+      .stream()
+      .filter(e -> provinceCode.equals(e.getCode()))
+      .collect(Collectors.toList())
+      .stream()
+      .findFirst()
+      .orElseThrow(() -> new ResourceNotFoundException("province is not found"));
+    DistrictResponse districtResponse = new DistrictResponse();
+    districtResponse.setDistricts(provinceOptional.getDistrict());
+    return Optional.of(districtResponse);
   }
 }
