@@ -16,9 +16,7 @@ public class ImageInfoServiceImpl
 
   @Override
   public Optional<ImageInfoRes> getImageByObjectId(String id) {
-    ImageInfo imageInfo = repository
-      .getOneByAttribute("objectId", id)
-      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy ảnh"));
+    ImageInfo imageInfo = repository.getImageByObjectId(id);
     return Optional.of(
       new ImageInfoRes(
         imageInfo.getId(),
