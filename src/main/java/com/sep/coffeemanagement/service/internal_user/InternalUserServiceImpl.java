@@ -134,7 +134,6 @@ public class InternalUserServiceImpl
     validate(user);
     userSave.setLoginName(user.getLoginName());
     userSave.setPhoneNumber(user.getPhoneNumber());
-    userSave.setAddress(user.getAddress());
     userSave.setFullName(user.getFullName());
     repository.insertAndUpdate(userSave, true);
   }
@@ -155,7 +154,6 @@ public class InternalUserServiceImpl
       throw new InvalidRequestException(er, "Email đã tồn tại!");
     }
     userSave.setLoginName(userReq.getLoginName());
-    userSave.setAddress(userReq.getAddress());
     userSave.setPhoneNumber(userReq.getPhoneNumber());
     userSave.setFullName(userReq.getFullName());
     repository.insertAndUpdate(userSave, true);

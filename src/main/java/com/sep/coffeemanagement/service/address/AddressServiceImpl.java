@@ -22,15 +22,20 @@ public class AddressServiceImpl
   extends AbstractService<UserRepository>
   implements AddressService {
   private final JSONParser jsonParser = new JSONParser();
+  private InputStream is;
+  private Reader reader;
 
   @Value("classpath:Vietnam.json")
   private Resource resource;
 
+  public AddressServiceImpl() throws UnsupportedEncodingException {
+    is = this.getClass().getResourceAsStream("/Vietnam.json");
+    reader = new InputStreamReader(is, "UTF-8");
+  }
+
   @Override
   public Optional<ProvinceResponse> getListAdrdress() {
     try {
-      InputStream is = this.getClass().getResourceAsStream("/Vietnam.json");
-      Reader reader = new InputStreamReader(is, "UTF-8");
       Object obj = jsonParser.parse(reader);
       JSONObject jsonObject = (JSONObject) obj;
       ProvinceResponse provices = objectMapper.convertValue(
@@ -50,8 +55,6 @@ public class AddressServiceImpl
   @Override
   public Optional<DistrictResponse> getListDistrctByProvince(String provinceCode) {
     try {
-      InputStream is = this.getClass().getResourceAsStream("/Vietnam.json");
-      Reader reader = new InputStreamReader(is, "UTF-8");
       Object obj = jsonParser.parse(reader);
       JSONObject jsonObject = (JSONObject) obj;
       ProvinceResponse provices = objectMapper.convertValue(
