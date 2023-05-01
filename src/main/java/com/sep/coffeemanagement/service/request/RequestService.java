@@ -13,7 +13,8 @@ public interface RequestService {
     String keySort,
     int page,
     int pageSize,
-    String sortField
+    String sortField,
+    boolean isBranchRole
   );
 
   void createRequest(RequestReq req);

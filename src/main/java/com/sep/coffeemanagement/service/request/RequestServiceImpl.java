@@ -44,7 +44,8 @@ public class RequestServiceImpl
     String keySort,
     int page,
     int pageSize,
-    String sortField
+    String sortField,
+    boolean isBranchRole
   ) {
     List<RequestRes> list = repository.getListRequest(
       allParams,
@@ -57,6 +58,13 @@ public class RequestServiceImpl
       new ListWrapperResponse<>(
         list
           .stream()
+          .filter(
+            requestRes ->
+              !requestRes
+                .getStatus()
+                .equals(Constant.REQUEST_STATUS.CREATED.toString()) ||
+              isBranchRole
+          )
           .map(
             request ->
               new RequestRes(
