@@ -97,6 +97,11 @@ public class NewsServiceImpl
     News news = repository
       .getOneByAttribute("newsId", req.getNewsId())
       .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tin tức"));
+    validate(req);
+    news.setTitle(req.getTitle());
+    news.setContent(req.getContent());
+    news.setStatus(req.getStatus());
+    validate(req.getImage());
     ImageInfo imageInfo = imageInfoRepository
       .getOneByAttribute("objectId", req.getNewsId())
       .orElse(null);
@@ -111,10 +116,6 @@ public class NewsServiceImpl
       imageInfo.setPrefix(req.getImage().getPrefix());
       imageInfoRepository.insertAndUpdate(imageInfo, true);
     }
-    validate(req);
-    news.setTitle(req.getTitle());
-    news.setContent(req.getContent());
-    news.setStatus(req.getStatus());
     repository.insertAndUpdate(news, true);
   }
 

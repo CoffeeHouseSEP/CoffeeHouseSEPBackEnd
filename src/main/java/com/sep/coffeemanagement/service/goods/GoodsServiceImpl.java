@@ -188,6 +188,7 @@ public class GoodsServiceImpl
     }
     //
     repository.insertAndUpdate(goodsUpdate, true);
+    validate(req.getImage());
     ImageInfo imageInfo = imageInfoRepository
       .getOneByAttribute("objectId", req.getGoodsId())
       .orElse(null);
