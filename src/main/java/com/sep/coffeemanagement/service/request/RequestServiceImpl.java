@@ -54,17 +54,19 @@ public class RequestServiceImpl
       pageSize,
       sortField
     );
+
+    List<RequestRes> listReturn = list
+      .stream()
+      .filter(
+        requestRes ->
+          !requestRes.getStatus().equals(Constant.REQUEST_STATUS.CREATED.toString()) ||
+          isBranchRole
+      )
+      .collect(Collectors.toList());
     return Optional.of(
       new ListWrapperResponse<>(
-        list
+        listReturn
           .stream()
-          .filter(
-            requestRes ->
-              !requestRes
-                .getStatus()
-                .equals(Constant.REQUEST_STATUS.CREATED.toString()) ||
-              isBranchRole
-          )
           .map(
             request ->
               new RequestRes(
@@ -103,7 +105,7 @@ public class RequestServiceImpl
           .collect(Collectors.toList()),
         page,
         pageSize,
-        repository.getTotal(allParams)
+        listReturn.size()
       )
     );
   }
