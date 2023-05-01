@@ -49,7 +49,6 @@ public class AuthenticationImpl
       error.put("loginPassword", "Mật khẩu không đúng định dạng");
       throw new InvalidRequestException(error, "Mật khẩu không đúng định dạng");
     }
-    System.out.println(decodedPassword);
     if (!bCryptPasswordEncoder().matches(decodedPassword, user.getEncrPassword())) {
       error.put("loginPassword", "Mật khẩu không chính xác");
       throw new InvalidRequestException(error, "Mật khẩu không chính xác");
