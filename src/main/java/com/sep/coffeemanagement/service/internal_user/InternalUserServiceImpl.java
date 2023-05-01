@@ -259,29 +259,61 @@ public class InternalUserServiceImpl
   }
 
   @Override
-  public void changePassword(String id, String newPass) {
+  public void changePassword(String id, String newPass, String oldPass, String rePass) {
     newPass = newPass.trim();
+    id = id.trim();
+    oldPass = oldPass.trim();
+    rePass = rePass.trim();
     Map<String, String> e = new HashMap<>();
+
     if (StringUtils.isEmpty(id)) {
       e.put("id", "Không tìm thấy!");
-      throw new InvalidRequestException(e, "Không tìm thấy người dùng");
+      throw new InvalidRequestException(e, "Không tìm thấy người dùng!!");
     }
     if (newPass == null | newPass.length() == 0) {
       e.put("newPass", "Không được để trống!");
-      throw new InvalidRequestException(e, "Mật khẩu không được để trống");
+      throw new InvalidRequestException(e, "Mật khẩu không được để trống!!");
     }
+    if (!org.springframework.util.StringUtils.hasText(oldPass)) {
+      e.put("oldPass", "Không được để trống!");
+      throw new InvalidRequestException(e, "Mật khẩu cũ không được để trống!!");
+    }
+    if (!org.springframework.util.StringUtils.hasText(rePass)) {
+      e.put("rePass", "Không được để trống!");
+      throw new InvalidRequestException(e, "Mật khẩu nhập lại trống!!");
+    }
+    if (!rePass.equals(newPass)) {
+      e.put("rePass", "Không trùng khớp!");
+      throw new InvalidRequestException(e, "Mật khẩu nhập lại không trùng khớp!!");
+    }
+
     String decodedPassword = new String(
       Base64.decodeBase64(newPass),
       StandardCharsets.UTF_8
     );
     if (!decodedPassword.matches(TypeValidation.PASSWORD)) {
       Map<String, String> er = generateError(String.class);
-      er.put("new pass", "Mật khẩu mới không đúng định dạng");
+      er.put("newPass", "Mật khẩu mới không đúng định dạng");
       throw new InvalidRequestException(er, "Mật khẩu mới không đúng định dạng");
     }
     InternalUser userUpdate = repository
       .getOneByAttribute("internalUserId", id)
-      .orElseThrow();
+      .orElseThrow(
+        () -> {
+          e.put("id", "Không tìm thấy!");
+          throw new InvalidRequestException(e, "Không tìm thấy người dùng!!");
+        }
+      );
+    String oldPassDecode = new String(
+      Base64.decodeBase64(oldPass),
+      StandardCharsets.UTF_8
+    );
+    if (
+      !bCryptPasswordEncoder().matches(oldPassDecode,userUpdate.getEncrPassword())
+    ) {
+      e.put("oldPass", "Mật khẩu cũ không đúng");
+      throw new InvalidRequestException(e, "Mật khẩu cũ không chính xác");
+    }
     userUpdate.setEncrPassword(
       bCryptPasswordEncoder()
         .encode(new String(Base64.decodeBase64(newPass), StandardCharsets.UTF_8))

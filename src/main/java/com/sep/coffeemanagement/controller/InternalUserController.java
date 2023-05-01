@@ -200,9 +200,15 @@ public class InternalUserController extends AbstractController<InternalUserServi
   @PostMapping(value = "change-password")
   public ResponseEntity<CommonResponse<String>> changePassword(
     @RequestParam String newPass,
+    @RequestParam String oldPass,
+    @RequestParam String rePass,
     HttpServletRequest request
   ) {
-    service.changePassword(checkAuthentication(request), newPass);
+    validateAuthorize(
+      request,
+      new String[] { Constant.BRANCH_ROLE, Constant.ADMIN_ROLE, Constant.USER_ROLE }
+    );
+    service.changePassword(checkAuthentication(request), newPass, oldPass, rePass);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
         true,
