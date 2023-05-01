@@ -88,7 +88,14 @@ public class RequestController extends AbstractController<RequestService> {
       );
     }
     return response(
-      service.getListRequest(allParams, keySort, page, pageSize, sortField),
+      service.getListRequest(
+        allParams,
+        keySort,
+        page,
+        pageSize,
+        sortField,
+        Constant.BRANCH_ROLE.equals(role)
+      ),
       "Thành công"
     );
   }

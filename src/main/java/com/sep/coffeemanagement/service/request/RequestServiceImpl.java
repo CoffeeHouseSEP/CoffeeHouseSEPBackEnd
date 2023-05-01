@@ -44,7 +44,8 @@ public class RequestServiceImpl
     String keySort,
     int page,
     int pageSize,
-    String sortField
+    String sortField,
+    boolean isBranchRole
   ) {
     List<RequestRes> list = repository.getListRequest(
       allParams,
@@ -53,9 +54,18 @@ public class RequestServiceImpl
       pageSize,
       sortField
     );
+
+    List<RequestRes> listReturn = list
+      .stream()
+      .filter(
+        requestRes ->
+          !requestRes.getStatus().equals(Constant.REQUEST_STATUS.CREATED.toString()) ||
+          isBranchRole
+      )
+      .collect(Collectors.toList());
     return Optional.of(
       new ListWrapperResponse<>(
-        list
+        listReturn
           .stream()
           .map(
             request ->
@@ -95,7 +105,7 @@ public class RequestServiceImpl
           .collect(Collectors.toList()),
         page,
         pageSize,
-        repository.getTotal(allParams)
+        listReturn.size()
       )
     );
   }

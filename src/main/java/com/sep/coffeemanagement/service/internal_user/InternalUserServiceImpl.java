@@ -308,9 +308,7 @@ public class InternalUserServiceImpl
       Base64.decodeBase64(oldPass),
       StandardCharsets.UTF_8
     );
-    if (
-      !bCryptPasswordEncoder().matches(oldPassDecode,userUpdate.getEncrPassword())
-    ) {
+    if (!bCryptPasswordEncoder().matches(oldPassDecode, userUpdate.getEncrPassword())) {
       e.put("oldPass", "Mật khẩu cũ không đúng");
       throw new InvalidRequestException(e, "Mật khẩu cũ không chính xác");
     }
