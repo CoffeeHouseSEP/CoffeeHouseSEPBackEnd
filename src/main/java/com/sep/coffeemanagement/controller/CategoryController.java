@@ -23,6 +23,7 @@ public class CategoryController extends AbstractController<CategoryService> {
     @RequestBody CategoryReq categoryRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.createCategory(categoryRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
@@ -37,6 +38,7 @@ public class CategoryController extends AbstractController<CategoryService> {
     @RequestBody CategoryReq categoryRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateCategory(categoryRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(

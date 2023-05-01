@@ -24,6 +24,7 @@ public class BranchController extends AbstractController<BranchService> {
     @RequestBody BranchReq branchRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.createBranch(branchRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
@@ -38,6 +39,7 @@ public class BranchController extends AbstractController<BranchService> {
     @RequestBody BranchReq branchRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateBranch(branchRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(

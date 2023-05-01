@@ -27,6 +27,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestBody RequestReq requestRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     String userId = checkAuthentication(request);
     requestRequest.setCreatedBy(userId);
     service.createRequest(requestRequest);
@@ -48,6 +49,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestBody RequestReq requestRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     String userId = checkAuthentication(request);
     requestRequest.setCreatedBy(userId);
     service.updateRequest(requestRequest);
@@ -98,6 +100,10 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestParam String cancelReason,
     HttpServletRequest request
   ) {
+    validateAuthorize(
+      request,
+      new String[] { Constant.ADMIN_ROLE, Constant.BRANCH_ROLE }
+    );
     RequestReq requestRequest = new RequestReq();
     requestRequest.setRequestId(requestId);
     requestRequest.setReason(cancelReason);
@@ -120,6 +126,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestParam String requestId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     RequestReq requestRequest = new RequestReq();
     requestRequest.setRequestId(requestId);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.PENDING);
@@ -141,6 +148,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestParam String requestId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     String userId = checkAuthentication(request);
     RequestReq requestRequest = new RequestReq();
     requestRequest.setRequestId(requestId);
@@ -164,6 +172,7 @@ public class RequestController extends AbstractController<RequestService> {
     @RequestParam String requestId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     RequestReq requestRequest = new RequestReq();
     requestRequest.setRequestId(requestId);
     service.changeStatusRequest(requestRequest, Constant.REQUEST_STATUS.COMPLETED);
