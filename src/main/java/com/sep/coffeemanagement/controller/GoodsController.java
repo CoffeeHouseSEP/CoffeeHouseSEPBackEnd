@@ -100,6 +100,7 @@ public class GoodsController extends AbstractController<GoodsService> {
     @RequestBody GoodsReq goodsRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.createGoods(goodsRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
@@ -114,6 +115,7 @@ public class GoodsController extends AbstractController<GoodsService> {
     @RequestBody GoodsReq goodsRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateGoods(goodsRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(

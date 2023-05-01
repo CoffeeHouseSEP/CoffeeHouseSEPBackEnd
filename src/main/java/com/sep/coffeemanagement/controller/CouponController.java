@@ -28,6 +28,7 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestBody CouponReq couponRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.createCoupon(couponRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Tạo mới thành công", HttpStatus.OK.value()),
@@ -42,6 +43,7 @@ public class CouponController extends AbstractController<CouponService> {
     @RequestBody CouponReq couponRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateCoupon(couponRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(

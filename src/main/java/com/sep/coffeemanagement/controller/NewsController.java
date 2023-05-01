@@ -23,6 +23,7 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestBody NewsReq newsRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     String userId = checkAuthentication(request);
     newsRequest.setCreatedBy(userId);
     service.createNews(newsRequest);
@@ -39,6 +40,7 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestBody NewsReq newsRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateNews(newsRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -94,6 +96,7 @@ public class NewsController extends AbstractController<NewsService> {
     @RequestParam String newsId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.removeNews(newsId);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Xóa thành công", HttpStatus.OK.value()),

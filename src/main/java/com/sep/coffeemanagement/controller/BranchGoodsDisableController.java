@@ -1,5 +1,6 @@
 package com.sep.coffeemanagement.controller;
 
+import com.sep.coffeemanagement.constant.Constant;
 import com.sep.coffeemanagement.dto.branch_goods_disable.BranchGoodsDisableReq;
 import com.sep.coffeemanagement.dto.branch_goods_disable.BranchGoodsDisableRes;
 import com.sep.coffeemanagement.dto.common.CommonResponse;
@@ -22,6 +23,7 @@ public class BranchGoodsDisableController
     @RequestParam String goodsId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     BranchGoodsDisableReq req = new BranchGoodsDisableReq();
     req.setGoodsId(goodsId);
     req.setUserId(checkAuthentication(request));
@@ -44,6 +46,7 @@ public class BranchGoodsDisableController
     @RequestParam String goodsId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     BranchGoodsDisableReq req = new BranchGoodsDisableReq();
     req.setGoodsId(goodsId);
     req.setUserId(checkAuthentication(request));

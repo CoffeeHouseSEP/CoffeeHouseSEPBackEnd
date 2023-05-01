@@ -57,6 +57,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestBody OrdersCreateReq ordersReq,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.USER_ROLE });
     String userId = checkAuthentication(request);
     ordersReq.setCustomerId(userId);
     service.createOrders(ordersReq);
@@ -79,6 +80,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam String cancelReason,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.USER_ROLE, Constant.BRANCH_ROLE });
     OrdersReq ordersRequest = new OrdersReq();
     ordersRequest.setOrdersId(ordersId);
     ordersRequest.setReason(cancelReason);
@@ -101,6 +103,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam String ordersId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     OrdersReq ordersRequest = new OrdersReq();
     ordersRequest.setOrdersId(ordersId);
     service.changeStatusOrders(ordersRequest, Constant.ORDER_STATUS.APPROVED);
@@ -122,6 +125,7 @@ public class OrdersController extends AbstractController<OrdersService> {
     @RequestParam String ordersId,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.BRANCH_ROLE });
     OrdersReq ordersRequest = new OrdersReq();
     ordersRequest.setOrdersId(ordersId);
     service.changeStatusOrders(ordersRequest, Constant.ORDER_STATUS.COMPLETED);
