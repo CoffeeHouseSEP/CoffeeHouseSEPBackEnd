@@ -59,6 +59,7 @@ public class GoodsReq {
   @NotNull(message = "Đơn vị tính không được để trống")
   @NotEmpty(message = "Đơn vị tính không được để trống")
   @NotBlank(message = "Đơn vị tính không được để trống")
+  @Length(max = 50, message = "Không được quá 50 ký tự")
   private String goodsUnit;
 
   private ImageInfoReq image;
