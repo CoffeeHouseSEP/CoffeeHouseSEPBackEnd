@@ -173,7 +173,7 @@ public class OrdersServiceImpl
       orderDetail.setOrdersId(ordersId);
       orderDetail.setGoodsId(orderDetailReq.getGoodsId());
       orderDetail.setQuantity(orderDetailReq.getQuantity());
-      orderDetail.setSize(orderDetailReq.getSize());
+      orderDetail.setSize(goods.getIsSize() == 1 ? orderDetailReq.getSize() : "");
       orderDetail.setApplyPrice(
         goods.getApplyPrice() *
         AppParamUtils.getRatioValueFromListSizeGoods(
