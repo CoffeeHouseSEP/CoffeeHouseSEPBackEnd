@@ -64,7 +64,7 @@ public class GoodsRepository extends BaseRepository<Goods> {
   ) {
     String branchId = allParams.remove("branchId");
     String isDisabled = allParams.remove("isDisabled");
-    StringBuilder sb = new StringBuilder(" SELECT t1.*, ");
+    StringBuilder sb = new StringBuilder(" SELECT t1.*, (select name from category where category_id = t1.category_id) categoryName, ");
     sb.append(
       " (select count(*) from branch_goods_disable where goods_id = t1.goods_id and branch_id = '"
     );
