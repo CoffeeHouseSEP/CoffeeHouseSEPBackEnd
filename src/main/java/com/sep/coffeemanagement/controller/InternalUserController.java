@@ -36,6 +36,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestBody InternalUserReq userRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.createUser(userRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -76,6 +77,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestParam String id,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.ADMIN_ROLE });
     service.updateStatus(id, 0);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(
@@ -99,6 +101,10 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestParam(required = false) String sortField,
     HttpServletRequest request
   ) {
+    validateAuthorize(
+      request,
+      new String[] { Constant.ADMIN_ROLE, Constant.BRANCH_ROLE }
+    );
     return response(
       service.getListInternalUsers(allParams, keySort, page, pageSize, sortField),
       "Thành công"
@@ -168,6 +174,7 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestBody InternalUserRegisterReq userRequest,
     HttpServletRequest request
   ) {
+    validateAuthorize(request, new String[] { Constant.USER_ROLE });
     service.register(userRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Đăng ký thành công", HttpStatus.OK.value()),

@@ -227,6 +227,9 @@ public class InternalUserServiceImpl
     InternalUser internalUser = repository
       .getOneByAttribute("loginName", username)
       .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+    if (!Constant.USER_ROLE.equals(internalUser.getRole())) {
+      throw new InvalidRequestException(er, "Không thể thao tác với người dùng nội bộ!!");
+    }
     if (!email.matches(TypeValidation.EMAIL)) {
       er.put("email", "Email không đúng định dạng");
       throw new InvalidRequestException(er, "Email không đúng định dạng");
