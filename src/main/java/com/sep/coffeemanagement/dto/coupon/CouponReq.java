@@ -21,6 +21,7 @@ public class CouponReq {
 
   @Max(value = 70, message = "Giá trị mã giảm giá phải trong khoảng 0 đến 70")
   @Min(value = 0, message = "Giá trị mã giảm giá phải trong khoảng 0 đến 70")
+  @Positive(message = "Giá trị mã giảm giá phải lớn hơn 0")
   private double value;
 
   private int status;
