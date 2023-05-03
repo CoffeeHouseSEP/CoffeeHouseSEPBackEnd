@@ -33,6 +33,8 @@ public interface InternalUserService {
 
   void forgotPassword(String username, String email);
 
+  void forgotPasswordForAdminAndBM(String username, String email);
+
   void changePassword(String id, String newPass, String oldPass, String rePass);
 
   InternalUserProfileRes getUserProfileById(String id);
