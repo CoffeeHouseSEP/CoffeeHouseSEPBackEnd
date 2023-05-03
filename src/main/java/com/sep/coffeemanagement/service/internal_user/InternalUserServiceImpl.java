@@ -262,6 +262,57 @@ public class InternalUserServiceImpl
   }
 
   @Override
+  public void forgotPasswordForAdminAndBM(String username, String email) {
+    username = username.trim();
+    email = email.trim();
+    //update password to default
+    Map<String, String> er = new HashMap<>();
+    if (!checkExistUser(username)) {
+      er.put("username", "Tên đăng nhập không tồn tại");
+      throw new InvalidRequestException(er, "Tên đăng nhập không tồn tại");
+    }
+    String autoGenPass = mailSenderUtil.autoGeneratePassword();
+    InternalUser internalUser = repository
+      .getOneByAttribute("loginName", username)
+      .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+    if (!email.matches(TypeValidation.EMAIL)) {
+      er.put("email", "Email không đúng định dạng");
+      throw new InvalidRequestException(er, "Email không đúng định dạng");
+    }
+    if (Constant.USER_ROLE.equals(internalUser.getRole())) {
+      throw new InvalidRequestException(
+        er,
+        "Không thể thao tác với người dùng thông thường!!"
+      );
+    }
+    if (!email.equals(internalUser.getEmail())) {
+      er.put("email", "Email không chính xác");
+      throw new InvalidRequestException(er, "Email không chính xác");
+    } //if the input email is not belong to the username then reject
+    String hashedPass = bCryptPasswordEncoder().encode(autoGenPass);
+    System.out.println(hashedPass);
+    internalUser.setEncrPassword(hashedPass);
+    repository.insertAndUpdate(internalUser, true);
+    //SEND MAIL
+    try {
+      Map<String, Object> props = new HashMap<>();
+      props.put("name", internalUser.getFullName());
+      props.put("username", internalUser.getLoginName());
+      props.put("password", autoGenPass);
+      System.out.println(autoGenPass);
+      DataMailDto dataMailDto = new DataMailDto()
+        .builder()
+        .to(internalUser.getEmail())
+        .subject(Constant.CLIENT_FORGOTPASSWORD)
+        .props(props)
+        .build();
+      mailSenderUtil.sendHtmlMail(dataMailDto, Constant.FORGOT);
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
   public void changePassword(String id, String newPass, String oldPass, String rePass) {
     newPass = newPass.trim();
     id = id.trim();

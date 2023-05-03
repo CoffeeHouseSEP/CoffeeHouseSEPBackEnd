@@ -174,7 +174,6 @@ public class InternalUserController extends AbstractController<InternalUserServi
     @RequestBody InternalUserRegisterReq userRequest,
     HttpServletRequest request
   ) {
-    validateAuthorize(request, new String[] { Constant.USER_ROLE });
     service.register(userRequest);
     return new ResponseEntity<CommonResponse<String>>(
       new CommonResponse<String>(true, null, "Đăng ký thành công", HttpStatus.OK.value()),
@@ -195,7 +194,27 @@ public class InternalUserController extends AbstractController<InternalUserServi
       new CommonResponse<String>(
         true,
         null,
-        "Đổi password thành công",
+        "Mật khẩu đã được gửi về hòm thư của bạn, vui lòng kiểm tra!!",
+        HttpStatus.OK.value()
+      ),
+      null,
+      HttpStatus.OK.value()
+    );
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping(value = "forgot-password-for-admin-bm")
+  public ResponseEntity<CommonResponse<String>> forgotPasswordForAdminAndBM(
+    @RequestParam String username,
+    @RequestParam String email,
+    HttpServletRequest request
+  ) {
+    service.forgotPasswordForAdminAndBM(username, email);
+    return new ResponseEntity<CommonResponse<String>>(
+      new CommonResponse<String>(
+        true,
+        null,
+        "Mật khẩu đã được gửi về hòm thư của bạn, vui lòng kiểm tra!!",
         HttpStatus.OK.value()
       ),
       null,
